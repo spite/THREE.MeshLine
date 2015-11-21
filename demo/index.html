@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>1AD - 002 Hexagons</title>
+    <meta property="og:description" content="1AD - 002 Hexagons">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="css/main.css">
+    <!--<link href='https://fonts.googleapis.com/css?family=Lato:400,700,700italic,400italic,300,300italic' rel='stylesheet' type='text/css'>-->
+</head>
+
+</script>
+
+<body>
+    <!--<h1>1AD - 002 Hexagons</h1>-->
+    <div id="container" ></div>
+</body>
+
+<script id="vs-line" type="x-shader/x-vertex">
+
+precision mediump float;
+
+attribute vec3 position;
+attribute vec3 previous;
+attribute vec3 next;
+attribute float side;
+attribute float width;
+attribute vec2 uv;
+
+uniform mat4 projectionMatrix;
+uniform mat4 modelViewMatrix;
+uniform vec2 resolution;
+uniform float lineWidth;
+uniform vec3 color;
+uniform float near;
+uniform float far;
+
+varying vec2 vUV;
+varying vec3 vColor;
+
+vec2 fix( vec4 i, float aspect ) {
+
+    vec2 res = i.xy / i.w;
+    res.x *= aspect;
+    return res;
+
+}
+
+void main() {
+
+    float aspect = resolution.x / resolution.y;
+
+    vColor = color;
+    vUV = uv;
+
+    mat4 m = projectionMatrix * modelViewMatrix;
+    vec4 finalPosition = m * vec4( position, 1.0 );
+    vec4 prevPos = m * vec4( previous, 1.0 );
+    vec4 nextPos = m * vec4( next, 1.0 );
+    
+    vec2 currentP = fix( finalPosition, aspect );
+    vec2 prevP = fix( prevPos, aspect );
+    vec2 nextP = fix( nextPos, aspect );
+
+    vec2 dir1 = normalize( currentP - prevP );
+    vec2 dir2 = normalize( nextP - currentP );
+    
+    vec2 dir = normalize( dir1 + dir2 );
+    if( nextP == currentP ) dir = dir1;
+    if( prevP == currentP ) dir = dir2;
+    
+    //vec2 normal = ( cross( vec3( dir, 0. ), vec3( 0., 0., 1. ) ) ).xy;
+    vec2 normal = vec2( -dir.y, dir.x );
+    normal.x /= aspect;
+    normal *= lineWidth * width;
+
+    float depth = ( finalPosition.z - near ) / ( far - near );
+    normal *= depth;
+
+    vec4 offset = vec4( normal * side, 0.0, 1.0 );
+
+    finalPosition.xy += offset.xy;
+
+    gl_Position = finalPosition;
+
+}
+
+</script>
+
+<script id="fs-line" type="x-shader/x-fragment">
+
+precision mediump float;
+
+uniform sampler2D map;
+uniform float useMap;
+
+varying vec2 vUV;
+varying vec3 vColor;
+
+void main() {
+
+    //vec3 c = vColor;
+    //c = vec3( vUV, 0. );
+    vec4 c = vec4( 1. );
+    if( useMap == 1. ) c *= texture2D( map, vUV );
+    c.rgb *= vColor;
+    gl_FragColor = c;
+    
+}
+
+</script>
+
+<script src="js/three.min.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script src="js/ImprovedNoise.js"></script>
+<script src="js/THREE.ConstantSpline.js"></script>
+<script src="js/Maf.js"></script>
+<script src="../src/THREE.MeshLine.js"></script>
+<script src="js/main.js"></script>
+
+</html>
