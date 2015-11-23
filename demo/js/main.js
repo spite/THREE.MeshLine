@@ -15,7 +15,7 @@ var controls = new THREE.OrbitControls( camera, renderer.domElement );
 
 var TAU = 2 * Math.PI;
 var hexagonGeometry = new THREE.Geometry();
-for( var j = 0; j < TAU - .1; j += TAU / 36 ) {
+for( var j = 0; j < TAU - .1; j += TAU / 6 ) {
 	var v = new THREE.Vector3();
 	v.set( Math.cos( j ), Math.sin( j ), 0 );
 	hexagonGeometry.vertices.push( v );
@@ -85,26 +85,30 @@ var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 
 function makeLine( geo ) {
 
-	var g = prepareGeometry( geo, true );
+	var g = new THREE.MeshLine();
+	g.setGeometry( geo );
+
+	var s = 10 +  10 * Math.random()
 
 	var material = new THREE.RawShaderMaterial( { 
 		uniforms:{
-			lineWidth: { type: 'f', value: 10 },
+			lineWidth: { type: 'f', value: 1 },
 			map: { type: 't', value: strokeTexture },
 			useMap: { type: 'f', value: 0 },
 			color: { type: 'c', value: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) },
 			resolution: { type: 'v2', value: resolution },
+			sizeAttenuation: { type: 'f', value: 1 },
 			near: { type: 'f', value: camera.near },
 			far: { type: 'f', value: camera.far }	
 		},
 		vertexShader: document.getElementById( 'vs-line' ).textContent,
 		fragmentShader: document.getElementById( 'fs-line' ).textContent,
-		//transparent: true,
-		//depthTest: false,
-		//blending: THREE.AdditiveAlphaBlending
+		/*side: THREE.DoubleSide,
+		transparent: true,
+		depthTest: false,
+		blending: THREE.AdditiveAlphaBlending*/
 	});
-	var mesh = new THREE.Mesh( g, material );
-	var s = 10 +  10 * Math.random()
+	var mesh = new THREE.Mesh( g.geometry, material );
 	mesh.scale.set( s,s,s );
 	mesh.rotation.set( Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI );
 	scene.add( mesh );
@@ -120,9 +124,55 @@ for( var j = 0; j < 100; j++ ) {
 */
 function m() {
 	//makeLine( hexagonGeometry );
-	makeLine( createCurve() );
+	//makeLine( createCurve() );
+	//makeLine( makeVerticalLine() );
+	//makeLine( makeSquare() );
 }
-m();
+//m();
+var circleGeo = new THREE.Geometry();
+for( var j = 0; j < 50; j++ ) circleGeo.vertices.push( new THREE.Vector3() );
+
+var g = new THREE.MeshLine();
+g.setGeometry( circleGeo );
+
+var material = new THREE.RawShaderMaterial( { 
+	uniforms:{
+		lineWidth: { type: 'f', value: 256 },
+		map: { type: 't', value: strokeTexture },
+		useMap: { type: 'f', value: 0 },
+		color: { type: 'c', value: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) },
+		resolution: { type: 'v2', value: resolution },
+		sizeAttenuation: { type: 'f', value: 0 },
+		near: { type: 'f', value: camera.near },
+		far: { type: 'f', value: camera.far }	
+	},
+	vertexShader: document.getElementById( 'vs-line' ).textContent,
+	fragmentShader: document.getElementById( 'fs-line' ).textContent,
+	transparent: true,
+	depthTest: false,
+	blending: THREE.AdditiveAlphaBlending
+});
+var circle = new THREE.Mesh( g.geometry, material );
+scene.add( circle );
+
+function makeVerticalLine() {
+	var g = new THREE.Geometry()
+	var x = ( .5 - Math.random() ) * 100;
+	g.vertices.push( new THREE.Vector3( x, -10, 0 ) );
+	g.vertices.push( new THREE.Vector3( x, 10, 0 ) );
+	return g;
+}
+
+function makeSquare() {
+	var g = new THREE.Geometry()
+	var x = ( .5 - Math.random() ) * 100;
+	g.vertices.push( new THREE.Vector3( -1, -1, 0 ) );
+	g.vertices.push( new THREE.Vector3( 1, -1, 0 ) );
+	g.vertices.push( new THREE.Vector3( 1, 1, 0 ) );
+	g.vertices.push( new THREE.Vector3( -1, 1, 0 ) );
+	g.vertices.push( new THREE.Vector3( -1, -1, 0 ) );
+	return g;
+}
 
 window.addEventListener( 'keydown', m );
 onWindowResize();
@@ -146,6 +196,7 @@ function onWindowResize() {
 window.addEventListener( 'resize', onWindowResize );
 
 var tmpVector = new THREE.Vector3();
+var noise = new ImprovedNoise();
 
 function render() {
 
@@ -156,6 +207,16 @@ function render() {
 	lines.forEach( function( l, i ) {
 		//l.material.uniforms.lineWidth.value = 10 + 5 * Math.sin( t + i );
 	} );
+
+	var t = .001 * Date.now();
+	var s = .1;
+	for( var j = 0; j < circleGeo.vertices.length; j++ ) {
+		var a = ( j * Math.PI / circleGeo.vertices.length - t );
+		var r = 2 + noise.noise( s * j + t, s * a + t, s * t + t );
+		circleGeo.vertices[ j ].set( r * Math.cos( a ), 0, r * Math.sin( a ) )
+	}
+	g.setGeometry( circleGeo );
+
 	renderer.render( scene, camera );
 	//manager.render( scene, camera );
 

@@ -34,6 +34,7 @@ uniform float lineWidth;
 uniform vec3 color;
 uniform float near;
 uniform float far;
+uniform float sizeAttenuation;
 
 varying vec2 vUV;
 varying vec3 vColor;
@@ -62,23 +63,37 @@ void main() {
     vec2 prevP = fix( prevPos, aspect );
     vec2 nextP = fix( nextPos, aspect );
 
-    vec2 dir1 = normalize( currentP - prevP );
-    vec2 dir2 = normalize( nextP - currentP );
-    
-    vec2 dir = normalize( dir1 + dir2 );
-    if( nextP == currentP ) dir = dir1;
-    if( prevP == currentP ) dir = dir2;
-    
+    float w = lineWidth * width;
+
+    vec2 dir;
+    if( nextP == currentP ) dir = normalize( currentP - prevP );
+    else if( prevP == currentP ) dir = normalize( nextP - currentP );
+    else {
+        vec2 dir1 = normalize( currentP - prevP );
+        vec2 dir2 = normalize( nextP - currentP );
+        dir = normalize( dir1 + dir2 );
+        
+        /*{
+            vec2 perp = vec2( -dir1.y, dir1.x );
+            vec2 miter = vec2( -dir.y, dir.x );
+            float f = dot( miter, perp );
+            w /= f;
+        }*/
+
+    }
+
     //vec2 normal = ( cross( vec3( dir, 0. ), vec3( 0., 0., 1. ) ) ).xy;
     vec2 normal = vec2( -dir.y, dir.x );
     normal.x /= aspect;
-    normal *= lineWidth * width;
+    normal *= .5 * w;
 
-    float depth = ( finalPosition.z - near ) / ( far - near );
-    normal *= depth;
+    if( sizeAttenuation == 0. ) {
+        float depth = ( finalPosition.z - near ) / ( far - near );
+        normal *= depth;
+    }
 
     vec4 offset = vec4( normal * side, 0.0, 1.0 );
-
+    //offset = vec4( side * 10., 0., 0., 0. );
     finalPosition.xy += offset.xy;
 
     gl_Position = finalPosition;
@@ -104,6 +119,8 @@ void main() {
     vec4 c = vec4( 1. );
     if( useMap == 1. ) c *= texture2D( map, vUV );
     c.rgb *= vColor;
+   // c = vec4( vUV, 0., 1. );
+    //c = vec4( 1.,0.,1.,1.);
     gl_FragColor = c;
     
 }
