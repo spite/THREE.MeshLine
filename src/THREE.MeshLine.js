@@ -11,13 +11,13 @@ THREE.MeshLine = function() {
 
 	this.geometry = new THREE.BufferGeometry();
 	
-	/*for( var j in this.attributes ) {
-		this.attributes[ j ].dynamic = true;
-	}*/
+	this.widthCallback = null;
 
 }
 
-THREE.MeshLine.prototype.setGeometry = function( g ) {
+THREE.MeshLine.prototype.setGeometry = function( g, c ) {
+
+	this.widthCallback = c;
 
 	this.positions = [];
 
@@ -56,17 +56,16 @@ THREE.MeshLine.prototype.process = function() {
 	this.width = [];
 	this.indices_array = [];
 	this.uvs = [];
-	
+
 	for( var j = 0; j < l; j++ ) {
 		this.side.push( 1 );
 		this.side.push( -1 );
 	}
 
+	var w;
 	for( var j = 0; j < l; j++ ) {
-		var w = 1 - j / ( l );
-		//w = 1 * Maf.parabola( w, 2 );
-		w = 1;
-		//w = Maf.smoothStep( 0, 1, j );
+		if( this.widthCallback ) w = this.widthCallback( j / ( l -1 ) );
+		else w = 1;
 		this.width.push( w );
 		this.width.push( w );
 	}
@@ -129,4 +128,88 @@ THREE.MeshLine.prototype.process = function() {
 	this.geometry.addAttribute( 'uv', this.attributes.uv );
 
 	this.geometry.setIndex( this.attributes.index );
+
 }
+
+THREE.MeshLineMaterial = function() {
+
+	this.material = new THREE.RawShaderMaterial( { 
+		uniforms:{
+			lineWidth: { type: 'f', value: 1 },
+			map: { type: 't', value: strokeTexture },
+			useMap: { type: 'f', value: 0 },
+			color: { type: 'c', value: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) },
+			resolution: { type: 'v2', value: resolution },
+			sizeAttenuation: { type: 'f', value: 1 },
+			near: { type: 'f', value: camera.near },
+			far: { type: 'f', value: camera.far }	
+		},
+		vertexShader: document.getElementById( 'vs-line' ).textContent,
+		fragmentShader: document.getElementById( 'fs-line' ).textContent,
+		/*side: THREE.DoubleSide,
+		transparent: true,
+		depthTest: false,
+		blending: THREE.AdditiveAlphaBlending*/
+	});
+
+}
+
+THREE.MeshLineMaterial = function ( parameters ) {
+
+	THREE.Material.call( this );
+
+	var material = new THREE.RawShaderMaterial( { 
+		uniforms:{
+			lineWidth: { type: 'f', value: 1 },
+			map: { type: 't', value: parameters.uniforms.map },
+			useMap: { type: 'f', value: 0 },
+			color: { type: 'c', value: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) },
+			resolution: { type: 'v2', value: resolution },
+			sizeAttenuation: { type: 'f', value: 1 },
+			near: { type: 'f', value: camera.near },
+			far: { type: 'f', value: camera.far }	
+		},
+		vertexShader: document.getElementById( 'vs-line' ).textContent,
+		fragmentShader: document.getElementById( 'fs-line' ).textContent
+	});
+
+	material.type = 'MeshLineMaterial';
+
+/*	this.color = new THREE.Color( 0xffffff );
+
+	this.linewidth = 1;
+	this.linecap = 'round';
+	this.linejoin = 'round';
+
+	this.vertexColors = THREE.NoColors;
+
+	this.fog = true;*/
+
+	delete parameters.uniforms;
+
+	material.setValues( parameters );
+
+	return material;
+
+};
+
+THREE.MeshLineMaterial.prototype = Object.create( THREE.Material.prototype );
+THREE.MeshLineMaterial.prototype.constructor = THREE.MeshLineMaterial;
+
+THREE.MeshLineMaterial.prototype.copy = function ( source ) {
+
+	THREE.Material.prototype.copy.call( this, source );
+
+	this.color.copy( source.color );
+
+	this.linewidth = source.linewidth;
+	this.linecap = source.linecap;
+	this.linejoin = source.linejoin;
+
+	this.vertexColors = source.vertexColors;
+
+	this.fog = source.fog;
+
+	return this;
+
+};

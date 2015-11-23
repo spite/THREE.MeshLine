@@ -86,28 +86,11 @@ var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 function makeLine( geo ) {
 
 	var g = new THREE.MeshLine();
-	g.setGeometry( geo );
+	g.setGeometry( geo, function( p ){ return p; } );
 
-	var s = 10 +  10 * Math.random()
+	var s = 10 +  10 * Math.random();
 
-	var material = new THREE.RawShaderMaterial( { 
-		uniforms:{
-			lineWidth: { type: 'f', value: 1 },
-			map: { type: 't', value: strokeTexture },
-			useMap: { type: 'f', value: 0 },
-			color: { type: 'c', value: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) },
-			resolution: { type: 'v2', value: resolution },
-			sizeAttenuation: { type: 'f', value: 1 },
-			near: { type: 'f', value: camera.near },
-			far: { type: 'f', value: camera.far }	
-		},
-		vertexShader: document.getElementById( 'vs-line' ).textContent,
-		fragmentShader: document.getElementById( 'fs-line' ).textContent,
-		/*side: THREE.DoubleSide,
-		transparent: true,
-		depthTest: false,
-		blending: THREE.AdditiveAlphaBlending*/
-	});
+	var material = new THREE.MeshLineMaterial( { uniforms: { map: strokeTexture }, depthTest: true });
 	var mesh = new THREE.Mesh( g.geometry, material );
 	mesh.scale.set( s,s,s );
 	mesh.rotation.set( Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI );
@@ -124,12 +107,13 @@ for( var j = 0; j < 100; j++ ) {
 */
 function m() {
 	//makeLine( hexagonGeometry );
-	//makeLine( createCurve() );
+	makeLine( createCurve() );
 	//makeLine( makeVerticalLine() );
 	//makeLine( makeSquare() );
 }
-//m();
-var circleGeo = new THREE.Geometry();
+m();
+
+/*var circleGeo = new THREE.Geometry();
 for( var j = 0; j < 50; j++ ) circleGeo.vertices.push( new THREE.Vector3() );
 
 var g = new THREE.MeshLine();
@@ -153,7 +137,7 @@ var material = new THREE.RawShaderMaterial( {
 	blending: THREE.AdditiveAlphaBlending
 });
 var circle = new THREE.Mesh( g.geometry, material );
-scene.add( circle );
+scene.add( circle );*/
 
 function makeVerticalLine() {
 	var g = new THREE.Geometry()
@@ -208,14 +192,14 @@ function render() {
 		//l.material.uniforms.lineWidth.value = 10 + 5 * Math.sin( t + i );
 	} );
 
-	var t = .001 * Date.now();
+	/*var t = .001 * Date.now();
 	var s = .1;
 	for( var j = 0; j < circleGeo.vertices.length; j++ ) {
 		var a = ( j * Math.PI / circleGeo.vertices.length - t );
 		var r = 2 + noise.noise( s * j + t, s * a + t, s * t + t );
 		circleGeo.vertices[ j ].set( r * Math.cos( a ), 0, r * Math.sin( a ) )
 	}
-	g.setGeometry( circleGeo );
+	g.setGeometry( circleGeo );*/
 
 	renderer.render( scene, camera );
 	//manager.render( scene, camera );
