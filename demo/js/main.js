@@ -25,15 +25,13 @@ hexagonGeometry.vertices.push( hexagonGeometry.vertices[ 0 ].clone() );
 function createCurve() {
 
 	var s = new THREE.ConstantSpline();
-	var rMin = 1;
-	var rMax = 2;
+	var rMin = 100;
+	var rMax = 200;
 	var origin = new THREE.Vector3( Maf.randomInRange( -rMin, rMin ), Maf.randomInRange( -rMin, rMin ), Maf.randomInRange( -rMin, rMin ) );
 
 	s.inc = .001;
 	s.p0 = new THREE.Vector3( .5 - Math.random(), .5 - Math.random(), .5 - Math.random() );
-	s.p1 = new THREE.Vector3( .5 - Math.random(), .5 - Math.random(), .5 - Math.random() );
-	s.p2 = new THREE.Vector3( .5 - Math.random(), .5 - Math.random(), .5 - Math.random() );
-	s.p3 = new THREE.Vector3( .5 - Math.random(), .5 - Math.random(), .5 - Math.random() );
+	s.p0.set( 0, 0, 0 );
 	s.p1 = s.p0.clone().add( new THREE.Vector3( .5 - Math.random(), .5 - Math.random(), .5 - Math.random() ) );
 	s.p2 = s.p1.clone().add( new THREE.Vector3( .5 - Math.random(), .5 - Math.random(), .5 - Math.random() ) );
 	s.p3 = s.p2.clone().add( new THREE.Vector3( .5 - Math.random(), .5 - Math.random(), .5 - Math.random() ) );
@@ -49,12 +47,8 @@ function createCurve() {
 	s.reticulate( { steps: 500 } );
  	var geometry = new THREE.Geometry();
    
-	for( var j = 0; j < s.lPoints.length - 1; j++ ) {
-	
-		var from = s.lPoints[ j ],
-			to = s.lPoints[ j + 1 ];
-		geometry.vertices.push( from.clone() );
-	    //geometry.vertices.push( to.clone() );
+	for( var j = 0; j < s.lPoints.length - 1; j++ ) {	
+		geometry.vertices.push( s.lPoints[ j ].clone() );
 	}
 
 	return geometry;
@@ -82,15 +76,20 @@ var colors = [
 var lines = [];
 var loader = new THREE.TextureLoader();
 var strokeTexture;
-loader.load( 'assets/stroke.png', function( texture ) { strokeTexture = texture; strokeTexture.needsUpdate = true; } );
+loader.load( 'assets/stroke.png', function( texture ) { 
+	strokeTexture = texture; 
+	init()
+} );
 var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 
 function makeLine( geo ) {
 
 	var g = new THREE.MeshLine();
-//	g.setGeometry( geo, function( p ) { return p; } );
-	g.setGeometry( geo, function( p ) { return 1 * Maf.parabola( p, 1 )} );
+//	g.setGeometry( geo, function( p ) { return 1 - p; } );
+	//g.setGeometry( geo, function( p ) { return 1 * Maf.parabola( p, 1 )} );
+	g.setGeometry( geo );
 
+	var r = 50;
 	var s = 10 + 10 * Math.random();
 
 	var material = new THREE.MeshLineMaterial( { 
@@ -98,6 +97,7 @@ function makeLine( geo ) {
 		useMap: false,
 		color: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ),
 		opacity: 1,
+		dashArray: new THREE.Vector2( 10, 5 ),
 		resolution: resolution,
 		sizeAttenuation: true,
 		lineWidth: 1,
@@ -106,25 +106,34 @@ function makeLine( geo ) {
 		/*depthTest: false,
 		blending: THREE.AdditiveAlphaBlending,
 		transparent: true*/
-		transparent: true
 	});
 	var mesh = new THREE.Mesh( g.geometry, material );
 	mesh.scale.set( s,s,s );
 	mesh.rotation.set( Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI );
+	mesh.position.set( Maf.randomInRange( -r, r ), Maf.randomInRange( -r, r ), Maf.randomInRange( -r, r ) );
 	scene.add( mesh );
 
 	lines.push( mesh );
 
 }
 
+function init() {
+
+	createLines();
+
+}
+
 function m() {
-	//makeLine( hexagonGeometry );
-	makeLine( createCurve() );
+	makeLine( hexagonGeometry );
+	//makeLine( createCurve() );
 	//makeLine( makeVerticalLine() );
 	//makeLine( makeSquare() );
 }
-for( var j = 0; j < 100; j++ ) {
-	m();
+
+function createLines() {
+	for( var j = 0; j < 100; j++ ) {
+		m();
+	}
 }
 
 /*var circleGeo = new THREE.Geometry();
