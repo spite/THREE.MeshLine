@@ -257,6 +257,8 @@ THREE.MeshLineMaterial = function ( parameters ) {
 '',
 'uniform sampler2D map;',
 'uniform float useMap;',
+'uniform float useDash;',
+'uniform vec2 dashArray;',
 '',
 'varying vec2 vUV;',
 'varying vec4 vColor;',
@@ -265,6 +267,9 @@ THREE.MeshLineMaterial = function ( parameters ) {
 '',
 '    vec4 c = vColor;',
 '    if( useMap == 1. ) c *= texture2D( map, vUV );',
+'	 if( useDash == 1. ){',
+'	 	 ',
+'	 }',
 '    gl_FragColor = c;',
 '',   
 '}' ];
@@ -285,6 +290,8 @@ THREE.MeshLineMaterial = function ( parameters ) {
 	this.sizeAttenuation = check( parameters.sizeAttenuation, 1 );
 	this.near = check( parameters.near, 1 );
 	this.far = check( parameters.far, 1 );
+	this.dashArray = check( parameters.dashArray, [] );
+	this.useDash = ( this.dashArray !== [] ) ? 1 : 0;
 
 	var material = new THREE.RawShaderMaterial( { 
 		uniforms:{
@@ -296,7 +303,9 @@ THREE.MeshLineMaterial = function ( parameters ) {
 			resolution: { type: 'v2', value: this.resolution },
 			sizeAttenuation: { type: 'f', value: this.sizeAttenuation },
 			near: { type: 'f', value: this.near },
-			far: { type: 'f', value: this.far }
+			far: { type: 'f', value: this.far },
+			dashArray: { type: 'v2', value: new THREE.Vector2( this.dashArray[ 0 ], this.dashArray[ 1 ] ) },
+			useDash: { type: 'f', value: this.useDash }
 		},
 		vertexShader: vertexShaderSource.join( '\r\n' ),
 		fragmentShader: fragmentShaderSource.join( '\r\n' )
@@ -311,6 +320,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 	delete parameters.sizeAttenuation;
 	delete parameters.near;
 	delete parameters.far;
+	delete parameters.dashArray;
 
 	material.type = 'MeshLineMaterial';
 
