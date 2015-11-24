@@ -15,7 +15,7 @@ var controls = new THREE.OrbitControls( camera, renderer.domElement );
 
 var TAU = 2 * Math.PI;
 var hexagonGeometry = new THREE.Geometry();
-for( var j = 0; j < TAU - .1; j += TAU / 6 ) {
+for( var j = 0; j < TAU - .1; j += TAU / 100 ) {
 	var v = new THREE.Vector3();
 	v.set( Math.cos( j ), Math.sin( j ), 0 );
 	hexagonGeometry.vertices.push( v );
@@ -80,17 +80,34 @@ var colors = [
 ];
 
 var lines = [];
-var strokeTexture = THREE.ImageUtils.loadTexture( 'assets/stroke.png' );
+var loader = new THREE.TextureLoader();
+var strokeTexture;
+loader.load( 'assets/stroke.png', function( texture ) { strokeTexture = texture; strokeTexture.needsUpdate = true; } );
 var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 
 function makeLine( geo ) {
 
 	var g = new THREE.MeshLine();
-	g.setGeometry( geo, function( p ){ return p; } );
+	g.setGeometry( geo, function( p ) { return p; } );
+//	g.setGeometry( geo, function( p ) { return 4 * Maf.parabola( p, 1 )} );
 
-	var s = 10 +  10 * Math.random();
+	var s = 10 + 10 * Math.random();
 
-	var material = new THREE.MeshLineMaterial( { uniforms: { map: strokeTexture }, depthTest: true });
+	var material = new THREE.MeshLineMaterial( { 
+		map: strokeTexture, 
+		useMap: false,
+		color: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ),
+		opacity: 1,
+		resolution: resolution,
+		sizeAttenuation: true,
+		lineWidth: 1,
+		near: camera.near,
+		far: camera.far,
+		/*depthTest: false,
+		blending: THREE.AdditiveAlphaBlending,
+		transparent: true*/
+		transparent: true
+	});
 	var mesh = new THREE.Mesh( g.geometry, material );
 	mesh.scale.set( s,s,s );
 	mesh.rotation.set( Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI );
@@ -100,15 +117,10 @@ function makeLine( geo ) {
 
 }
 
-/*
-for( var j = 0; j < 100; j++ ) {
-	makeLine();
-}
-*/
 function m() {
 	//makeLine( hexagonGeometry );
-	makeLine( createCurve() );
-	//makeLine( makeVerticalLine() );
+	//makeLine( createCurve() );
+	makeLine( makeVerticalLine() );
 	//makeLine( makeSquare() );
 }
 m();
@@ -189,7 +201,8 @@ function render() {
 
 	var t = .01 *Date.now();
 	lines.forEach( function( l, i ) {
-		//l.material.uniforms.lineWidth.value = 10 + 5 * Math.sin( t + i );
+		//l.material.uniforms.lineWidth.value = 1 + .5 * Math.sin( t + i );
+		l.rotation.z += .01;
 	} );
 
 	/*var t = .001 * Date.now();

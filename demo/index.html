@@ -32,12 +32,13 @@ uniform mat4 modelViewMatrix;
 uniform vec2 resolution;
 uniform float lineWidth;
 uniform vec3 color;
+uniform float opacity;
 uniform float near;
 uniform float far;
 uniform float sizeAttenuation;
 
 varying vec2 vUV;
-varying vec3 vColor;
+varying vec4 vColor;
 
 vec2 fix( vec4 i, float aspect ) {
 
@@ -51,7 +52,7 @@ void main() {
 
     float aspect = resolution.x / resolution.y;
 
-    vColor = color;
+    vColor = vec4( color, opacity );
     vUV = uv;
 
     mat4 m = projectionMatrix * modelViewMatrix;
@@ -109,11 +110,11 @@ uniform sampler2D map;
 uniform float useMap;
 
 varying vec2 vUV;
-varying vec3 vColor;
+varying vec4 vColor;
 
 void main() {
 
-    vec4 c = vec4( vColor, 1. );
+    vec4 c = vColor;
     if( useMap == 1. ) c *= texture2D( map, vUV );
     gl_FragColor = c;
     

@@ -21,10 +21,23 @@ THREE.MeshLine.prototype.setGeometry = function( g, c ) {
 
 	this.positions = [];
 
-	for( var j = 0; j < g.vertices.length; j++ ) {
-		var v = g.vertices[ j ];
-		this.positions.push( v.x, v.y, v.z );
-		this.positions.push( v.x, v.y, v.z );
+	if( g instanceof THREE.Geometry ) {
+		for( var j = 0; j < g.vertices.length; j++ ) {
+			var v = g.vertices[ j ];
+			this.positions.push( v.x, v.y, v.z );
+			this.positions.push( v.x, v.y, v.z );
+		}
+	}
+
+	if( g instanceof THREE.BufferGeometry ) {
+		// read attribute positions ?
+	}
+
+	if( g instanceof Float32Array ) {
+		for( var j = 0; j < g.length; j += 3 ) {
+			this.positions.push( g[ j ], g[ j + 1 ], g[ j + 2 ] );
+			this.positions.push( g[ j ], g[ j + 1 ], g[ j + 2 ] );
+		}
 	}
 
 	this.process();
@@ -156,36 +169,150 @@ THREE.MeshLineMaterial = function() {
 
 THREE.MeshLineMaterial = function ( parameters ) {
 
+	var vertexShaderSource = [
+'precision mediump float;',
+'',
+'attribute vec3 position;',
+'attribute vec3 previous;',
+'attribute vec3 next;',
+'attribute float side;',
+'attribute float width;',
+'attribute vec2 uv;',
+'',
+'uniform mat4 projectionMatrix;',
+'uniform mat4 modelViewMatrix;',
+'uniform vec2 resolution;',
+'uniform float lineWidth;',
+'uniform vec3 color;',
+'uniform float opacity;',
+'uniform float near;',
+'uniform float far;',
+'uniform float sizeAttenuation;',
+'',
+'varying vec2 vUV;',
+'varying vec4 vColor;',
+'',
+'vec2 fix( vec4 i, float aspect ) {',
+'',
+'    vec2 res = i.xy / i.w;',
+'    res.x *= aspect;',
+'    return res;',
+'',
+'}',
+'',
+'void main() {',
+'',
+'    float aspect = resolution.x / resolution.y;',
+'',
+'    vColor = vec4( color, opacity );',
+'    vUV = uv;',
+'',
+'    mat4 m = projectionMatrix * modelViewMatrix;',
+'    vec4 finalPosition = m * vec4( position, 1.0 );',
+'    vec4 prevPos = m * vec4( previous, 1.0 );',
+'    vec4 nextPos = m * vec4( next, 1.0 );',
+'',
+'    vec2 currentP = fix( finalPosition, aspect );',
+'    vec2 prevP = fix( prevPos, aspect );',
+'    vec2 nextP = fix( nextPos, aspect );',
+'',
+'    float w = lineWidth * width;',
+'',
+'    vec2 dir;',
+'    if( nextP == currentP ) dir = normalize( currentP - prevP );',
+'    else if( prevP == currentP ) dir = normalize( nextP - currentP );',
+'    else {',
+'        vec2 dir1 = normalize( currentP - prevP );',
+'        vec2 dir2 = normalize( nextP - currentP );',
+'        dir = normalize( dir1 + dir2 );',
+'',
+'        /*{',
+'            vec2 perp = vec2( -dir1.y, dir1.x );',
+'            vec2 miter = vec2( -dir.y, dir.x );',
+'            float f = dot( miter, perp );',
+'            w /= f;',
+'        }*/',
+'',
+'    }',
+'',
+'    //vec2 normal = ( cross( vec3( dir, 0. ), vec3( 0., 0., 1. ) ) ).xy;',
+'    vec2 normal = vec2( -dir.y, dir.x );',
+'    normal.x /= aspect;',
+'    normal *= .5 * w;',
+'',
+'    if( sizeAttenuation == 0. ) {',
+'        float depth = ( finalPosition.z - near ) / ( far - near );',
+'        normal *= depth;',
+'    }',
+'',
+'    vec4 offset = vec4( normal * side, 0.0, 1.0 );',
+'    finalPosition.xy += offset.xy;',
+'',
+'    gl_Position = finalPosition;',
+'',
+'}' ];
+
+	var fragmentShaderSource = [
+'precision mediump float;',
+'',
+'uniform sampler2D map;',
+'uniform float useMap;',
+'',
+'varying vec2 vUV;',
+'varying vec4 vColor;',
+'',
+'void main() {',
+'',
+'    vec4 c = vColor;',
+'    if( useMap == 1. ) c *= texture2D( map, vUV );',
+'    gl_FragColor = c;',
+'',   
+'}' ];
+
+	function check( v, d ) {
+		if( v === undefined ) return d;
+		return v;
+	}
+
 	THREE.Material.call( this );
+
+	this.lineWidth = check( parameters.lineWidth, 1 );
+	this.map = check( parameters.map, null );
+	this.useMap = check( parameters.useMap, 0 );
+	this.color = check( parameters.color, new THREE.Color( 0xffffff ) );
+	this.opacity = check( parameters.opacity, 1 );
+	this.resolution = check( parameters.resolution, new THREE.Vector2( 1, 1 ) );
+	this.sizeAttenuation = check( parameters.sizeAttenuation, 1 );
+	this.near = check( parameters.near, 1 );
+	this.far = check( parameters.far, 1 );
 
 	var material = new THREE.RawShaderMaterial( { 
 		uniforms:{
-			lineWidth: { type: 'f', value: 1 },
-			map: { type: 't', value: parameters.uniforms.map },
-			useMap: { type: 'f', value: 0 },
-			color: { type: 'c', value: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) },
-			resolution: { type: 'v2', value: resolution },
-			sizeAttenuation: { type: 'f', value: 1 },
-			near: { type: 'f', value: camera.near },
-			far: { type: 'f', value: camera.far }	
+			lineWidth: { type: 'f', value: this.lineWidth },
+			map: { type: 't', value: this.map },
+			useMap: { type: 'f', value: this.useMap },
+			color: { type: 'c', value: this.color },
+			opacity: { type: 'f', value: this.opacity },
+			resolution: { type: 'v2', value: this.resolution },
+			sizeAttenuation: { type: 'f', value: this.sizeAttenuation },
+			near: { type: 'f', value: this.near },
+			far: { type: 'f', value: this.far }
 		},
-		vertexShader: document.getElementById( 'vs-line' ).textContent,
-		fragmentShader: document.getElementById( 'fs-line' ).textContent
+		vertexShader: vertexShaderSource.join( '\r\n' ),
+		fragmentShader: fragmentShaderSource.join( '\r\n' )
 	});
 
+	delete parameters.lineWidth;
+	delete parameters.map;
+	delete parameters.useMap;
+	delete parameters.color;
+	delete parameters.opacity;
+	delete parameters.resolution;
+	delete parameters.sizeAttenuation;
+	delete parameters.near;
+	delete parameters.far;
+
 	material.type = 'MeshLineMaterial';
-
-/*	this.color = new THREE.Color( 0xffffff );
-
-	this.linewidth = 1;
-	this.linecap = 'round';
-	this.linejoin = 'round';
-
-	this.vertexColors = THREE.NoColors;
-
-	this.fog = true;*/
-
-	delete parameters.uniforms;
 
 	material.setValues( parameters );
 
@@ -200,15 +327,15 @@ THREE.MeshLineMaterial.prototype.copy = function ( source ) {
 
 	THREE.Material.prototype.copy.call( this, source );
 
+	this.lineWidth = source.lineWidth;
+	this.map = source.map;
+	this.useMap = source.useMap;
 	this.color.copy( source.color );
-
-	this.linewidth = source.linewidth;
-	this.linecap = source.linecap;
-	this.linejoin = source.linejoin;
-
-	this.vertexColors = source.vertexColors;
-
-	this.fog = source.fog;
+	this.opacity = source.opacity;
+	this.resolution.copy( source.resolution );
+	this.sizeAttenuation = source.sizeAttenuation;
+	this.near = source.near;
+	this.far = source.far;
 
 	return this;
 
