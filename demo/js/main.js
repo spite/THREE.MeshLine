@@ -88,8 +88,8 @@ var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 function makeLine( geo ) {
 
 	var g = new THREE.MeshLine();
-	g.setGeometry( geo, function( p ) { return p; } );
-//	g.setGeometry( geo, function( p ) { return 4 * Maf.parabola( p, 1 )} );
+//	g.setGeometry( geo, function( p ) { return p; } );
+	g.setGeometry( geo, function( p ) { return 1 * Maf.parabola( p, 1 )} );
 
 	var s = 10 + 10 * Math.random();
 
@@ -119,11 +119,13 @@ function makeLine( geo ) {
 
 function m() {
 	//makeLine( hexagonGeometry );
-	//makeLine( createCurve() );
-	makeLine( makeVerticalLine() );
+	makeLine( createCurve() );
+	//makeLine( makeVerticalLine() );
 	//makeLine( makeSquare() );
 }
-m();
+for( var j = 0; j < 100; j++ ) {
+	m();
+}
 
 /*var circleGeo = new THREE.Geometry();
 for( var j = 0; j < 50; j++ ) circleGeo.vertices.push( new THREE.Vector3() );
@@ -202,7 +204,7 @@ function render() {
 	var t = .01 *Date.now();
 	lines.forEach( function( l, i ) {
 		//l.material.uniforms.lineWidth.value = 1 + .5 * Math.sin( t + i );
-		l.rotation.z += .01;
+		l.rotation.z += .001;
 	} );
 
 	/*var t = .001 * Date.now();
