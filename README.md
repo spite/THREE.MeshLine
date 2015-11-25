@@ -3,9 +3,9 @@ Mesh replacement for ```THREE.Line```
 
 Instead of using GL_LINE, it uses a strip of triangles billboarded. Some examples:
 
-* [Demo](https://clicktorelease.com/tmp/threejs/lines): play with the different settings of materials
-* [Graph](https://clicktorelease.com/tmp/threejs/lines/graph.html): example of using ```THREE.MeshLine``` to plot graphs
-* [Spinner](https://clicktorelease.com/tmp/threejs/lines/spinner.html): example of dynamic ```THREE.MeshLine``` with texture
+* [Demo](https://clicktorelease.com/tmp/threejs/lines/demo): play with the different settings of materials
+* [Graph](https://clicktorelease.com/tmp/threejs/lines/demo/graph.html): example of using ```THREE.MeshLine``` to plot graphs
+* [Spinner](https://clicktorelease.com/tmp/threejs/lines/demo/spinner.html): example of dynamic ```THREE.MeshLine``` with texture
 
 #### How to use
 
