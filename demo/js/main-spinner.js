@@ -36,29 +36,31 @@ loader.load( 'assets/stroke.png', function( texture ) { strokeTexture = texture;
 var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 
 var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
-var geo = new Float32Array( 100 * 3 );
-for( var j = 0; j < geo.length; j += 3 ) {
-	geo[ j ] = geo[ j + 1 ] = geo[ j + 2 ] = 0;
-}
+var geo = [];
 
-var g = new THREE.MeshLine();
 var raycaster = new THREE.Raycaster();
-var mouse = new THREE.Vector2();
-var nMouse = new THREE.Vector2();
+var mouse = [];
+var nMouse = [];
 var tmpVector = new THREE.Vector2();
 var angle = 0;
-var mesh, plane;
+var meshes = [], plane;
 var material;
 var center = new THREE.Vector2( .5, .5 );
 
-function init() {
+function prepareMesh() {
 
+	var geo = new Float32Array( 100 * 3 );
+	for( var j = 0; j < geo.length; j += 3 ) {
+		geo[ j ] = geo[ j + 1 ] = geo[ j + 2 ] = 0;
+	}
+
+	var g = new THREE.MeshLine();
 	g.setGeometry( geo, function( p ) { return p; } );
 
 	material = new THREE.MeshLineMaterial( { 
 		useMap: true,
 		map: strokeTexture,
-		color: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ),
+		color: new THREE.Color( colors[ meshes.length ] ),
 		opacity: 1,
 		resolution: resolution,
 		sizeAttenuation: true,
@@ -69,8 +71,18 @@ function init() {
 		blending: THREE.AdditiveAlphaBlending,
 		transparent: true
 	});
-	mesh = new THREE.Mesh( g.geometry, material );
+	
+	var mesh = new THREE.Mesh( g.geometry, material );
+	mesh.geo = geo;
+	mesh.g = g;
+
 	scene.add( mesh );
+	
+	return mesh;
+
+}
+
+function init() {
 	
 	plane = new THREE.Mesh( new THREE.PlaneBufferGeometry( 1000, 1000 ), new THREE.MeshNormalMaterial( { side: THREE.DoubleSide,  } ) );
 	plane.material.visible = false;
@@ -78,8 +90,8 @@ function init() {
 
 	window.addEventListener( 'mousemove', onMouseMove );
 	window.addEventListener( 'touchmove', onTouchMove );
-	window.addEventListener( 'click', changeColor );
-	window.addEventListener( 'touchstart', changeColor );
+	window.addEventListener( 'mousedown', onMouseDown );
+	window.addEventListener( 'touchstart', onTouchStart );
 
 	window.addEventListener( 'resize', onWindowResize );
 
@@ -88,16 +100,38 @@ function init() {
 
 }
 
+function onMouseDown( e ) {
+
+	if( !meshes[ 0 ] ) {
+		meshes[ 0 ] = prepareMesh();
+		nMouse[ 0 ] = new THREE.Vector2();
+		mouse[ 0 ] = new THREE.Vector2();
+	}
+
+}
+
+function onTouchStart( e ) {
+
+	for( var j = 0; j < e.touches.length; j++ ) {
+		if( !meshes[ e.touches[ j ].identifier ] ) {
+			meshes[ e.touches[ j ].identifier ] = prepareMesh();
+			nMouse[ e.touches[ j ].identifier ] = new THREE.Vector2();
+			mouse[ e.touches[ j ].identifier ] = new THREE.Vector2();
+		}
+	}
+	
+}
+
 function changeColor() {
 
-	mesh.material.uniforms.color.value = new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] );
+	//mesh.material.uniforms.color.value = new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] );
 
 }
 
 function onMouseMove ( e ) {
 
-	nMouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-	nMouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+	nMouse[ 0 ].x = ( e.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+	nMouse[ 0 ].y = - ( e.clientY / renderer.domElement.clientHeight ) * 2 + 1;
 
 	checkIntersection();
 
@@ -107,30 +141,35 @@ function onMouseMove ( e ) {
 
 function onTouchMove ( e ) {
 
-	nMouse.x = ( event.touches[ 0 ].clientX / renderer.domElement.clientWidth ) * 2 - 1;
-	nMouse.y = - ( event.touches[ 0 ].clientY / renderer.domElement.clientHeight ) * 2 + 1;
-
-	checkIntersection();
+	for( var j = 0; j < e.touches.length; j++ ) {
+		nMouse[ e.touches[ j ].identifier ].x = ( e.touches[ j ].clientX / renderer.domElement.clientWidth ) * 2 - 1;
+		nMouse[ e.touches[ j ].identifier ].y = - ( e.touches[ j ].clientY / renderer.domElement.clientHeight ) * 2 + 1;
+		checkIntersection( e.touches[ j ].identifier );
+	}
 
 	e.preventDefault();
 
 }
 
-function checkIntersection() {
+function checkIntersection( id ) {
 
-	tmpVector.copy( nMouse ).sub( mouse ).multiplyScalar( .1 );
+	tmpVector.copy( nMouse[ id ] ).sub( mouse[ id ] ).multiplyScalar( .1 );
 	Maf.clamp( tmpVector.x, -1, 1 );
 	Maf.clamp( tmpVector.y, -1, 1 );
 	
-	mouse.add( tmpVector );
-	
-	raycaster.setFromCamera( mouse, camera );
+	mouse[ id ].add( tmpVector );
+
+	raycaster.setFromCamera( mouse[ id ], camera );
 
 	// See if the ray from the camera into the world hits one of our meshes
 	var intersects = raycaster.intersectObject( plane );
 
 	// Toggle rotation bool for meshes that we clicked
 	if ( intersects.length > 0 ) {
+
+		var mesh = meshes[ id ];
+		var geo = mesh.geo;
+		var g = mesh.g;
 
 		for( var j = 0; j < geo.length; j+= 3 ) {
 			geo[ j ] = geo[ j + 3 ] * 1.01;
@@ -142,7 +181,7 @@ function checkIntersection() {
 		geo[ geo.length - 2 ] = intersects[ 0 ].point.y;
 		geo[ geo.length - 1 ] = d * Math.sin( angle );
 
-		g.setGeometry( geo, function( p ) { return p } );
+		g.setGeometry( geo );//, function( p ) { return p } );
 
 	}
 
@@ -169,7 +208,7 @@ function render() {
 	requestAnimationFrame( render );
 	
 	angle += .05;
-	mesh.rotation.y = angle;
+	meshes.forEach( function( mesh ) { mesh.rotation.y = angle } );
 
 	renderer.render( scene, camera );
 
