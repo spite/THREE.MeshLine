@@ -36,6 +36,7 @@ var graph = new THREE.Object3D();
 scene.add( graph );
 
 init()
+render();
 
 function makeLine( geo, c ) {
 
@@ -151,4 +152,3 @@ function render() {
 	renderer.render( scene, camera );
 
 }
-render();
