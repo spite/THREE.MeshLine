@@ -45,6 +45,7 @@ var g = new THREE.MeshLine();
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var nMouse = new THREE.Vector2();
+var tmpVector = new THREE.Vector2();
 var angle = 0;
 var mesh, plane;
 var material;
@@ -117,8 +118,11 @@ function onTouchMove ( e ) {
 
 function checkIntersection() {
 
-	mouse.x += ( nMouse.x - mouse.x ) * 1.;
-	mouse.y += ( nMouse.y - mouse.y ) * 1.;
+	tmpVector.copy( nMouse ).sub( mouse ).multiplyScalar( .1 );
+	Maf.clamp( tmpVector.x, -1, 1 );
+	Maf.clamp( tmpVector.y, -1, 1 );
+	
+	mouse.add( tmpVector );
 	
 	raycaster.setFromCamera( mouse, camera );
 
