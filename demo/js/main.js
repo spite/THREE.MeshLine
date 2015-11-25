@@ -13,6 +13,51 @@ container.appendChild( renderer.domElement );
 
 var controls = new THREE.OrbitControls( camera, renderer.domElement );
 
+var lines = [];
+var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
+var strokeTexture;
+
+var Params = function() {
+	this.curves = true;
+	this.circles = false;
+	this.amount = 100;
+	this.lineWidth = 1;
+	this.taper = 'none';
+	this.strokes = false;
+	this.sizeAttenuation = true;
+	this.animateWidth = false;
+	this.autoRotate = true;
+	this.update = function() {
+		clearLines();
+		createLines();
+	}
+};
+
+var params = new Params();
+
+window.addEventListener( 'load', function() {
+
+	var gui = new dat.GUI();
+
+	gui.add( params, 'curves' );
+	gui.add( params, 'circles' );
+	gui.add( params, 'amount', 1, 1000 );
+	gui.add( params, 'lineWidth', 1, 20 );
+	gui.add( params, 'taper', [ 'none', 'linear', 'parabolic', 'wavy' ] );
+	gui.add( params, 'strokes' );
+	gui.add( params, 'sizeAttenuation' );
+	gui.add( params, 'update' );
+	gui.add( params, 'animateWidth' );
+	gui.add( params, 'autoRotate' );
+
+	var loader = new THREE.TextureLoader();
+	loader.load( 'assets/stroke.png', function( texture ) { 
+		strokeTexture = texture; 
+		init()
+	} );
+
+} );
+
 var TAU = 2 * Math.PI;
 var hexagonGeometry = new THREE.Geometry();
 for( var j = 0; j < TAU - .1; j += TAU / 100 ) {
@@ -25,8 +70,8 @@ hexagonGeometry.vertices.push( hexagonGeometry.vertices[ 0 ].clone() );
 function createCurve() {
 
 	var s = new THREE.ConstantSpline();
-	var rMin = 100;
-	var rMax = 200;
+	var rMin = 5;
+	var rMax = 10;
 	var origin = new THREE.Vector3( Maf.randomInRange( -rMin, rMin ), Maf.randomInRange( -rMin, rMin ), Maf.randomInRange( -rMin, rMin ) );
 
 	s.inc = .001;
@@ -39,7 +84,7 @@ function createCurve() {
 	s.p1.multiplyScalar( rMin + Math.random() * rMax );
 	s.p2.multiplyScalar( rMin + Math.random() * rMax );
 	s.p3.multiplyScalar( rMin + Math.random() * rMax );
-	s.p0.copy( origin );
+
 	s.calculate();
 	var geometry = new THREE.Geometry();
 	s.calculateDistances();
@@ -73,44 +118,47 @@ var colors = [
 	0x70c1b3
 ];
 
-var lines = [];
-var loader = new THREE.TextureLoader();
-var strokeTexture;
-loader.load( 'assets/stroke.png', function( texture ) { 
-	strokeTexture = texture; 
-	init()
-} );
-var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
+function clearLines() {
+
+	lines.forEach( function( l ) {
+		scene.remove( l );
+	} );
+	lines = [];
+
+}
 
 function makeLine( geo ) {
 
 	var g = new THREE.MeshLine();
-//	g.setGeometry( geo, function( p ) { return 1 - p; } );
-	//g.setGeometry( geo, function( p ) { return 1 * Maf.parabola( p, 1 )} );
-	g.setGeometry( geo );
 
-	var r = 50;
-	var s = 10 + 10 * Math.random();
-
+	switch( params.taper ) {
+		case 'none': g.setGeometry( geo ); break;
+		case 'linear': g.setGeometry( geo, function( p ) { return 1 - p; } ); break;
+		case 'parabolic': g.setGeometry( geo, function( p ) { return 1 * Maf.parabola( p, 1 )} ); break;
+		case 'wavy': g.setGeometry( geo, function( p ) { return 2 + Math.sin( 50 * p ) } ); break;
+	}
+	
 	var material = new THREE.MeshLineMaterial( { 
 		map: strokeTexture, 
-		useMap: false,
+		useMap: params.strokes,
 		color: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ),
-		opacity: 1,
+		opacity: params.strokes ? .5 : 1,
 		dashArray: new THREE.Vector2( 10, 5 ),
 		resolution: resolution,
-		sizeAttenuation: true,
-		lineWidth: 1,
+		sizeAttenuation: params.sizeAttenuation,
+		lineWidth: params.lineWidth,
 		near: camera.near,
 		far: camera.far,
-		/*depthTest: false,
-		blending: THREE.AdditiveAlphaBlending,
-		transparent: true*/
+		depthTest: !params.strokes,
+		blending: params.strokes ? THREE.AdditiveAlphaBlending : THREE.NormalBlending,
+		transparent: params.strokes
 	});
 	var mesh = new THREE.Mesh( g.geometry, material );
+	var r = 50;
+	mesh.position.set( Maf.randomInRange( -r, r ), Maf.randomInRange( -r, r ), Maf.randomInRange( -r, r ) );
+	var s = 10 + 10 * Math.random();
 	mesh.scale.set( s,s,s );
 	mesh.rotation.set( Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI );
-	mesh.position.set( Maf.randomInRange( -r, r ), Maf.randomInRange( -r, r ), Maf.randomInRange( -r, r ) );
 	scene.add( mesh );
 
 	lines.push( mesh );
@@ -120,47 +168,23 @@ function makeLine( geo ) {
 function init() {
 
 	createLines();
+	onWindowResize();
+	render();
 
 }
 
-function m() {
-	makeLine( hexagonGeometry );
-	//makeLine( createCurve() );
+function createLine() {
+	if( params.circles ) makeLine( hexagonGeometry );
+	if( params.curves ) makeLine( createCurve() );
 	//makeLine( makeVerticalLine() );
 	//makeLine( makeSquare() );
 }
 
 function createLines() {
-	for( var j = 0; j < 100; j++ ) {
-		m();
+	for( var j = 0; j < params.amount; j++ ) {
+		createLine();
 	}
 }
-
-/*var circleGeo = new THREE.Geometry();
-for( var j = 0; j < 50; j++ ) circleGeo.vertices.push( new THREE.Vector3() );
-
-var g = new THREE.MeshLine();
-g.setGeometry( circleGeo );
-
-var material = new THREE.RawShaderMaterial( { 
-	uniforms:{
-		lineWidth: { type: 'f', value: 256 },
-		map: { type: 't', value: strokeTexture },
-		useMap: { type: 'f', value: 0 },
-		color: { type: 'c', value: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) },
-		resolution: { type: 'v2', value: resolution },
-		sizeAttenuation: { type: 'f', value: 0 },
-		near: { type: 'f', value: camera.near },
-		far: { type: 'f', value: camera.far }	
-	},
-	vertexShader: document.getElementById( 'vs-line' ).textContent,
-	fragmentShader: document.getElementById( 'fs-line' ).textContent,
-	transparent: true,
-	depthTest: false,
-	blending: THREE.AdditiveAlphaBlending
-});
-var circle = new THREE.Mesh( g.geometry, material );
-scene.add( circle );*/
 
 function makeVerticalLine() {
 	var g = new THREE.Geometry()
@@ -180,9 +204,6 @@ function makeSquare() {
 	g.vertices.push( new THREE.Vector3( -1, -1, 0 ) );
 	return g;
 }
-
-window.addEventListener( 'keydown', m );
-onWindowResize();
 
 function onWindowResize() {
 
@@ -212,21 +233,10 @@ function render() {
 
 	var t = .01 *Date.now();
 	lines.forEach( function( l, i ) {
-		//l.material.uniforms.lineWidth.value = 1 + .5 * Math.sin( t + i );
-		l.rotation.z += .001;
+		if( params.animateWidth ) l.material.uniforms.lineWidth.value = 1 + .5 * Math.sin( t + i );
+		if( params.autoRotate ) l.rotation.z += .001;
 	} );
 
-	/*var t = .001 * Date.now();
-	var s = .1;
-	for( var j = 0; j < circleGeo.vertices.length; j++ ) {
-		var a = ( j * Math.PI / circleGeo.vertices.length - t );
-		var r = 2 + noise.noise( s * j + t, s * a + t, s * t + t );
-		circleGeo.vertices[ j ].set( r * Math.cos( a ), 0, r * Math.sin( a ) )
-	}
-	g.setGeometry( circleGeo );*/
-
 	renderer.render( scene, camera );
-	//manager.render( scene, camera );
 
 }
-render();
