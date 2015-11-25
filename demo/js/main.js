@@ -12,6 +12,7 @@ renderer.setPixelRatio( window.devicePixelRatio );
 container.appendChild( renderer.domElement );
 
 var controls = new THREE.OrbitControls( camera, renderer.domElement );
+var clock = new THREE.Clock();
 
 var lines = [];
 var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
@@ -224,17 +225,17 @@ function onWindowResize() {
 window.addEventListener( 'resize', onWindowResize );
 
 var tmpVector = new THREE.Vector3();
-var noise = new ImprovedNoise();
 
 function render() {
 
 	requestAnimationFrame( render );
 	controls.update();
 
-	var t = .01 *Date.now();
+	var delta = clock.getDelta();
+	var t = clock.getElapsedTime();
 	lines.forEach( function( l, i ) {
-		if( params.animateWidth ) l.material.uniforms.lineWidth.value = 1 + .5 * Math.sin( t + i );
-		if( params.autoRotate ) l.rotation.z += .001;
+		if( params.animateWidth ) l.material.uniforms.lineWidth.value = 1 + .5 * Math.sin( 5 * t + i );
+		if( params.autoRotate ) l.rotation.z += .125 * delta;
 	} );
 
 	renderer.render( scene, camera );

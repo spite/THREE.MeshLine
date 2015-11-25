@@ -12,6 +12,7 @@ renderer.setPixelRatio( window.devicePixelRatio );
 container.appendChild( renderer.domElement );
 
 var controls = new THREE.OrbitControls( camera, renderer.domElement );
+var clock = new THREE.Clock();
 
 var colors = [
 	0xed6a5a,
@@ -147,7 +148,7 @@ function render() {
 
 	requestAnimationFrame( render );
 	controls.update();
-	graph.rotation.y += .01;
+	graph.rotation.y += .25 * clock.getDelta();
 
 	renderer.render( scene, camera );
 
