@@ -13,7 +13,7 @@ First, create the list of vertices that will define the line. ```THREE.MeshLine`
 
 ````
 var geometry = new THREE.Geometry();
-for( var j = 0; j < Math.PI; j += TAU / 100 ) {
+for( var j = 0; j < Math.PI; j += 2 * Math.PI / 100 ) {
 	var v = new THREE.Vector3( Math.cos( j ), Math.sin( j ), 0 );
 	geometry.vertices.push( v );
 }
@@ -55,7 +55,7 @@ By default it's a white material of width 1 unit.
 * ```near``` - camera near clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
 * ```far``` - camera far clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
 
-If you're rendering transparent lines or using a texture with alpha map, you should set depthTest to false, transparent to true and blending to THREE.AdditiveAlphaBlending.
+If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to ```THREE.AdditiveAlphaBlending```.
 
 #### License ####
 
