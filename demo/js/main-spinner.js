@@ -44,6 +44,7 @@ for( var j = 0; j < geo.length; j += 3 ) {
 var g = new THREE.MeshLine();
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
+var nMouse = new THREE.Vector2();
 var angle = 0;
 var mesh, plane;
 var material;
@@ -94,8 +95,8 @@ function changeColor() {
 
 function onMouseMove ( e ) {
 
-	mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-	mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+	nMouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+	nMouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
 
 	checkIntersection();
 
@@ -105,8 +106,8 @@ function onMouseMove ( e ) {
 
 function onTouchMove ( e ) {
 
-	mouse.x = ( event.touches[ 0 ].clientX / renderer.domElement.clientWidth ) * 2 - 1;
-	mouse.y = - ( event.touches[ 0 ].clientY / renderer.domElement.clientHeight ) * 2 + 1;
+	nMouse.x = ( event.touches[ 0 ].clientX / renderer.domElement.clientWidth ) * 2 - 1;
+	nMouse.y = - ( event.touches[ 0 ].clientY / renderer.domElement.clientHeight ) * 2 + 1;
 
 	checkIntersection();
 
@@ -116,6 +117,9 @@ function onTouchMove ( e ) {
 
 function checkIntersection() {
 
+	mouse.x += ( nMouse.x - mouse.x ) * 1.;
+	mouse.y += ( nMouse.y - mouse.y ) * 1.;
+	
 	raycaster.setFromCamera( mouse, camera );
 
 	// See if the ray from the camera into the world hits one of our meshes
@@ -164,6 +168,5 @@ function render() {
 	mesh.rotation.y = angle;
 
 	renderer.render( scene, camera );
-	//manager.render( scene, camera );
 
 }
