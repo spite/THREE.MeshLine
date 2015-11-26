@@ -216,7 +216,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 '    vec2 prevP = fix( prevPos, aspect );',
 '    vec2 nextP = fix( nextPos, aspect );',
 '',
-'    float w = lineWidth * width;',
+'    float w = 1.8 * lineWidth * width;',
 '',
 '    vec2 dir;',
 '    if( nextP == currentP ) dir = normalize( currentP - prevP );',
