@@ -39,11 +39,11 @@ var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 var geo = [];
 
 var raycaster = new THREE.Raycaster();
-var mouse = [];
-var nMouse = [];
+var mouse = {};
+var nMouse = {};
 var tmpVector = new THREE.Vector2();
 var angle = 0;
-var meshes = [], plane;
+var meshes = {}, plane;
 var material;
 var center = new THREE.Vector2( .5, .5 );
 
@@ -60,7 +60,7 @@ function prepareMesh() {
 	material = new THREE.MeshLineMaterial( { 
 		useMap: true,
 		map: strokeTexture,
-		color: new THREE.Color( colors[ meshes.length ] ),
+		color: new THREE.Color( new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) ),
 		opacity: 1,
 		resolution: resolution,
 		sizeAttenuation: true,
@@ -92,13 +92,19 @@ function init() {
 	window.addEventListener( 'touchmove', onTouchMove );
 	window.addEventListener( 'mousedown', onMouseDown );
 	window.addEventListener( 'touchstart', onTouchStart );
-
+	window.addEventListener( 'mouseup', onMouseEnd );
+	window.addEventListener( 'mouseout', onMouseEnd );
+	window.addEventListener( 'touchend', onTouchEnd );
+	window.addEventListener( 'touchcancel', onTouchEnd );
+	
 	window.addEventListener( 'resize', onWindowResize );
 
 	onWindowResize();
 	render();
 
 }
+
+var userInteracting = false;
 
 function onMouseDown( e ) {
 
@@ -107,6 +113,25 @@ function onMouseDown( e ) {
 		nMouse[ 0 ] = new THREE.Vector2();
 		mouse[ 0 ] = new THREE.Vector2();
 	}
+
+	userInteracting = true;
+
+	e.preventDefault();
+
+}
+
+function onMouseEnd( e ) {
+
+	userInteracting = false;
+
+	var id = 0;
+	var m = meshes[ id ];
+	scene.remove( m );
+	delete meshes[ id ];
+	delete nMouse[ id ];
+	delete mouse[ id ];
+
+	e.preventDefault();
 
 }
 
@@ -119,21 +144,38 @@ function onTouchStart( e ) {
 			mouse[ e.touches[ j ].identifier ] = new THREE.Vector2();
 		}
 	}
+
+	e.preventDefault();
 	
 }
 
-function changeColor() {
+function onTouchEnd( e ) {
 
-	//mesh.material.uniforms.color.value = new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] );
+	userInteracting = false;
+
+	for( var j = 0; j < e.changedTouches.length; j++ ) {
+		var id = e.changedTouches[ j ].identifier;
+		var m = meshes[ id ];
+		scene.remove( m );
+		delete meshes[ id ];
+		delete nMouse[ id ];
+		delete mouse[ id ];
+	}
+
+	e.preventDefault();
 
 }
 
 function onMouseMove ( e ) {
 
-	nMouse[ 0 ].x = ( e.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-	nMouse[ 0 ].y = - ( e.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+	if( userInteracting ) {
 
-	checkIntersection();
+		nMouse[ 0 ].x = ( e.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+		nMouse[ 0 ].y = - ( e.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+
+		//checkIntersection( 0 );
+
+	}
 
 	e.preventDefault();
 
@@ -141,10 +183,10 @@ function onMouseMove ( e ) {
 
 function onTouchMove ( e ) {
 
-	for( var j = 0; j < e.touches.length; j++ ) {
-		nMouse[ e.touches[ j ].identifier ].x = ( e.touches[ j ].clientX / renderer.domElement.clientWidth ) * 2 - 1;
-		nMouse[ e.touches[ j ].identifier ].y = - ( e.touches[ j ].clientY / renderer.domElement.clientHeight ) * 2 + 1;
-		checkIntersection( e.touches[ j ].identifier );
+	for( var j = 0; j < e.changedTouches.length; j++ ) {
+		nMouse[ e.changedTouches[ j ].identifier ].x = ( e.changedTouches[ j ].clientX / renderer.domElement.clientWidth ) * 2 - 1;
+		nMouse[ e.changedTouches[ j ].identifier ].y = - ( e.changedTouches[ j ].clientY / renderer.domElement.clientHeight ) * 2 + 1;
+		//checkIntersection( e.changedTouches[ j ].identifier );
 	}
 
 	e.preventDefault();
@@ -171,17 +213,19 @@ function checkIntersection( id ) {
 		var geo = mesh.geo;
 		var g = mesh.g;
 
-		for( var j = 0; j < geo.length; j+= 3 ) {
-			geo[ j ] = geo[ j + 3 ] * 1.01;
-			geo[ j + 1 ] = geo[ j + 4 ] * 1.01;
-			geo[ j + 2 ] = geo[ j + 5 ] * 1.01;
-		}
 		var d = intersects[ 0 ].point.x;
+
+		for( var j = 0; j < geo.length; j+= 3 ) {
+			geo[ j ] = geo[ j + 3 ] * 1.001;
+			geo[ j + 1 ] = geo[ j + 4 ] * 1.001;
+			geo[ j + 2 ] = geo[ j + 5 ] * 1.001;
+		}
+
 		geo[ geo.length - 3 ] = d * Math.cos( angle );
 		geo[ geo.length - 2 ] = intersects[ 0 ].point.y;
 		geo[ geo.length - 1 ] = d * Math.sin( angle );
 
-		g.setGeometry( geo );//, function( p ) { return p } );
+		g.setGeometry( geo );
 
 	}
 
@@ -203,12 +247,30 @@ function onWindowResize() {
 
 var tmpVector = new THREE.Vector3();
 
+function check() {
+
+	for( var i in nMouse ) { checkIntersection( i ); }
+	setTimeout( check, 20 );
+
+}
+check();
+
 function render() {
 
 	requestAnimationFrame( render );
 	
 	angle += .05;
-	meshes.forEach( function( mesh ) { mesh.rotation.y = angle } );
+	for( var i in meshes ) { var mesh = meshes[ i ]; mesh.rotation.y = angle }
+
+	/*for( var i in meshes ) {
+		var geo = meshes[ i ].geo;
+		for( var j = 0; j < geo.length; j+= 3 ) {
+			geo[ j ] *= 1.01;
+			geo[ j + 1 ] *= 1.01;
+			geo[ j + 2 ] *= 1.01;
+		}
+		meshes[ i ].g.setGeometry( geo );
+	}*/
 
 	renderer.render( scene, camera );
 
