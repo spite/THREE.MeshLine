@@ -170,7 +170,7 @@ THREE.MeshLineMaterial = function() {
 THREE.MeshLineMaterial = function ( parameters ) {
 
 	var vertexShaderSource = [
-'precision mediump float;',
+'precision highp float;',
 '',
 'attribute vec3 position;',
 'attribute vec3 previous;',
