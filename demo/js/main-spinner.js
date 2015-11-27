@@ -12,6 +12,8 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setPixelRatio( window.devicePixelRatio );
 container.appendChild( renderer.domElement );
 
+var directions = document.getElementById( 'directions' );
+
 var colors = [
 	0xed6a5a,
 	0xf4f1bb,
@@ -108,6 +110,8 @@ var userInteracting = false;
 
 function onMouseDown( e ) {
 
+	directions.style.opacity = 0;
+	
 	if( !meshes[ 0 ] ) {
 		meshes[ 0 ] = prepareMesh();
 		nMouse[ 0 ] = new THREE.Vector2();
@@ -136,6 +140,8 @@ function onMouseEnd( e ) {
 }
 
 function onTouchStart( e ) {
+
+	directions.style.opacity = 0;
 
 	for( var j = 0; j < e.touches.length; j++ ) {
 		if( !meshes[ e.touches[ j ].identifier ] ) {
