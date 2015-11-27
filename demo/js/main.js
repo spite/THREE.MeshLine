@@ -211,8 +211,6 @@ function onWindowResize() {
 	var w = container.clientWidth;
 	var h = container.clientHeight;
 
-	container.style.left = .5 * ( window.innerWidth - w ) + 'px';
-
 	camera.aspect = w / h;
 	camera.updateProjectionMatrix();
 
