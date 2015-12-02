@@ -66,6 +66,13 @@ By default it's a white material of width 1 unit.
 
 If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to ```THREE.AdditiveAlphaBlending```.
 
+Finally, we create a mesh and add it to the scene:
+
+```
+var mesh = new THREE.Mesh( geometry.geometry, material ); // this syntac could definitely be improved!
+scene.add( mesh );
+```
+
 ### TODO ###
 
 * Better miters
