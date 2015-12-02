@@ -3,11 +3,11 @@ Mesh replacement for ```THREE.Line```
 
 Instead of using GL_LINE, it uses a strip of triangles billboarded. Some examples:
 
-[![Demo](screenshots/demo.png)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/index.html)
-[![Graph](screenshots/graph.png)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/graph.html)
-[![Spinner](screenshots/spinner.png)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/spinner.html)
-[![SVG](screenshots/svg.png)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/svg.html)
-[![Shape](screenshots/shape.png)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/shape.html)
+[![Demo](screenshots/demo.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/index.html)
+[![Graph](screenshots/graph.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/graph.html)
+[![Spinner](screenshots/spinner.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/spinner.html)
+[![SVG](screenshots/svg.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/svg.html)
+[![Shape](screenshots/shape.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/shape.html)
 
 * [Demo](https://www.clicktorelease.com/code/THREE.MeshLine/demo/index.html): play with the different settings of materials
 * [Graph](https://www.clicktorelease.com/code/THREE.MeshLine/demo/graph.html): example of using ```THREE.MeshLine``` to plot graphs
