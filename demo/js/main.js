@@ -27,6 +27,7 @@ var Params = function() {
 	this.strokes = false;
 	this.sizeAttenuation = true;
 	this.animateWidth = false;
+	this.spread = false;
 	this.autoRotate = true;
 	this.update = function() {
 		clearLines();
@@ -49,6 +50,7 @@ window.addEventListener( 'load', function() {
 	gui.add( params, 'sizeAttenuation' );
 	gui.add( params, 'update' );
 	gui.add( params, 'animateWidth' );
+	gui.add( params, 'spread' );
 	gui.add( params, 'autoRotate' );
 
 	var loader = new THREE.TextureLoader();
@@ -152,14 +154,17 @@ function makeLine( geo ) {
 		far: camera.far,
 		depthTest: !params.strokes,
 		blending: params.strokes ? THREE.AdditiveAlphaBlending : THREE.NormalBlending,
-		transparent: params.strokes
+		transparent: params.strokes,
+		side: THREE.DoubleSide
 	});
 	var mesh = new THREE.Mesh( g.geometry, material );
-	var r = 50;
-	mesh.position.set( Maf.randomInRange( -r, r ), Maf.randomInRange( -r, r ), Maf.randomInRange( -r, r ) );
-	var s = 10 + 10 * Math.random();
-	mesh.scale.set( s,s,s );
-	mesh.rotation.set( Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI );
+	if( params.spread || params.circles ) {
+		var r = 50;
+		mesh.position.set( Maf.randomInRange( -r, r ), Maf.randomInRange( -r, r ), Maf.randomInRange( -r, r ) );
+		var s = 10 + 10 * Math.random();
+		mesh.scale.set( s,s,s );
+		mesh.rotation.set( Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI );
+	}
 	scene.add( mesh );
 
 	lines.push( mesh );
@@ -233,7 +238,7 @@ function render() {
 	var t = clock.getElapsedTime();
 	lines.forEach( function( l, i ) {
 		if( params.animateWidth ) l.material.uniforms.lineWidth.value = 1 + .5 * Math.sin( 5 * t + i );
-		if( params.autoRotate ) l.rotation.z += .125 * delta;
+	//	if( params.autoRotate ) l.rotation.z += .125 * delta;
 	} );
 
 	renderer.render( scene, camera );
