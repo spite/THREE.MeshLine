@@ -219,7 +219,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 '    vec2 nextP = fix( nextPos, aspect );',
 '',
 '	 float pixelWidth = finalPosition.w * pixelWidthRatio;',
-'    float w = 1. * pixelWidth * lineWidth * width;',
+'    float w = 1.8 * pixelWidth * lineWidth * width;',
 '',
 '    if( sizeAttenuation == 1. ) {',
 '        w = 1.8 * lineWidth * width;',
