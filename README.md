@@ -80,6 +80,7 @@ Tested successfully on
 * Firefox OSX, Windows, Anroid
 * Safari OSX, iOS
 * Internet Explorer 11 (SVG and Shape demo won't work because they use Promises)
+* Opera OSX, Windows
 
 ### References ###
 
