@@ -72,6 +72,15 @@ If you're rendering transparent lines or using a texture with alpha map, you sho
 * Proper sizes
 * Support for dashArray
 
+### Support ###
+
+Tested successfully on
+
+* Chrome OSX, Windows, Android
+* Firefox OSX, Windows, Anroid
+* Safari OSX, iOS
+* Internet Explorer 11 (SVG and Shape demo won't work because they use Promises)
+
 ### References ###
 
 * [Drawing lines is hard](http://mattdesl.svbtle.com/drawing-lines-is-hard)
