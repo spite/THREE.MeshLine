@@ -191,6 +191,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 '',
 'varying vec2 vUV;',
 'varying vec4 vColor;',
+'varying vec3 vPosition;',
 '',
 'vec2 fix( vec4 i, float aspect ) {',
 '',
@@ -203,6 +204,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 'void main() {',
 '',
 '    float aspect = resolution.x / resolution.y;',
+'	 float pixelWidthRatio = 1. / (resolution.x * projectionMatrix[0][0]);',
 '',
 '    vColor = vec4( color, opacity );',
 '    vUV = uv;',
@@ -216,7 +218,12 @@ THREE.MeshLineMaterial = function ( parameters ) {
 '    vec2 prevP = fix( prevPos, aspect );',
 '    vec2 nextP = fix( nextPos, aspect );',
 '',
-'    float w = 1.8 * lineWidth * width;',
+'	 float pixelWidth = finalPosition.w * pixelWidthRatio;',
+'    float w = 1. * pixelWidth * lineWidth * width;',
+'',
+'    if( sizeAttenuation == 1. ) {',
+'        w = 1.8 * lineWidth * width;',
+'    }',
 '',
 '    vec2 dir;',
 '    if( nextP == currentP ) dir = normalize( currentP - prevP );',
@@ -226,12 +233,9 @@ THREE.MeshLineMaterial = function ( parameters ) {
 '        vec2 dir2 = normalize( nextP - currentP );',
 '        dir = normalize( dir1 + dir2 );',
 '',
-'        /*{',
-'            vec2 perp = vec2( -dir1.y, dir1.x );',
-'            vec2 miter = vec2( -dir.y, dir.x );',
-'            float f = dot( miter, perp );',
-'            w /= f;',
-'        }*/',
+'        vec2 perp = vec2( -dir1.y, dir1.x );',
+'        vec2 miter = vec2( -dir.y, dir.x );',
+'        //w = clamp( w / dot( miter, perp ), 0., 4. * lineWidth * width );',
 '',
 '    }',
 '',
@@ -240,19 +244,16 @@ THREE.MeshLineMaterial = function ( parameters ) {
 '    normal.x /= aspect;',
 '    normal *= .5 * w;',
 '',
-'    if( sizeAttenuation == 0. ) {',
-'        float depth = ( finalPosition.z - near ) / ( far - near );',
-'        normal *= depth;',
-'    }',
-'',
 '    vec4 offset = vec4( normal * side, 0.0, 1.0 );',
 '    finalPosition.xy += offset.xy;',
 '',
+'	 vPosition = ( modelViewMatrix * vec4( position, 1. ) ).xyz;',
 '    gl_Position = finalPosition;',
 '',
 '}' ];
 
 	var fragmentShaderSource = [
+		'#extension GL_OES_standard_derivatives : enable',
 'precision mediump float;',
 '',
 'uniform sampler2D map;',
@@ -262,6 +263,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 '',
 'varying vec2 vUV;',
 'varying vec4 vColor;',
+'varying vec3 vPosition;',
 '',
 'void main() {',
 '',
@@ -280,6 +282,8 @@ THREE.MeshLineMaterial = function ( parameters ) {
 	}
 
 	THREE.Material.call( this );
+
+	parameters = parameters || {};
 
 	this.lineWidth = check( parameters.lineWidth, 1 );
 	this.map = check( parameters.map, null );
