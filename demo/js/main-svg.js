@@ -46,7 +46,7 @@ var material = new THREE.MeshLineMaterial( {
 	opacity: 1,
 	resolution: resolution,
 	sizeAttenuation: false,
-	lineWidth: 1 * window.devicePixelRatio,
+	lineWidth: 1,
 	near: camera.near,
 	far: camera.far,
 	depthWrite: false,
