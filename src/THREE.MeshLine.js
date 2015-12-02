@@ -33,7 +33,7 @@ THREE.MeshLine.prototype.setGeometry = function( g, c ) {
 		// read attribute positions ?
 	}
 
-	if( g instanceof Float32Array ) {
+	if( g instanceof Float32Array || g instanceof Array ) {
 		for( var j = 0; j < g.length; j += 3 ) {
 			this.positions.push( g[ j ], g[ j + 1 ], g[ j + 2 ] );
 			this.positions.push( g[ j ], g[ j + 1 ], g[ j + 2 ] );
