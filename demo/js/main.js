@@ -4,7 +4,7 @@ var container = document.getElementById( 'container' );
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, .1, 1000 );
-camera.position.z = -50;
+camera.position.set( 0, 0, -10 );
 
 var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true });
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -22,10 +22,10 @@ var Params = function() {
 	this.curves = true;
 	this.circles = false;
 	this.amount = 100;
-	this.lineWidth = 1;
-	this.taper = 'none';
+	this.lineWidth = 10;
+	this.taper = 'parabolic';
 	this.strokes = false;
-	this.sizeAttenuation = true;
+	this.sizeAttenuation = false;
 	this.animateWidth = false;
 	this.spread = false;
 	this.autoRotate = true;
@@ -36,10 +36,9 @@ var Params = function() {
 };
 
 var params = new Params();
+var gui = new dat.GUI();
 
 window.addEventListener( 'load', function() {
-
-	var gui = new dat.GUI();
 
 	gui.add( params, 'curves' );
 	gui.add( params, 'circles' );
@@ -237,8 +236,8 @@ function render() {
 	var delta = clock.getDelta();
 	var t = clock.getElapsedTime();
 	lines.forEach( function( l, i ) {
-		if( params.animateWidth ) l.material.uniforms.lineWidth.value = 1 + .5 * Math.sin( 5 * t + i );
-	//	if( params.autoRotate ) l.rotation.z += .125 * delta;
+		if( params.animateWidth ) l.material.uniforms.lineWidth.value = params.lineWidth * ( 1 + .5 * Math.sin( 5 * t + i ) );
+		if( params.autoRotate ) l.rotation.y += .125 * delta;
 	} );
 
 	renderer.render( scene, camera );

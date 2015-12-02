@@ -46,7 +46,7 @@ var material = new THREE.MeshLineMaterial( {
 	opacity: 1,
 	resolution: resolution,
 	sizeAttenuation: false,
-	lineWidth: window.devicePixelRatio,
+	lineWidth: 1 * window.devicePixelRatio,
 	near: camera.near,
 	far: camera.far,
 	depthWrite: false,
@@ -80,7 +80,7 @@ function readSVG() {
 
 	return new Promise( function( resolve, reject ) {
 		var ajax = new XMLHttpRequest();
-		ajax.open("GET", "assets/worldHigh.svg", true);
+		ajax.open("GET", "assets/worldLow.svg", true);
 		ajax.send();
 		ajax.addEventListener( 'load', function(e) {
 			resolve( ajax.responseText );

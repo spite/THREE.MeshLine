@@ -123,7 +123,7 @@ function collectPoints( source ) {
     }
 
     var l = new THREE.MeshLine();
-    l.setGeometry( points );
+    l.setGeometry( points, function( p ) { return p } );
     var line = new THREE.Mesh( l.geometry, material );
     scene.add( line );
 	
