@@ -18,6 +18,13 @@ Instead of using GL_LINE, it uses a strip of triangles billboarded. Some example
 
 #### How to use
 
+* Create and populate a geometry
+* Create a THREE.MeshLine and assing the geometry
+* Create a THREE.MeshLineMaterial
+* Use THREE.MeshLine and THREE.MeshLineMaterial to create a THREE.Mesh
+
+##### Create and populate a geometry #####
+
 First, create the list of vertices that will define the line. ```THREE.MeshLine``` accepts ```THREE.Geometry``` (looking up the ```.vertices``` in it) and ```Array```/```Float32Array```. ```THREE.BufferGeometry``` coming soon, and may be others like ```Array``` of ```THREE.Vector3```.
 
 ````
@@ -27,6 +34,8 @@ for( var j = 0; j < Math.PI; j += 2 * Math.PI / 100 ) {
 	geometry.vertices.push( v );
 }
 ````
+
+##### Create a THREE.MeshLine and assing the geometry #####
 
 Once you have that, you can create a new ```THREE.MeshLine```, and call ```.setGeometry()``` passing the vertices.
 
@@ -42,6 +51,8 @@ line.setGeometry( geometry, function( p ) { return 2; } ); // makes width 2 * li
 line.setGeometry( geometry, function( p ) { return 1 - p; } ); // makes width taper
 line.setGeometry( geometry, function( p ) { return 2 + Math.sin( 50 * p ); } ); // makes width sinusoidal
 ````
+
+##### Create a THREE.MeshLineMaterial #####
 
 A ```THREE.MeshLine``` needs a ```THREE.MeshLineMaterial```:
 
@@ -66,6 +77,8 @@ By default it's a white material of width 1 unit.
 
 If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to ```THREE.AdditiveAlphaBlending```.
 
+##### Use THREE.MeshLine and THREE.MeshLineMaterial to create a THREE.Mesh #####
+
 Finally, we create a mesh and add it to the scene:
 
 ```
@@ -79,7 +92,7 @@ scene.add( mesh );
 * Proper sizes
 * Support for dashArray
 
-### Support ###
+### Support ###
 
 Tested successfully on
 
