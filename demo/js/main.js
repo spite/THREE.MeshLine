@@ -29,6 +29,7 @@ var Params = function() {
 	this.animateWidth = false;
 	this.spread = false;
 	this.autoRotate = true;
+	this.autoUpdate = true;
 	this.update = function() {
 		clearLines();
 		createLines();
@@ -40,13 +41,21 @@ var gui = new dat.GUI();
 
 window.addEventListener( 'load', function() {
 
-	gui.add( params, 'curves' );
-	gui.add( params, 'circles' );
-	gui.add( params, 'amount', 1, 1000 );
-	gui.add( params, 'lineWidth', 1, 20 );
-	gui.add( params, 'taper', [ 'none', 'linear', 'parabolic', 'wavy' ] );
-	gui.add( params, 'strokes' );
-	gui.add( params, 'sizeAttenuation' );
+	function update() {
+		if( params.autoUpdate ) {
+			clearLines();
+			createLines();
+		}
+	}
+	
+	gui.add( params, 'curves' ).onChange( update );
+	gui.add( params, 'circles' ).onChange( update );
+	gui.add( params, 'amount', 1, 1000 ).onChange( update );
+	gui.add( params, 'lineWidth', 1, 20 ).onChange( update );
+	gui.add( params, 'taper', [ 'none', 'linear', 'parabolic', 'wavy' ] ).onChange( update );
+	gui.add( params, 'strokes' ).onChange( update );
+	gui.add( params, 'sizeAttenuation' ).onChange( update );
+	gui.add( params, 'autoUpdate' ).onChange( update );
 	gui.add( params, 'update' );
 	gui.add( params, 'animateWidth' );
 	gui.add( params, 'spread' );
