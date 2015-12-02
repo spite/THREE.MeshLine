@@ -82,7 +82,7 @@ If you're rendering transparent lines or using a texture with alpha map, you sho
 Finally, we create a mesh and add it to the scene:
 
 ```
-var mesh = new THREE.Mesh( geometry.geometry, material ); // this syntac could definitely be improved!
+var mesh = new THREE.Mesh( geometry.geometry, material ); // this syntax could definitely be improved!
 scene.add( mesh );
 ```
 
