@@ -3,13 +3,22 @@ Mesh replacement for ```THREE.Line```
 
 Instead of using GL_LINE, it uses a strip of triangles billboarded. Some examples:
 
-* [Demo](https://clicktorelease.com/tmp/threejs/lines/demo): play with the different settings of materials
-* [Graph](https://clicktorelease.com/tmp/threejs/lines/demo/graph.html): example of using ```THREE.MeshLine``` to plot graphs
-* [Spinner](https://clicktorelease.com/tmp/threejs/lines/demo/spinner.html): example of dynamic ```THREE.MeshLine``` with texture
+[![Demo](https://raw.githubusercontent.com/spite/THREE.MeshLine/master/screenshots/demo.png)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/index.html)
+[![Graph](https://raw.githubusercontent.com/spite/THREE.MeshLine/master/screenshots/graph.png)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/graph.html)
+[![Spinner](https://raw.githubusercontent.com/spite/THREE.MeshLine/master/screenshots/spinner.png)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/spinner.html)
+[![SVG](https://raw.githubusercontent.com/spite/THREE.MeshLine/master/screenshots/svg.png)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/svg.html)
+[![Shape](https://raw.githubusercontent.com/spite/THREE.MeshLine/master/screenshots/shape.png)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/shape.html)
+
+* [Demo](https://www.clicktorelease.com/code/THREE.MeshLine/demo/index.html): play with the different settings of materials
+* [Graph](https://www.clicktorelease.com/code/THREE.MeshLine/demo/graph.html): example of using ```THREE.MeshLine``` to plot graphs
+* [Spinner](https://www.clicktorelease.com/code/THREE.MeshLine/demo/spinner.html): example of dynamic ```THREE.MeshLine``` with texture
+* [SVG](https://www.clicktorelease.com/code/THREE.MeshLine/demo/svg.html): example of ```THREE.MeshLine``` rendering SVG Paths
+* [Shape](https://www.clicktorelease.com/code/THREE.MeshLine/demo/shape.html): example of ```THREE.MeshLine``` created from a mesh
+
 
 #### How to use
 
-First, create the list of vertices that will define the line. ```THREE.MeshLine``` accepts ```THREE.Geometry``` (looking up the ```.vertices``` in it) and ```Float32Array```. ```THREE.BufferGeometry``` coming soon, and may be others like ```Array``` of ```THREE.Vector3```.
+First, create the list of vertices that will define the line. ```THREE.MeshLine``` accepts ```THREE.Geometry``` (looking up the ```.vertices``` in it) and ```Array```/```Float32Array```. ```THREE.BufferGeometry``` coming soon, and may be others like ```Array``` of ```THREE.Vector3```.
 
 ````
 var geometry = new THREE.Geometry();
@@ -56,6 +65,12 @@ By default it's a white material of width 1 unit.
 * ```far``` - camera far clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
 
 If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to ```THREE.AdditiveAlphaBlending```.
+
+### References ###
+
+* [Drawing lines is hard](http://mattdesl.svbtle.com/drawing-lines-is-hard)
+* [WebGL rendering of solid traisl](http://codeflow.org/entries/2012/aug/05/webgl-rendering-of-solid-trails/)
+* [Drawing Antialiased Lines with OpenGL](https://www.mapbox.com/blog/drawing-antialiased-lines/)
 
 #### License ####
 
