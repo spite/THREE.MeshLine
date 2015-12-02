@@ -66,6 +66,12 @@ By default it's a white material of width 1 unit.
 
 If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to ```THREE.AdditiveAlphaBlending```.
 
+### TODO ###
+
+* Better miters
+* Proper sizes
+* Support for dashArray
+
 ### References ###
 
 * [Drawing lines is hard](http://mattdesl.svbtle.com/drawing-lines-is-hard)
