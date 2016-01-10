@@ -144,29 +144,6 @@ THREE.MeshLine.prototype.process = function() {
 
 }
 
-THREE.MeshLineMaterial = function() {
-
-	this.material = new THREE.RawShaderMaterial( { 
-		uniforms:{
-			lineWidth: { type: 'f', value: 1 },
-			map: { type: 't', value: strokeTexture },
-			useMap: { type: 'f', value: 0 },
-			color: { type: 'c', value: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) },
-			resolution: { type: 'v2', value: resolution },
-			sizeAttenuation: { type: 'f', value: 1 },
-			near: { type: 'f', value: camera.near },
-			far: { type: 'f', value: camera.far }	
-		},
-		vertexShader: document.getElementById( 'vs-line' ).textContent,
-		fragmentShader: document.getElementById( 'fs-line' ).textContent,
-		/*side: THREE.DoubleSide,
-		transparent: true,
-		depthTest: false,
-		blending: THREE.AdditiveAlphaBlending*/
-	});
-
-}
-
 THREE.MeshLineMaterial = function ( parameters ) {
 
 	var vertexShaderSource = [
