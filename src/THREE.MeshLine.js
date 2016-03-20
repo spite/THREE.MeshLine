@@ -123,14 +123,24 @@ THREE.MeshLine.prototype.process = function() {
 		this.indices_array.push( n + 2, n + 1, n + 3 );
 	}
 
-	this.attributes = {
-		position: new THREE.BufferAttribute( new Float32Array( this.positions ), 3 ),
-		previous: new THREE.BufferAttribute( new Float32Array( this.previous ), 3 ),
-		next: new THREE.BufferAttribute( new Float32Array( this.next ), 3 ),
-		side: new THREE.BufferAttribute( new Float32Array( this.side ), 1 ),
-		width: new THREE.BufferAttribute( new Float32Array( this.width ), 1 ),
-		uv: new THREE.BufferAttribute( new Float32Array( this.uvs ), 2 ),
-		index: new THREE.BufferAttribute( new Uint16Array( this.indices_array ), 1 )
+	if (!this.attributes) {
+		this.attributes = {
+			position: new THREE.BufferAttribute( new Float32Array( this.positions ), 3 ),
+			previous: new THREE.BufferAttribute( new Float32Array( this.previous ), 3 ),
+			next: new THREE.BufferAttribute( new Float32Array( this.next ), 3 ),
+			side: new THREE.BufferAttribute( new Float32Array( this.side ), 1 ),
+			width: new THREE.BufferAttribute( new Float32Array( this.width ), 1 ),
+			uv: new THREE.BufferAttribute( new Float32Array( this.uvs ), 2 ),
+			index: new THREE.BufferAttribute( new Uint16Array( this.indices_array ), 1 )
+		}
+	} else {
+		this.attributes.position.copyArray(new Float32Array(this.positions));
+		this.attributes.previous.copyArray(new Float32Array(this.previous));
+		this.attributes.next.copyArray(new Float32Array(this.next));
+		this.attributes.side.copyArray(new Float32Array(this.side));
+		this.attributes.width.copyArray(new Float32Array(this.width));
+		this.attributes.uv.copyArray(new Float32Array(this.uvs));
+		this.attributes.index.copyArray(new Uint16Array(this.index));
 	}
 
 	this.geometry.addAttribute( 'position', this.attributes.position );
