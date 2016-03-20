@@ -135,12 +135,19 @@ THREE.MeshLine.prototype.process = function() {
 		}
 	} else {
 		this.attributes.position.copyArray(new Float32Array(this.positions));
+		this.attributes.position.needsUpdate = true;
 		this.attributes.previous.copyArray(new Float32Array(this.previous));
+		this.attributes.previous.needsUpdate = true;
 		this.attributes.next.copyArray(new Float32Array(this.next));
+		this.attributes.next.needsUpdate = true;
 		this.attributes.side.copyArray(new Float32Array(this.side));
+		this.attributes.side.needsUpdate = true;
 		this.attributes.width.copyArray(new Float32Array(this.width));
+		this.attributes.width.needsUpdate = true;
 		this.attributes.uv.copyArray(new Float32Array(this.uvs));
+		this.attributes.uv.needsUpdate = true;
 		this.attributes.index.copyArray(new Uint16Array(this.index));
+		this.attributes.index.needsUpdate = true;
 	}
 
 	this.geometry.addAttribute( 'position', this.attributes.position );
