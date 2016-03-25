@@ -19,7 +19,7 @@ Instead of using GL_LINE, it uses a strip of triangles billboarded. Some example
 #### How to use
 
 * Create and populate a geometry
-* Create a THREE.MeshLine and assing the geometry
+* Create a THREE.MeshLine and assign the geometry
 * Create a THREE.MeshLineMaterial
 * Use THREE.MeshLine and THREE.MeshLineMaterial to create a THREE.Mesh
 
@@ -35,7 +35,7 @@ for( var j = 0; j < Math.PI; j += 2 * Math.PI / 100 ) {
 }
 ````
 
-##### Create a THREE.MeshLine and assing the geometry #####
+##### Create a THREE.MeshLine and assign the geometry #####
 
 Once you have that, you can create a new ```THREE.MeshLine```, and call ```.setGeometry()``` passing the vertices.
 
