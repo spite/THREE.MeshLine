@@ -30,6 +30,7 @@ var Params = function() {
 	this.spread = false;
 	this.autoRotate = true;
 	this.autoUpdate = true;
+    this.animateVisibility=false;
 	this.update = function() {
 		clearLines();
 		createLines();
@@ -60,7 +61,8 @@ window.addEventListener( 'load', function() {
 	gui.add( params, 'animateWidth' );
 	gui.add( params, 'spread' );
 	gui.add( params, 'autoRotate' );
-
+    gui.add( params, 'animateVisibility' );
+  
 	var loader = new THREE.TextureLoader();
 	loader.load( 'assets/stroke.png', function( texture ) { 
 		strokeTexture = texture; 
@@ -247,7 +249,7 @@ function render(time) {
 	lines.forEach( function( l, i ) {
 		if( params.animateWidth ) l.material.uniforms.lineWidth.value = params.lineWidth * ( 1 + .5 * Math.sin( 5 * t + i ) );
 		if( params.autoRotate ) l.rotation.y += .125 * delta;
-      l.material.uniforms.visibility.value=(time/3000) % 1.0;
+      l.material.uniforms.visibility.value= params.animateVisibility ? (time/3000) % 1.0 : 1.0;
 	} );
 
 	renderer.render( scene, camera );

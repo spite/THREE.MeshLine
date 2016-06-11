@@ -261,7 +261,7 @@ function check() {
 }
 check();
 
-function render(time) {
+function render() {
 
 	requestAnimationFrame( render );
 	
@@ -270,7 +270,6 @@ function render(time) {
 	for( var i in meshes ) { 
       var mesh = meshes[ i ]; 
       mesh.rotation.y = angle;
-      mesh.material.uniforms.visibility.value = (time/3000) % 1.0;
     }
 
 	/*for( var i in meshes ) {
