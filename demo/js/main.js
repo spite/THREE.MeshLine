@@ -162,7 +162,7 @@ function makeLine( geo ) {
 		far: camera.far,
 		depthTest: !params.strokes,
 		blending: params.strokes ? THREE.AdditiveAlphaBlending : THREE.NormalBlending,
-		transparent: params.strokes,
+		transparent: true,
 		side: THREE.DoubleSide
 	});
 	var mesh = new THREE.Mesh( g.geometry, material );
@@ -237,7 +237,7 @@ window.addEventListener( 'resize', onWindowResize );
 
 var tmpVector = new THREE.Vector3();
 
-function render() {
+function render(time) {
 
 	requestAnimationFrame( render );
 	controls.update();
@@ -247,6 +247,7 @@ function render() {
 	lines.forEach( function( l, i ) {
 		if( params.animateWidth ) l.material.uniforms.lineWidth.value = params.lineWidth * ( 1 + .5 * Math.sin( 5 * t + i ) );
 		if( params.autoRotate ) l.rotation.y += .125 * delta;
+      l.material.uniforms.visibility.value=(time/3000) % 1.0;
 	} );
 
 	renderer.render( scene, camera );

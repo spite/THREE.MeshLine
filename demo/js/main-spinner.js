@@ -261,12 +261,17 @@ function check() {
 }
 check();
 
-function render() {
+function render(time) {
 
 	requestAnimationFrame( render );
 	
 	angle += .05;
-	for( var i in meshes ) { var mesh = meshes[ i ]; mesh.rotation.y = angle }
+  
+	for( var i in meshes ) { 
+      var mesh = meshes[ i ]; 
+      mesh.rotation.y = angle;
+      mesh.material.uniforms.visibility.value = (time/3000) % 1.0;
+    }
 
 	/*for( var i in meshes ) {
 		var geo = meshes[ i ].geo;
