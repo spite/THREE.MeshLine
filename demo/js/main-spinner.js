@@ -266,7 +266,11 @@ function render() {
 	requestAnimationFrame( render );
 	
 	angle += .05;
-	for( var i in meshes ) { var mesh = meshes[ i ]; mesh.rotation.y = angle }
+  
+	for( var i in meshes ) { 
+      var mesh = meshes[ i ]; 
+      mesh.rotation.y = angle;
+    }
 
 	/*for( var i in meshes ) {
 		var geo = meshes[ i ].geo;
