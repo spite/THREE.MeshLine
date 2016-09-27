@@ -75,7 +75,7 @@ By default it's a white material of width 1 unit.
 * ```near``` - camera near clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
 * ```far``` - camera far clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
 
-If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to ```THREE.AdditiveAlphaBlending```.
+If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to an appropriate blending mode.
 
 ##### Use THREE.MeshLine and THREE.MeshLineMaterial to create a THREE.Mesh #####
 
