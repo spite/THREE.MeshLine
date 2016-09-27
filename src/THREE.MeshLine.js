@@ -153,7 +153,7 @@ THREE.MeshLine.prototype.process = function() {
 		this.attributes.width.needsUpdate = true;
 		this.attributes.uv.copyArray(new Float32Array(this.uvs));
 		this.attributes.uv.needsUpdate = true;
-		this.attributes.index.copyArray(new Uint16Array(this.index));
+		this.attributes.index.copyArray(new Uint16Array(this.indices_array));
 		this.attributes.index.needsUpdate = true;
     }
 
