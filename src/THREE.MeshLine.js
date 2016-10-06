@@ -172,62 +172,65 @@ THREE.MeshLine.prototype.process = function() {
 
 }
 
+function memcpy (src, srcOffset, dst, dstOffset, length) {
+	var i
+
+	src = src.subarray || src.slice ? src : src.buffer
+	dst = dst.subarray || dst.slice ? dst : dst.buffer
+
+	src = srcOffset ? src.subarray ?
+	src.subarray(srcOffset, length && srcOffset + length) :
+	src.slice(srcOffset, length && srcOffset + length) : src
+
+	if (dst.set) {
+		dst.set(src, dstOffset)
+	} else {
+		for (i=0; i<src.length; i++) {
+			dst[i + dstOffset] = src[i]
+		}
+	}
+
+	return dst
+}
+
 /**
  * Fast method to advance the line by one position.  The oldest position is removed.
  * @param position
  */
 THREE.MeshLine.prototype.advance = function(position) {
 
-    var positions = this.attributes.position.array;
-    var previous = this.attributes.previous.array;
-    var next = this.attributes.next.array;
-    var l = positions.length;
+	var positions = this.attributes.position.array;
+	var previous = this.attributes.previous.array;
+	var next = this.attributes.next.array;
+	var l = positions.length;
 
-    // PREVIOUS
-    for(i = 0; i < l; i += 6) {
-        previous[i + 0] = positions[i + 0];
-        previous[i + 1] = positions[i + 1];
-        previous[i + 2] = positions[i + 2];
-        previous[i + 3] = positions[i + 3];
-        previous[i + 4] = positions[i + 4];
-        previous[i + 5] = positions[i + 5];
-    }
+	// PREVIOUS
+	memcpy( positions, 0, previous, 0, l );
 
-    // POSITIONS
-    for(var i = 0; i < l - 6; i += 6) {
-        positions[i + 0] = positions[i + 6];
-        positions[i + 1] = positions[i + 7];
-        positions[i + 2] = positions[i + 8];
-        positions[i + 3] = positions[i + 9];
-        positions[i + 4] = positions[i + 10];
-        positions[i + 5] = positions[i + 11];
-    }
-    positions[l - 6] = position.x;
-    positions[l - 5] = position.y;
-    positions[l - 4] = position.z;
-    positions[l - 3] = position.x;
-    positions[l - 2] = position.y;
-    positions[l - 1] = position.z;
+	// POSITIONS
+	memcpy( positions, 6, positions, 0, l - 6 );
+
+	positions[l - 6] = position.x;
+	positions[l - 5] = position.y;
+	positions[l - 4] = position.z;
+	positions[l - 3] = position.x;
+	positions[l - 2] = position.y;
+	positions[l - 1] = position.z;
 
     // NEXT
-    for(i = 0; i < l - 6; i += 6) {
-        next[i + 0] = positions[i + 6];
-        next[i + 1] = positions[i + 7];
-        next[i + 2] = positions[i + 8];
-        next[i + 3] = positions[i + 9];
-        next[i + 4] = positions[i + 10];
-        next[i + 5] = positions[i + 11];
-    }
-    next[l - 6]  = position.x;
-    next[l - 5]  = position.y;
-    next[l - 4]  = position.z;
-    next[l - 3]  = position.x;
-    next[l - 2]  = position.y;
-    next[l - 1]  = position.z;
+	memcpy( positions, 6, next, 0, l - 6 );
 
-    this.attributes.position.needsUpdate = true;
-    this.attributes.previous.needsUpdate = true;
-    this.attributes.next.needsUpdate = true;
+	next[l - 6]  = position.x;
+	next[l - 5]  = position.y;
+	next[l - 4]  = position.z;
+	next[l - 3]  = position.x;
+	next[l - 2]  = position.y;
+	next[l - 1]  = position.z;
+
+	this.attributes.position.needsUpdate = true;
+	this.attributes.previous.needsUpdate = true;
+	this.attributes.next.needsUpdate = true;
+
 };
 
 THREE.MeshLineMaterial = function ( parameters ) {
