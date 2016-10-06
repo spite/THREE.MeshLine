@@ -1,3 +1,5 @@
+( function() {
+
 THREE.MeshLine = function() {
 
 	this.positions = [];
@@ -423,3 +425,7 @@ THREE.MeshLineMaterial.prototype.copy = function ( source ) {
 	return this;
 
 };
+
+window.THREE.MeshLineMaterial = THREE.MeshLineMaterial;
+
+})();
