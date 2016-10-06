@@ -35,6 +35,8 @@
 
 			var boid, boids;
 
+			var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
+
 			// Based on http://www.openprocessing.org/visuals/?visualID=6910
 
 			var Boid = function() {
@@ -71,7 +73,7 @@
 					this.trail_material = new THREE.MeshLineMaterial( {
 						color: new THREE.Color( "rgb(255, 2, 2)" ),
 						opacity: 1,
-						resolution: new THREE.Vector2( SCREEN_WIDTH, SCREEN_HEIGHT ),
+						resolution: resolution,
 						sizeAttenuation: 1,
 						lineWidth: 1,
 						near: 1,
@@ -412,6 +414,11 @@
 
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
+
+				resolution.set( window.innerWidth, window.innerHeight );
+				this.boids.forEach( function ( boid ) {
+					if( boid.trail_initialized ) boid.trail_material.uniforms.resolution.value.copy( resolution );
+				} );
 
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
