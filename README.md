@@ -8,13 +8,14 @@ Instead of using GL_LINE, it uses a strip of triangles billboarded. Some example
 [![Spinner](screenshots/spinner.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/spinner.html)
 [![SVG](screenshots/svg.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/svg.html)
 [![Shape](screenshots/shape.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/shape.html)
+[![Shape](screenshots/birds.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/birds.html)
 
 * [Demo](https://www.clicktorelease.com/code/THREE.MeshLine/demo/index.html): play with the different settings of materials
 * [Graph](https://www.clicktorelease.com/code/THREE.MeshLine/demo/graph.html): example of using ```THREE.MeshLine``` to plot graphs
 * [Spinner](https://www.clicktorelease.com/code/THREE.MeshLine/demo/spinner.html): example of dynamic ```THREE.MeshLine``` with texture
 * [SVG](https://www.clicktorelease.com/code/THREE.MeshLine/demo/svg.html): example of ```THREE.MeshLine``` rendering SVG Paths
 * [Shape](https://www.clicktorelease.com/code/THREE.MeshLine/demo/shape.html): example of ```THREE.MeshLine``` created from a mesh
-
+* [Birds](https://www.clicktorelease.com/code/THREE.MeshLine/demo/birds.html): example of ```THREE.MeshLine.advance()``` by @caramelcode (Jared Sprague) and @mwcz (Michael Clayton)
 
 #### How to use
 
