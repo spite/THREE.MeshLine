@@ -69,6 +69,7 @@ By default it's a white material of width 1 unit.
 * ```useMap``` - tells the material to use ```map``` (0 - solid color, 1 use texture)
 * ```color``` - ```THREE.Color``` to paint the line width, or tint the texture with
 * ```opacity``` - alpha value from 0 to 1 (requires ```transparent``` set to ```true```)
+* ```alphaTest``` - cutoff value from 0 to 1
 * ```dashArray``` - THREE.Vector2 to define the dashing (NOT IMPLEMENTED YET)
 * ```resolution``` - ```THREE.Vector2``` specifying the canvas size (REQUIRED)
 * ```sizeAttenuation``` - makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
@@ -76,7 +77,7 @@ By default it's a white material of width 1 unit.
 * ```near``` - camera near clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
 * ```far``` - camera far clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
 
-If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to an appropriate blending mode.
+If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to an appropriate blending mode, or use ```alphaTest```.
 
 ##### Use THREE.MeshLine and THREE.MeshLineMaterial to create a THREE.Mesh #####
 
