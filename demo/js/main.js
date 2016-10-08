@@ -48,7 +48,7 @@ window.addEventListener( 'load', function() {
 			createLines();
 		}
 	}
-	
+
 	gui.add( params, 'curves' ).onChange( update );
 	gui.add( params, 'circles' ).onChange( update );
 	gui.add( params, 'amount', 1, 1000 ).onChange( update );
@@ -62,10 +62,10 @@ window.addEventListener( 'load', function() {
 	gui.add( params, 'spread' );
 	gui.add( params, 'autoRotate' );
     gui.add( params, 'animateVisibility' );
-  
+
 	var loader = new THREE.TextureLoader();
-	loader.load( 'assets/stroke.png', function( texture ) { 
-		strokeTexture = texture; 
+	loader.load( 'assets/stroke.png', function( texture ) {
+		strokeTexture = texture;
 		init()
 	} );
 
@@ -104,8 +104,8 @@ function createCurve() {
 	//s.reticulate( { distancePerStep: .1 });
 	s.reticulate( { steps: 500 } );
  	var geometry = new THREE.Geometry();
-   
-	for( var j = 0; j < s.lPoints.length - 1; j++ ) {	
+
+	for( var j = 0; j < s.lPoints.length - 1; j++ ) {
 		geometry.vertices.push( s.lPoints[ j ].clone() );
 	}
 
@@ -150,20 +150,21 @@ function makeLine( geo ) {
 		case 'parabolic': g.setGeometry( geo, function( p ) { return 1 * Maf.parabola( p, 1 )} ); break;
 		case 'wavy': g.setGeometry( geo, function( p ) { return 2 + Math.sin( 50 * p ) } ); break;
 	}
-	
-	var material = new THREE.MeshLineMaterial( { 
-		map: strokeTexture, 
+
+	var material = new THREE.MeshLineMaterial( {
+		map: strokeTexture,
 		useMap: params.strokes,
 		color: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ),
-		opacity: params.strokes ? .5 : 1,
+		opacity: 1,//params.strokes ? .5 : 1,
 		dashArray: new THREE.Vector2( 10, 5 ),
 		resolution: resolution,
 		sizeAttenuation: params.sizeAttenuation,
 		lineWidth: params.lineWidth,
 		near: camera.near,
 		far: camera.far,
+		depthWrite: false,
 		depthTest: !params.strokes,
-		blending: params.strokes ? THREE.AdditiveAlphaBlending : THREE.NormalBlending,
+		alphaTest: params.strokes ? .5 : 0,
 		transparent: true,
 		side: THREE.DoubleSide
 	});

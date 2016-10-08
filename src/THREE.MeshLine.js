@@ -330,6 +330,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 'uniform float useDash;',
 'uniform vec2 dashArray;',
 'uniform float visibility;',
+'uniform float alphaTest;',
 '',
 'varying vec2 vUV;',
 'varying vec4 vColor;',
@@ -339,12 +340,13 @@ THREE.MeshLineMaterial = function ( parameters ) {
 'void main() {',
 '',
 '    vec4 c = vColor;',
+'	 if( c.a < alphaTest ) discard;',
 '    if( useMap == 1. ) c *= texture2D( map, vUV );',
 '	 if( useDash == 1. ){',
 '	 	 ',
 '	 }',
 '    gl_FragColor = c;',
-'	 gl_FragColor.a = step(vCounters,visibility);',
+'	 gl_FragColor.a *= step(vCounters,visibility);',
 '}' ];
 
 	function check( v, d ) {
@@ -368,6 +370,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 	this.dashArray = check( parameters.dashArray, [] );
 	this.useDash = ( this.dashArray !== [] ) ? 1 : 0;
 	this.visibility = check( parameters.visibility, 1 );
+	this.alphaTest = check( parameters.alphaTest, 0 );
 
 	var material = new THREE.RawShaderMaterial( {
 		uniforms:{
@@ -382,7 +385,8 @@ THREE.MeshLineMaterial = function ( parameters ) {
 			far: { type: 'f', value: this.far },
 			dashArray: { type: 'v2', value: new THREE.Vector2( this.dashArray[ 0 ], this.dashArray[ 1 ] ) },
 			useDash: { type: 'f', value: this.useDash },
-			visibility: {type: 'f', value: this.visibility}
+			visibility: {type: 'f', value: this.visibility},
+			alphaTest: {type: 'f', value: this.alphaTest}
 		},
 		vertexShader: vertexShaderSource.join( '\r\n' ),
 		fragmentShader: fragmentShaderSource.join( '\r\n' )
@@ -399,6 +403,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 	delete parameters.far;
 	delete parameters.dashArray;
 	delete parameters.visibility;
+	delete parameters.alphaTest;
 
 	material.type = 'MeshLineMaterial';
 

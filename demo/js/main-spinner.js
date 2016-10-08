@@ -59,7 +59,7 @@ function prepareMesh() {
 	var g = new THREE.MeshLine();
 	g.setGeometry( geo, function( p ) { return p; } );
 
-	material = new THREE.MeshLineMaterial( { 
+	material = new THREE.MeshLineMaterial( {
 		useMap: true,
 		map: strokeTexture,
 		color: new THREE.Color( new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) ),
@@ -70,22 +70,22 @@ function prepareMesh() {
 		near: camera.near,
 		far: camera.far,
 		depthTest: false,
-		blending: THREE.AdditiveAlphaBlending,
+		blending: THREE.NormalBlending,
 		transparent: true
 	});
-	
+
 	var mesh = new THREE.Mesh( g.geometry, material );
 	mesh.geo = geo;
 	mesh.g = g;
 
 	scene.add( mesh );
-	
+
 	return mesh;
 
 }
 
 function init() {
-	
+
 	plane = new THREE.Mesh( new THREE.PlaneBufferGeometry( 1000, 1000 ), new THREE.MeshNormalMaterial( { side: THREE.DoubleSide,  } ) );
 	plane.material.visible = false;
 	scene.add( plane );
@@ -98,7 +98,7 @@ function init() {
 	window.addEventListener( 'mouseout', onMouseEnd );
 	window.addEventListener( 'touchend', onTouchEnd );
 	window.addEventListener( 'touchcancel', onTouchEnd );
-	
+
 	window.addEventListener( 'resize', onWindowResize );
 
 	onWindowResize();
@@ -111,7 +111,7 @@ var userInteracting = false;
 function onMouseDown( e ) {
 
 	directions.style.opacity = 0;
-	
+
 	if( !meshes[ 0 ] ) {
 		meshes[ 0 ] = prepareMesh();
 		nMouse[ 0 ] = new THREE.Vector2();
@@ -152,7 +152,7 @@ function onTouchStart( e ) {
 	}
 
 	e.preventDefault();
-	
+
 }
 
 function onTouchEnd( e ) {
@@ -204,7 +204,7 @@ function checkIntersection( id ) {
 	tmpVector.copy( nMouse[ id ] ).sub( mouse[ id ] ).multiplyScalar( .1 );
 	Maf.clamp( tmpVector.x, -1, 1 );
 	Maf.clamp( tmpVector.y, -1, 1 );
-	
+
 	mouse[ id ].add( tmpVector );
 
 	raycaster.setFromCamera( mouse[ id ], camera );
@@ -264,11 +264,11 @@ check();
 function render() {
 
 	requestAnimationFrame( render );
-	
+
 	angle += .05;
-  
-	for( var i in meshes ) { 
-      var mesh = meshes[ i ]; 
+
+	for( var i in meshes ) {
+      var mesh = meshes[ i ];
       mesh.rotation.y = angle;
     }
 
