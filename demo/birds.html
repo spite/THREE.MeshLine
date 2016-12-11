@@ -66,11 +66,11 @@
 					}
 
 					// Create the line mesh
-					this.trail_line = new THREE.MeshLine();
+					this.trail_line = new MeshLine();
 					this.trail_line.setGeometry( this.trail_geometry,  function( p ) { return p; }  ); // makes width taper
 
 					// Create the line material
-					this.trail_material = new THREE.MeshLineMaterial( {
+					this.trail_material = new MeshLineMaterial( {
 						color: new THREE.Color( "rgb(255, 2, 2)" ),
 						opacity: 1,
 						resolution: resolution,
