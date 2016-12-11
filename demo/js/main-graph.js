@@ -4,7 +4,9 @@ var container = document.getElementById( 'container' );
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, .1, 1000 );
+var camera = new THREE.OrthographicCamera( -1, 1, 1, -1, 1, 1000 );
 camera.position.set( 50, 10, 0 );
+var frustumSize = 1000;
 
 var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true });
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -41,16 +43,16 @@ render();
 
 function makeLine( geo, c ) {
 
-	var g = new THREE.MeshLine();
+	var g = new MeshLine();
 	g.setGeometry( geo );
 
-	var material = new THREE.MeshLineMaterial( { 
+	var material = new MeshLineMaterial( {
 		useMap: false,
 		color: new THREE.Color( colors[ c ] ),
 		opacity: 1,
 		resolution: resolution,
-		sizeAttenuation: false,
-		lineWidth: 10,
+		sizeAttenuation: !false,
+		lineWidth: .01,
 		near: camera.near,
 		far: camera.far
 	});
@@ -131,7 +133,13 @@ function onWindowResize() {
 	var w = container.clientWidth;
 	var h = container.clientHeight;
 
-	camera.aspect = w / h;
+	var aspect = w / h;
+
+	camera.left   = - frustumSize * aspect / 2;
+	camera.right  =   frustumSize * aspect / 2;
+	camera.top    =   frustumSize / 2;
+	camera.bottom = - frustumSize / 2;
+
 	camera.updateProjectionMatrix();
 
 	renderer.setSize( w, h );

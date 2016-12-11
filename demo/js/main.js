@@ -142,7 +142,7 @@ function clearLines() {
 
 function makeLine( geo ) {
 
-	var g = new THREE.MeshLine();
+	var g = new MeshLine();
 
 	switch( params.taper ) {
 		case 'none': g.setGeometry( geo ); break;
@@ -151,7 +151,7 @@ function makeLine( geo ) {
 		case 'wavy': g.setGeometry( geo, function( p ) { return 2 + Math.sin( 50 * p ) } ); break;
 	}
 
-	var material = new THREE.MeshLineMaterial( {
+	var material = new MeshLineMaterial( {
 		map: strokeTexture,
 		useMap: params.strokes,
 		color: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ),

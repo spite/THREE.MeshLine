@@ -1,6 +1,16 @@
-( function() {
+;(function() {
 
-THREE.MeshLine = function() {
+"use strict";
+
+var root = this
+
+var has_require = typeof require !== 'undefined'
+
+var THREE = root.THREE || has_require && require('three')
+if( !THREE )
+	throw new Error( 'EquirectangularToCubemap requires three.js' )
+
+function MeshLine() {
 
 	this.positions = [];
 
@@ -17,7 +27,7 @@ THREE.MeshLine = function() {
 
 }
 
-THREE.MeshLine.prototype.setGeometry = function( g, c ) {
+MeshLine.prototype.setGeometry = function( g, c ) {
 
 	this.widthCallback = c;
 
@@ -53,7 +63,7 @@ THREE.MeshLine.prototype.setGeometry = function( g, c ) {
 
 }
 
-THREE.MeshLine.prototype.compareV3 = function( a, b ) {
+MeshLine.prototype.compareV3 = function( a, b ) {
 
 	var aa = a * 6;
 	var ab = b * 6;
@@ -61,14 +71,14 @@ THREE.MeshLine.prototype.compareV3 = function( a, b ) {
 
 }
 
-THREE.MeshLine.prototype.copyV3 = function( a ) {
+MeshLine.prototype.copyV3 = function( a ) {
 
 	var aa = a * 6;
 	return [ this.positions[ aa ], this.positions[ aa + 1 ], this.positions[ aa + 2 ] ];
 
 }
 
-THREE.MeshLine.prototype.process = function() {
+MeshLine.prototype.process = function() {
 
 	var l = this.positions.length / 6;
 
@@ -197,7 +207,7 @@ function memcpy (src, srcOffset, dst, dstOffset, length) {
  * Fast method to advance the line by one position.  The oldest position is removed.
  * @param position
  */
-THREE.MeshLine.prototype.advance = function(position) {
+MeshLine.prototype.advance = function(position) {
 
 	var positions = this.attributes.position.array;
 	var previous = this.attributes.previous.array;
@@ -233,7 +243,7 @@ THREE.MeshLine.prototype.advance = function(position) {
 
 };
 
-THREE.MeshLineMaterial = function ( parameters ) {
+function MeshLineMaterial( parameters ) {
 
 	var vertexShaderSource = [
 'precision highp float;',
@@ -413,10 +423,10 @@ THREE.MeshLineMaterial = function ( parameters ) {
 
 };
 
-THREE.MeshLineMaterial.prototype = Object.create( THREE.Material.prototype );
-THREE.MeshLineMaterial.prototype.constructor = THREE.MeshLineMaterial;
+MeshLineMaterial.prototype = Object.create( THREE.Material.prototype );
+MeshLineMaterial.prototype.constructor = MeshLineMaterial;
 
-THREE.MeshLineMaterial.prototype.copy = function ( source ) {
+MeshLineMaterial.prototype.copy = function ( source ) {
 
 	THREE.Material.prototype.copy.call( this, source );
 
@@ -434,6 +444,17 @@ THREE.MeshLineMaterial.prototype.copy = function ( source ) {
 
 };
 
-window.THREE.MeshLineMaterial = THREE.MeshLineMaterial;
+if( typeof exports !== 'undefined' ) {
+	if( typeof module !== 'undefined' && module.exports ) {
+		exports = module.exports = { MeshLine: MeshLine, MeshLineMaterial: MeshLineMaterial };
+	}
+	exports.MeshLine = MeshLine;
+	exports.MeshLineMaterial = MeshLineMaterial;
+}
+else {
+	root.MeshLine = MeshLine;
+	root.MeshLineMaterial = MeshLineMaterial;
+}
 
-})();
+}).call(this);
+

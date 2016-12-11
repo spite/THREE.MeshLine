@@ -56,10 +56,10 @@ function prepareMesh() {
 		geo[ j ] = geo[ j + 1 ] = geo[ j + 2 ] = 0;
 	}
 
-	var g = new THREE.MeshLine();
+	var g = new MeshLine();
 	g.setGeometry( geo, function( p ) { return p; } );
 
-	material = new THREE.MeshLineMaterial( {
+	material = new MeshLineMaterial( {
 		useMap: true,
 		map: strokeTexture,
 		color: new THREE.Color( new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ) ),
