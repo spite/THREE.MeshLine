@@ -1,4 +1,4 @@
-# THREE.MeshLine
+# MeshLine
 Mesh replacement for ```THREE.Line```
 
 Instead of using GL_LINE, it uses a strip of triangles billboarded. Some examples:
@@ -11,22 +11,22 @@ Instead of using GL_LINE, it uses a strip of triangles billboarded. Some example
 [![Shape](screenshots/birds.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/birds.html)
 
 * [Demo](https://www.clicktorelease.com/code/THREE.MeshLine/demo/index.html): play with the different settings of materials
-* [Graph](https://www.clicktorelease.com/code/THREE.MeshLine/demo/graph.html): example of using ```THREE.MeshLine``` to plot graphs
-* [Spinner](https://www.clicktorelease.com/code/THREE.MeshLine/demo/spinner.html): example of dynamic ```THREE.MeshLine``` with texture
-* [SVG](https://www.clicktorelease.com/code/THREE.MeshLine/demo/svg.html): example of ```THREE.MeshLine``` rendering SVG Paths
-* [Shape](https://www.clicktorelease.com/code/THREE.MeshLine/demo/shape.html): example of ```THREE.MeshLine``` created from a mesh
-* [Birds](https://www.clicktorelease.com/code/THREE.MeshLine/demo/birds.html): example of ```THREE.MeshLine.advance()``` by @caramelcode (Jared Sprague) and @mwcz (Michael Clayton)
+* [Graph](https://www.clicktorelease.com/code/THREE.MeshLine/demo/graph.html): example of using ```MeshLine``` to plot graphs
+* [Spinner](https://www.clicktorelease.com/code/THREE.MeshLine/demo/spinner.html): example of dynamic ```MeshLine``` with texture
+* [SVG](https://www.clicktorelease.com/code/THREE.MeshLine/demo/svg.html): example of ```MeshLine``` rendering SVG Paths
+* [Shape](https://www.clicktorelease.com/code/THREE.MeshLine/demo/shape.html): example of ```MeshLine``` created from a mesh
+* [Birds](https://www.clicktorelease.com/code/THREE.MeshLine/demo/birds.html): example of ```MeshLine.advance()``` by @caramelcode (Jared Sprague) and @mwcz (Michael Clayton)
 
 #### How to use
 
 * Create and populate a geometry
-* Create a THREE.MeshLine and assign the geometry
-* Create a THREE.MeshLineMaterial
-* Use THREE.MeshLine and THREE.MeshLineMaterial to create a THREE.Mesh
+* Create a MeshLine and assign the geometry
+* Create a MeshLineMaterial
+* Use MeshLine and MeshLineMaterial to create a THREE.Mesh
 
 ##### Create and populate a geometry #####
 
-First, create the list of vertices that will define the line. ```THREE.MeshLine``` accepts ```THREE.Geometry``` (looking up the ```.vertices``` in it) and ```Array```/```Float32Array```. ```THREE.BufferGeometry``` coming soon, and may be others like ```Array``` of ```THREE.Vector3```.
+First, create the list of vertices that will define the line. ```MeshLine``` accepts ```THREE.Geometry``` (looking up the ```.vertices``` in it) and ```Array```/```Float32Array```. ```THREE.BufferGeometry``` coming soon, and may be others like ```Array``` of ```THREE.Vector3```.
 
 ````
 var geometry = new THREE.Geometry();
@@ -36,12 +36,12 @@ for( var j = 0; j < Math.PI; j += 2 * Math.PI / 100 ) {
 }
 ````
 
-##### Create a THREE.MeshLine and assign the geometry #####
+##### Create a MeshLine and assign the geometry #####
 
-Once you have that, you can create a new ```THREE.MeshLine```, and call ```.setGeometry()``` passing the vertices.
+Once you have that, you can create a new ```MeshLine```, and call ```.setGeometry()``` passing the vertices.
 
 ````
-var line = new THREE.MeshLine();
+var line = new MeshLine();
 line.setGeometry( geometry );
 ````
 
@@ -53,17 +53,17 @@ line.setGeometry( geometry, function( p ) { return 1 - p; } ); // makes width ta
 line.setGeometry( geometry, function( p ) { return 2 + Math.sin( 50 * p ); } ); // makes width sinusoidal
 ````
 
-##### Create a THREE.MeshLineMaterial #####
+##### Create a MeshLineMaterial #####
 
-A ```THREE.MeshLine``` needs a ```THREE.MeshLineMaterial```:
+A ```MeshLine``` needs a ```MeshLineMaterial```:
 
 ````
-var material = new THREE.MeshLineMaterial();
+var material = new MeshLineMaterial();
 ````
 
 By default it's a white material of width 1 unit.
 
-```THREE.MeshLineMaterial``` has several attributes to control the appereance of the ```THREE.MeshLine```:
+```MeshLineMaterial``` has several attributes to control the appereance of the ```MeshLine```:
 
 * ```map``` - a ```THREE.Texture``` to paint along the line (requires ```useMap``` set to true)
 * ```useMap``` - tells the material to use ```map``` (0 - solid color, 1 use texture)
@@ -79,7 +79,7 @@ By default it's a white material of width 1 unit.
 
 If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to an appropriate blending mode, or use ```alphaTest```.
 
-##### Use THREE.MeshLine and THREE.MeshLineMaterial to create a THREE.Mesh #####
+##### Use MeshLine and MeshLineMaterial to create a THREE.Mesh #####
 
 Finally, we create a mesh and add it to the scene:
 
