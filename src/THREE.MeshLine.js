@@ -49,7 +49,7 @@ MeshLine.prototype.setGeometry = function( g, c ) {
 		// read attribute positions ?
 	}
 
-	if( g instanceof Float32Array || g instanceof Array ) {
+	if( g instanceof Float32Array || g instanceof Array ) {
 		for( var j = 0; j < g.length; j += 3 ) {
 			var c = j/g.length;
 			this.positions.push( g[ j ], g[ j + 1 ], g[ j + 2 ] );
@@ -366,7 +366,7 @@ function MeshLineMaterial( parameters ) {
 
 	THREE.Material.call( this );
 
-	parameters = parameters || {};
+	parameters = parameters || {};
 
 	this.lineWidth = check( parameters.lineWidth, 1 );
 	this.map = check( parameters.map, null );
