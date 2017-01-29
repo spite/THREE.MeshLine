@@ -34,7 +34,10 @@ var colors = [
 
 var loader = new THREE.TextureLoader();
 var strokeTexture;
-loader.load( 'assets/stroke.png', function( texture ) { strokeTexture = texture; init(); } );
+loader.load( 'assets/stroke.png', function( texture ) {
+	strokeTexture = texture;
+	strokeTexture.wrapS = strokeTexture.wrapT = THREE.RepeatWrapping;
+	init(); } );
 var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 
 var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
@@ -51,7 +54,7 @@ var center = new THREE.Vector2( .5, .5 );
 
 function prepareMesh() {
 
-	var geo = new Float32Array( 100 * 3 );
+	var geo = new Float32Array( 200 * 3 );
 	for( var j = 0; j < geo.length; j += 3 ) {
 		geo[ j ] = geo[ j + 1 ] = geo[ j + 2 ] = 0;
 	}
@@ -71,7 +74,8 @@ function prepareMesh() {
 		far: camera.far,
 		depthTest: false,
 		blending: THREE.NormalBlending,
-		transparent: true
+		transparent: true,
+		repeat: new THREE.Vector2( 1,2 )
 	});
 
 	var mesh = new THREE.Mesh( g.geometry, material );
