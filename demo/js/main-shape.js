@@ -89,15 +89,26 @@ function readModel() {
 
 function collectPoints( source ) {
 
-    console.log( source );
-    var g = source.children[ 0 ].geometry;
-    THREE.GeometryUtils.center( g );
+	var total = 0;
+	source.children.forEach( function( o ) {
+		total += o.geometry.attributes.position.count;
+	})
+	var g = new THREE.BufferGeometry();
+	g.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array( total * 3 ), 3 ) );
+
+	var offset = 0;
+	source.children.forEach( function( o ) {
+		g.merge( o.geometry, offset );
+		offset += o.geometry.attributes.position.count;
+	})
+
+    g.center( g );
     var scaleMatrix = new THREE.Matrix4();
     scaleMatrix.makeScale( 1000, 1000, 1000 );
     g.applyMatrix( scaleMatrix );
 
     var o = new THREE.Mesh( g, new THREE.MeshNormalMaterial() );
-    //scene.add( o );
+    scene.add( o );
 
     var raycaster = new THREE.Raycaster();
 
@@ -121,6 +132,8 @@ function collectPoints( source ) {
             points.push( i[ 0 ].point.x, i[ 0 ].point.y, i[ 0 ].point.z );
         }
     }
+
+    scene.remove( o );
 
     var l = new MeshLine();
     l.setGeometry( points, function( p ) { return p } );
