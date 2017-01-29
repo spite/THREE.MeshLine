@@ -268,7 +268,6 @@ function MeshLineMaterial( parameters ) {
 '',
 'varying vec2 vUV;',
 'varying vec4 vColor;',
-'varying vec3 vPosition;',
 'varying float vCounters;',
 '',
 'vec2 fix( vec4 i, float aspect ) {',
@@ -326,7 +325,6 @@ function MeshLineMaterial( parameters ) {
 '    vec4 offset = vec4( normal * side, 0.0, 1.0 );',
 '    finalPosition.xy += offset.xy;',
 '',
-'	 vPosition = ( modelViewMatrix * vec4( position, 1. ) ).xyz;',
 '    gl_Position = finalPosition;',
 '',
 '}' ];
@@ -344,7 +342,6 @@ function MeshLineMaterial( parameters ) {
 '',
 'varying vec2 vUV;',
 'varying vec4 vColor;',
-'varying vec3 vPosition;',
 'varying float vCounters;',
 '',
 'void main() {',
