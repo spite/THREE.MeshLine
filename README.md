@@ -84,6 +84,9 @@ By default it's a white material of width 1 unit.
 
 * ```map``` - a ```THREE.Texture``` to paint along the line (requires ```useMap``` set to true)
 * ```useMap``` - tells the material to use ```map``` (0 - solid color, 1 use texture)
+* ```alphaMap``` - a ```THREE.Texture``` to use as alpha along the line (requires ```useAlphaMap``` set to true)
+* ```useAlphaMap``` - tells the material to use ```alphaMap``` (0 - no alpha, 1 modulate alpha)
+* ```repeat``` - THREE.Vector2 to define the texture tiling (applies to map and alphaMap - MIGHT CHANGE IN THE FUTURE)
 * ```color``` - ```THREE.Color``` to paint the line width, or tint the texture with
 * ```opacity``` - alpha value from 0 to 1 (requires ```transparent``` set to ```true```)
 * ```alphaTest``` - cutoff value from 0 to 1
@@ -131,4 +134,4 @@ Tested successfully on
 
 MIT licensed
 
-Copyright (C) 2015 Jaume Sanchez Elias, http://www.clicktorelease.com
+Copyright (C) 2015-2016 Jaume Sanchez Elias, http://www.clicktorelease.com
