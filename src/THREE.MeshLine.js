@@ -245,9 +245,35 @@ MeshLine.prototype.advance = function(position) {
 
 function MeshLineMaterial( parameters ) {
 
+
+	function check( v, d ) {
+		if( v === undefined ) return d;
+		return v;
+	}
+
+	THREE.Material.call( this );
+
+	parameters = parameters || {};
+
+	this.lineWidth = check( parameters.lineWidth, 1 );
+	this.map = check( parameters.map, null );
+	this.useMap = check( parameters.useMap, 0 );
+	this.color = check( parameters.color, new THREE.Color( 0xffffff ) );
+	this.opacity = check( parameters.opacity, 1 );
+	this.resolution = check( parameters.resolution, new THREE.Vector2( 1, 1 ) );
+	this.sizeAttenuation = check( parameters.sizeAttenuation, 1 );
+	this.near = check( parameters.near, 1 );
+	this.far = check( parameters.far, 1 );
+	this.dashArray = check( parameters.dashArray, [] );
+	this.useDash = ( this.dashArray !== [] ) ? 1 : 0;
+	this.visibility = check( parameters.visibility, 1 );
+	this.alphaTest = check( parameters.alphaTest, 0 );
+	this.fog = check( parameters.fog, true );
+
 	var vertexShaderSource = [
 'precision highp float;',
 '',
+(this.fog ? '#define USE_FOG' : ''),
 'attribute vec3 position;',
 'attribute vec3 previous;',
 'attribute vec3 next;',
@@ -270,6 +296,7 @@ function MeshLineMaterial( parameters ) {
 'varying vec4 vColor;',
 'varying vec3 vPosition;',
 'varying float vCounters;',
+THREE.ShaderChunk[ "fog_pars_vertex" ],
 '',
 'vec2 fix( vec4 i, float aspect ) {',
 '',
@@ -282,6 +309,7 @@ function MeshLineMaterial( parameters ) {
 '',
 'void main() {',
 '',
+"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
 '    float aspect = resolution.x / resolution.y;',
 '	 float pixelWidthRatio = 1. / (resolution.x * projectionMatrix[0][0]);',
 '',
@@ -328,6 +356,7 @@ function MeshLineMaterial( parameters ) {
 '',
 '	 vPosition = ( modelViewMatrix * vec4( position, 1. ) ).xyz;',
 '    gl_Position = finalPosition;',
+THREE.ShaderChunk[ "fog_vertex" ],
 '',
 '}' ];
 
@@ -335,6 +364,7 @@ function MeshLineMaterial( parameters ) {
 		'#extension GL_OES_standard_derivatives : enable',
 'precision mediump float;',
 '',
+(this.fog ? '#define USE_FOG' : ''),
 'uniform sampler2D map;',
 'uniform float useMap;',
 'uniform float useDash;',
@@ -346,6 +376,8 @@ function MeshLineMaterial( parameters ) {
 'varying vec4 vColor;',
 'varying vec3 vPosition;',
 'varying float vCounters;',
+THREE.ShaderChunk[ "common" ],
+THREE.ShaderChunk[ "fog_pars_fragment" ],
 '',
 'void main() {',
 '',
@@ -357,33 +389,13 @@ function MeshLineMaterial( parameters ) {
 '	 }',
 '    gl_FragColor = c;',
 '	 gl_FragColor.a *= step(vCounters,visibility);',
+THREE.ShaderChunk[ "fog_fragment" ],
 '}' ];
 
-	function check( v, d ) {
-		if( v === undefined ) return d;
-		return v;
-	}
-
-	THREE.Material.call( this );
-
-	parameters = parameters || {};
-
-	this.lineWidth = check( parameters.lineWidth, 1 );
-	this.map = check( parameters.map, null );
-	this.useMap = check( parameters.useMap, 0 );
-	this.color = check( parameters.color, new THREE.Color( 0xffffff ) );
-	this.opacity = check( parameters.opacity, 1 );
-	this.resolution = check( parameters.resolution, new THREE.Vector2( 1, 1 ) );
-	this.sizeAttenuation = check( parameters.sizeAttenuation, 1 );
-	this.near = check( parameters.near, 1 );
-	this.far = check( parameters.far, 1 );
-	this.dashArray = check( parameters.dashArray, [] );
-	this.useDash = ( this.dashArray !== [] ) ? 1 : 0;
-	this.visibility = check( parameters.visibility, 1 );
-	this.alphaTest = check( parameters.alphaTest, 0 );
-
 	var material = new THREE.RawShaderMaterial( {
-		uniforms:{
+		uniforms: THREE.UniformsUtils.merge([
+			this.fog ? THREE.UniformsLib[ "fog" ] : {},
+			{
 			lineWidth: { type: 'f', value: this.lineWidth },
 			map: { type: 't', value: this.map },
 			useMap: { type: 'f', value: this.useMap },
@@ -397,7 +409,8 @@ function MeshLineMaterial( parameters ) {
 			useDash: { type: 'f', value: this.useDash },
 			visibility: {type: 'f', value: this.visibility},
 			alphaTest: {type: 'f', value: this.alphaTest}
-		},
+			}
+		]),
 		vertexShader: vertexShaderSource.join( '\r\n' ),
 		fragmentShader: fragmentShaderSource.join( '\r\n' )
 	});

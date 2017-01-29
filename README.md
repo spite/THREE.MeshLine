@@ -93,6 +93,7 @@ By default it's a white material of width 1 unit.
 * ```lineWidth``` - float defining width (if ```sizeAttenuation``` is true, it's world units; else is screen pixels)
 * ```near``` - camera near clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
 * ```far``` - camera far clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
+* ```fog``` - enabled blending with scene fog, requires THREE >=0.84, defaults to true
 
 If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to an appropriate blending mode, or use ```alphaTest```.
 
