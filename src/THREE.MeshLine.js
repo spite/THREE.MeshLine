@@ -436,6 +436,10 @@ MeshLineMaterial.prototype.copy = function ( source ) {
 	this.sizeAttenuation = source.sizeAttenuation;
 	this.near = source.near;
 	this.far = source.far;
+	this.dashArray.copy( source.dashArray );
+	this.useDash = source.useDash;
+	this.visibility = source.visibility;
+	this.alphaTest = source.alphaTest;
 
 	return this;
 
