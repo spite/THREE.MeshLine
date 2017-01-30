@@ -8,7 +8,7 @@ var has_require = typeof require !== 'undefined'
 
 var THREE = root.THREE || has_require && require('three')
 if( !THREE )
-	throw new Error( 'EquirectangularToCubemap requires three.js' )
+	throw new Error( 'MeshLine requires three.js' )
 
 function MeshLine() {
 
