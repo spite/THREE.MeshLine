@@ -129,6 +129,7 @@ Tested successfully on
 * [Drawing lines is hard](http://mattdesl.svbtle.com/drawing-lines-is-hard)
 * [WebGL rendering of solid trails](http://codeflow.org/entries/2012/aug/05/webgl-rendering-of-solid-trails/)
 * [Drawing Antialiased Lines with OpenGL](https://www.mapbox.com/blog/drawing-antialiased-lines/)
+* [Using THREE.MeshLine in AFrame](https://github.com/andreasplesch/aframe-meshline-component)
 
 #### License ####
 
