@@ -23,6 +23,8 @@ var Params = function() {
 	this.circles = false;
 	this.amount = 100;
 	this.lineWidth = 10;
+  this.dashArray = 0;
+  this.dashOffset = 0;
 	this.taper = 'parabolic';
 	this.strokes = false;
 	this.sizeAttenuation = false;
@@ -30,7 +32,8 @@ var Params = function() {
 	this.spread = false;
 	this.autoRotate = true;
 	this.autoUpdate = true;
-    this.animateVisibility=false;
+  this.animateVisibility = false;
+  this.animateDashOffset = false;
 	this.update = function() {
 		clearLines();
 		createLines();
@@ -53,6 +56,7 @@ window.addEventListener( 'load', function() {
 	gui.add( params, 'circles' ).onChange( update );
 	gui.add( params, 'amount', 1, 1000 ).onChange( update );
 	gui.add( params, 'lineWidth', 1, 20 ).onChange( update );
+	gui.add( params, 'dashArray', 0, 1 ).onChange( update );
 	gui.add( params, 'taper', [ 'none', 'linear', 'parabolic', 'wavy' ] ).onChange( update );
 	gui.add( params, 'strokes' ).onChange( update );
 	gui.add( params, 'sizeAttenuation' ).onChange( update );
@@ -61,7 +65,8 @@ window.addEventListener( 'load', function() {
 	gui.add( params, 'animateWidth' );
 	gui.add( params, 'spread' );
 	gui.add( params, 'autoRotate' );
-    gui.add( params, 'animateVisibility' );
+  gui.add( params, 'animateVisibility' );
+  gui.add( params, 'animateDashOffset' );
 
 	var loader = new THREE.TextureLoader();
 	loader.load( 'assets/stroke.png', function( texture ) {
@@ -156,7 +161,8 @@ function makeLine( geo ) {
 		useMap: params.strokes,
 		color: new THREE.Color( colors[ ~~Maf.randomInRange( 0, colors.length ) ] ),
 		opacity: 1,//params.strokes ? .5 : 1,
-		dashArray: new THREE.Vector2( 10, 5 ),
+    dashArray: params.dashArray,
+    dashOffset: params.dashOffset,
 		resolution: resolution,
 		sizeAttenuation: params.sizeAttenuation,
 		lineWidth: params.lineWidth,
@@ -251,6 +257,7 @@ function render(time) {
 		if( params.animateWidth ) l.material.uniforms.lineWidth.value = params.lineWidth * ( 1 + .5 * Math.sin( 5 * t + i ) );
 		if( params.autoRotate ) l.rotation.y += .125 * delta;
       l.material.uniforms.visibility.value= params.animateVisibility ? (time/3000) % 1.0 : 1.0;
+      l.material.uniforms.dashOffset.value -= params.animateDashOffset ? 0.01 : 0;
 	} );
 
 	renderer.render( scene, camera );

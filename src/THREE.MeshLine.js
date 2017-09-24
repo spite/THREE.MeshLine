@@ -338,7 +338,8 @@ function MeshLineMaterial( parameters ) {
 'uniform float useMap;',
 'uniform float useAlphaMap;',
 'uniform float useDash;',
-'uniform vec2 dashArray;',
+'uniform float dashArray;',
+'uniform float dashOffset;',
 'uniform float visibility;',
 'uniform float alphaTest;',
 'uniform vec2 repeat;',
@@ -352,12 +353,12 @@ function MeshLineMaterial( parameters ) {
 '    vec4 c = vColor;',
 '    if( useMap == 1. ) c *= texture2D( map, vUV * repeat );',
 '    if( useAlphaMap == 1. ) c.a *= texture2D( alphaMap, vUV * repeat ).a;',
-'	 if( c.a < alphaTest ) discard;',
-'	 if( useDash == 1. ){',
-'	 	 ',
-'	 }',
+'    if( c.a < alphaTest ) discard;',
+'    if( useDash == 1. ){',
+'        c.a *= ceil(mod(vCounters + dashOffset, (dashArray)) - (dashArray * .5));',
+'    }',
 '    gl_FragColor = c;',
-'	 gl_FragColor.a *= step(vCounters,visibility);',
+'    gl_FragColor.a *= step(vCounters, visibility);',
 '}' ];
 
 	function check( v, d ) {
@@ -380,8 +381,9 @@ function MeshLineMaterial( parameters ) {
 	this.sizeAttenuation = check( parameters.sizeAttenuation, 1 );
 	this.near = check( parameters.near, 1 );
 	this.far = check( parameters.far, 1 );
-	this.dashArray = check( parameters.dashArray, [] );
-	this.useDash = ( this.dashArray !== [] ) ? 1 : 0;
+	this.dashArray = check( parameters.dashArray, 0 );
+	this.dashOffset = check( parameters.dashOffset, 0 );
+	this.useDash = ( this.dashArray !== 0 ) ? 1 : 0;
 	this.visibility = check( parameters.visibility, 1 );
 	this.alphaTest = check( parameters.alphaTest, 0 );
 	this.repeat = check( parameters.repeat, new THREE.Vector2( 1, 1 ) );
@@ -399,7 +401,8 @@ function MeshLineMaterial( parameters ) {
 			sizeAttenuation: { type: 'f', value: this.sizeAttenuation },
 			near: { type: 'f', value: this.near },
 			far: { type: 'f', value: this.far },
-			dashArray: { type: 'v2', value: new THREE.Vector2( this.dashArray[ 0 ], this.dashArray[ 1 ] ) },
+			dashArray: { type: 'f', value: this.dashArray },
+			dashOffset: { type: 'f', value: this.dashOffset },
 			useDash: { type: 'f', value: this.useDash },
 			visibility: {type: 'f', value: this.visibility},
 			alphaTest: {type: 'f', value: this.alphaTest},
@@ -421,6 +424,7 @@ function MeshLineMaterial( parameters ) {
 	delete parameters.near;
 	delete parameters.far;
 	delete parameters.dashArray;
+	delete parameters.dashOffset;
 	delete parameters.visibility;
 	delete parameters.alphaTest;
 	delete parameters.repeat;
@@ -474,4 +478,3 @@ else {
 }
 
 }).call(this);
-
