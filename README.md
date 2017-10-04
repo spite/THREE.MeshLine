@@ -92,6 +92,7 @@ By default it's a white material of width 1 unit.
 * ```alphaTest``` - cutoff value from 0 to 1
 * ```dashArray``` - the length and space between dashes. (0 - no dash)
 * ```dashOffset``` - defines the location where the dash will begin. Ideal to animate the line.
+* ```dashRatio``` - defines the ratio between that is visible or not (0 - more visible, 1 - more invisible).
 * ```resolution``` - ```THREE.Vector2``` specifying the canvas size (REQUIRED)
 * ```sizeAttenuation``` - makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
 * ```lineWidth``` - float defining width (if ```sizeAttenuation``` is true, it's world units; else is screen pixels)

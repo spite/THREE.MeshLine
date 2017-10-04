@@ -340,6 +340,7 @@ function MeshLineMaterial( parameters ) {
 'uniform float useDash;',
 'uniform float dashArray;',
 'uniform float dashOffset;',
+'uniform float dashRatio;',
 'uniform float visibility;',
 'uniform float alphaTest;',
 'uniform vec2 repeat;',
@@ -355,7 +356,7 @@ function MeshLineMaterial( parameters ) {
 '    if( useAlphaMap == 1. ) c.a *= texture2D( alphaMap, vUV * repeat ).a;',
 '    if( c.a < alphaTest ) discard;',
 '    if( useDash == 1. ){',
-'        c.a *= ceil(mod(vCounters + dashOffset, (dashArray)) - (dashArray * .5));',
+'        c.a *= ceil(mod(vCounters + dashOffset, dashArray) - (dashArray * dashRatio));',
 '    }',
 '    gl_FragColor = c;',
 '    gl_FragColor.a *= step(vCounters, visibility);',
@@ -383,6 +384,7 @@ function MeshLineMaterial( parameters ) {
 	this.far = check( parameters.far, 1 );
 	this.dashArray = check( parameters.dashArray, 0 );
 	this.dashOffset = check( parameters.dashOffset, 0 );
+	this.dashRatio = check( parameters.dashRatio, 0.5 );
 	this.useDash = ( this.dashArray !== 0 ) ? 1 : 0;
 	this.visibility = check( parameters.visibility, 1 );
 	this.alphaTest = check( parameters.alphaTest, 0 );
@@ -403,6 +405,7 @@ function MeshLineMaterial( parameters ) {
 			far: { type: 'f', value: this.far },
 			dashArray: { type: 'f', value: this.dashArray },
 			dashOffset: { type: 'f', value: this.dashOffset },
+			dashRatio: { type: 'f', value: this.dashRatio },
 			useDash: { type: 'f', value: this.useDash },
 			visibility: {type: 'f', value: this.visibility},
 			alphaTest: {type: 'f', value: this.alphaTest},
@@ -425,6 +428,7 @@ function MeshLineMaterial( parameters ) {
 	delete parameters.far;
 	delete parameters.dashArray;
 	delete parameters.dashOffset;
+	delete parameters.dashRatio;
 	delete parameters.visibility;
 	delete parameters.alphaTest;
 	delete parameters.repeat;
@@ -456,6 +460,8 @@ MeshLineMaterial.prototype.copy = function ( source ) {
 	this.near = source.near;
 	this.far = source.far;
 	this.dashArray.copy( source.dashArray );
+	this.dashOffset.copy( source.dashOffset );
+	this.dashRatio.copy( source.dashRatio );
 	this.useDash = source.useDash;
 	this.visibility = source.visibility;
 	this.alphaTest = source.alphaTest;
