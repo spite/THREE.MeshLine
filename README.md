@@ -25,7 +25,7 @@ Instead of using GL_LINE, it uses a strip of triangles billboarded. Some example
 * Create a MeshLineMaterial
 * Use MeshLine and MeshLineMaterial to create a THREE.Mesh
 
-#### Include the script
+#### Include the script ####
 
 Include script after THREE is included
 ```js
