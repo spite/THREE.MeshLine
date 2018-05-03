@@ -1,6 +1,6 @@
 {
   "name": "three.meshline",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Mesh replacement for THREE.Line",
   "main": "src/THREE.MeshLine.js",
   "scripts": {
