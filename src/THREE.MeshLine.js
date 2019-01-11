@@ -415,27 +415,30 @@ function MeshLineMaterial( parameters ) {
 		fragmentShader: fragmentShaderSource.join( '\r\n' )
 	});
 
-	delete parameters.lineWidth;
-	delete parameters.map;
-	delete parameters.useMap;
-	delete parameters.alphaMap;
-	delete parameters.useAlphaMap;
-	delete parameters.color;
-	delete parameters.opacity;
-	delete parameters.resolution;
-	delete parameters.sizeAttenuation;
-	delete parameters.near;
-	delete parameters.far;
-	delete parameters.dashArray;
-	delete parameters.dashOffset;
-	delete parameters.dashRatio;
-	delete parameters.visibility;
-	delete parameters.alphaTest;
-	delete parameters.repeat;
+	var leftOverParameters = {}
+	
+	for (var key in parameters) {
+		if (key === 'lineWidth') break;
+		if (key === 'map') break;
+		if (key === 'useMap') break;
+		if (key === 'alphaMap') break;
+		if (key === 'useAlphaMap') break;
+		if (key === 'color') break;
+		if (key === 'opacity') break;
+		if (key === 'resolution') break;
+		if (key === 'sizeAttenuation') break;
+		if (key === 'near') break;
+		if (key === 'far') break;
+		if (key === 'dashArray') break;
+		if (key === 'visibility') break;
+		if (key === 'alphaTest') break;
+		if (key === 'repeat') break;
+		leftOverParameters[key] = parameters[key]
+	}
 
 	material.type = 'MeshLineMaterial';
 
-	material.setValues( parameters );
+	material.setValues(leftOverParameters);
 
 	return material;
 
