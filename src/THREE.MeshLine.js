@@ -249,18 +249,16 @@ MeshLine.prototype.advance = function(position) {
  * * *******************
  */
 THREE.ShaderChunk[ 'meshline_vert' ] = [
-	'precision highp float;',
 	'',
-	'attribute vec3 position;',
+	THREE.ShaderChunk.logdepthbuf_pars_vertex,
+	THREE.ShaderChunk.fog_pars_vertex,
+	'',
 	'attribute vec3 previous;',
 	'attribute vec3 next;',
 	'attribute float side;',
 	'attribute float width;',
-	'attribute vec2 uv;',
 	'attribute float counters;',
 	'',
-	'uniform mat4 projectionMatrix;',
-	'uniform mat4 modelViewMatrix;',
 	'uniform vec2 resolution;',
 	'uniform float lineWidth;',
 	'uniform vec3 color;',
@@ -285,7 +283,7 @@ THREE.ShaderChunk[ 'meshline_vert' ] = [
 	'void main() {',
 	'',
 	'    float aspect = resolution.x / resolution.y;',
-	'	 float pixelWidthRatio = 1. / (resolution.x * projectionMatrix[0][0]);',
+	'    float pixelWidthRatio = 1. / (resolution.x * projectionMatrix[0][0]);',
 	'',
 	'    vColor = vec4( color, opacity );',
 	'    vUV = uv;',
@@ -299,7 +297,7 @@ THREE.ShaderChunk[ 'meshline_vert' ] = [
 	'    vec2 prevP = fix( prevPos, aspect );',
 	'    vec2 nextP = fix( nextPos, aspect );',
 	'',
-	'	 float pixelWidth = finalPosition.w * pixelWidthRatio;',
+	'    float pixelWidth = finalPosition.w * pixelWidthRatio;',
 	'    float w = 1.8 * pixelWidth * lineWidth * width;',
 	'',
 	'    if( sizeAttenuation == 1. ) {',
@@ -330,12 +328,16 @@ THREE.ShaderChunk[ 'meshline_vert' ] = [
 	'',
 	'    gl_Position = finalPosition;',
 	'',
+	THREE.ShaderChunk.logdepthbuf_vertex,
+  THREE.ShaderChunk.fog_vertex && '    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
+  THREE.ShaderChunk.fog_vertex,
 	'}'
 ].join( '\r\n' );
 
 THREE.ShaderChunk[ 'meshline_frag' ] = [
-	'#extension GL_OES_standard_derivatives : enable',
-	'precision mediump float;',
+	'',
+	THREE.ShaderChunk.fog_pars_fragment,
+	THREE.ShaderChunk.logdepthbuf_pars_fragment,
 	'',
 	'uniform sampler2D map;',
 	'uniform sampler2D alphaMap;',
@@ -355,6 +357,8 @@ THREE.ShaderChunk[ 'meshline_frag' ] = [
 	'',
 	'void main() {',
 	'',
+	THREE.ShaderChunk.logdepthbuf_fragment,
+	'',
 	'    vec4 c = vColor;',
 	'    if( useMap == 1. ) c *= texture2D( map, vUV * repeat );',
 	'    if( useAlphaMap == 1. ) c.a *= texture2D( alphaMap, vUV * repeat ).a;',
@@ -364,37 +368,37 @@ THREE.ShaderChunk[ 'meshline_frag' ] = [
 	'    }',
 	'    gl_FragColor = c;',
 	'    gl_FragColor.a *= step(vCounters, visibility);',
+	'',
+	THREE.ShaderChunk.fog_fragment,
 	'}'
 ].join( '\r\n' );
 
 function MeshLineMaterial( parameters ) {
 
-	/**
-	 * TODO: merge the UniformShaders & UniformsLibs.already existing
-	 * THREE.UniformsLib.common,
-	 * THREE.UniformsLib.fog,
-	 */
-	THREE.RawShaderMaterial.call( this, {
-		uniforms: {
-			lineWidth: { value: 1 },
-			map: { value: null },
-			useMap: { value: 0 },
-			alphaMap: { value: null },
-			useAlphaMap: { value: 0 },
-			color: { value: new THREE.Color( 0xffffff ) },
-			opacity: { value: 1 },
-			resolution: { value: new THREE.Vector2( 1, 1 ) },
-			sizeAttenuation: { value: 1 },
-			near: { value: 1 },
-			far: { value: 1 },
-			dashArray: { value: 0 },
-			dashOffset: { value: 0 },
-			dashRatio: { value: 0.5 },
-			useDash: { value: 0 },
-			visibility: {value: 1 },
-			alphaTest: {value: 0 },
-			repeat: { value: new THREE.Vector2( 1, 1 ) }
-		},
+	THREE.ShaderMaterial.call( this, {
+		uniforms: Object.assign({},
+			THREE.UniformsLib.fog,
+			{
+				lineWidth: { value: 1 },
+				map: { value: null },
+				useMap: { value: 0 },
+				alphaMap: { value: null },
+				useAlphaMap: { value: 0 },
+				color: { value: new THREE.Color( 0xffffff ) },
+				opacity: { value: 1 },
+				resolution: { value: new THREE.Vector2( 1, 1 ) },
+				sizeAttenuation: { value: 1 },
+				near: { value: 1 },
+				far: { value: 1 },
+				dashArray: { value: 0 },
+				dashOffset: { value: 0 },
+				dashRatio: { value: 0.5 },
+				useDash: { value: 0 },
+				visibility: {value: 1 },
+				alphaTest: {value: 0 },
+				repeat: { value: new THREE.Vector2( 1, 1 ) },
+			}
+		),
 
 		vertexShader: THREE.ShaderChunk.meshline_vert,
 
@@ -511,6 +515,7 @@ function MeshLineMaterial( parameters ) {
 			},
 			set: function ( value ) {
 				this.uniforms.dashArray.value = value;
+				this.useDash = ( value !== 0 ) ? 1 : 0
 			}
 		},
 		dashOffset: {
@@ -572,7 +577,7 @@ function MeshLineMaterial( parameters ) {
 	this.setValues( parameters );
 }
 
-MeshLineMaterial.prototype = Object.create( THREE.RawShaderMaterial.prototype );
+MeshLineMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 MeshLineMaterial.prototype.constructor = MeshLineMaterial;
 
 MeshLineMaterial.prototype.isMeshLineMaterial = true;
