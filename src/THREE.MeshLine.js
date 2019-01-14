@@ -243,11 +243,6 @@ MeshLine.prototype.advance = function(position) {
 
 };
 
-/**
- * * *******************
- * * Material
- * * *******************
- */
 THREE.ShaderChunk[ 'meshline_vert' ] = [
 	'',
 	THREE.ShaderChunk.logdepthbuf_pars_vertex,
@@ -584,7 +579,7 @@ MeshLineMaterial.prototype.isMeshLineMaterial = true;
 
 MeshLineMaterial.prototype.copy = function ( source ) {
 
-	Material.prototype.copy.call( this, source );
+	THREE.ShaderMaterial.prototype.copy.call( this, source );
 
 	this.lineWidth = source.lineWidth;
 	this.map = source.map;
@@ -606,6 +601,7 @@ MeshLineMaterial.prototype.copy = function ( source ) {
 	this.repeat.copy( source.repeat );
 
 	return this;
+
 };
 
 if( typeof exports !== 'undefined' ) {
