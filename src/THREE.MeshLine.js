@@ -25,15 +25,26 @@ function MeshLine() {
 
 	this.widthCallback = null;
 
+	// Used to raycast
+	this.matrixWorld = new THREE.Matrix4();
 }
 
-MeshLine.prototype.setGeometry = function( g, c ) {
+MeshLine.prototype.setMatrixWorld = function(matrixWorld) {
+	this.matrixWorld = matrixWorld;
+}
 
+
+MeshLine.prototype.setGeometry = function( g, c ) {
+	
 	this.widthCallback = c;
 
 	this.positions = [];
 	this.counters = [];
+	// g.computeBoundingBox();
+	// g.computeBoundingSphere();
 
+	// set the normals
+	// g.computeVertexNormals();
 	if( g instanceof THREE.Geometry ) {
 		for( var j = 0; j < g.vertices.length; j++ ) {
 			var v = g.vertices[ j ];
@@ -62,6 +73,159 @@ MeshLine.prototype.setGeometry = function( g, c ) {
 	this.process();
 
 }
+
+MeshLine.prototype.raycast = ( function () {
+
+	var inverseMatrix = new THREE.Matrix4();
+	var ray = new THREE.Ray();
+	var sphere = new THREE.Sphere();
+
+	return function raycast( raycaster, intersects ) {
+
+		var precision = raycaster.linePrecision;
+		var precisionSq = precision * precision;
+
+		var geometry = this.geometry;
+
+		if ( geometry.boundingSphere === null ) geometry.computeBoundingSphere();
+
+		// Checking boundingSphere distance to ray
+
+		sphere.copy( geometry.boundingSphere );
+		sphere.applyMatrix4( this.matrixWorld );
+
+		if ( raycaster.ray.intersectSphere( sphere ) === false ) {
+
+			return;
+
+		}
+
+		inverseMatrix.getInverse( this.matrixWorld );
+		ray.copy( raycaster.ray ).applyMatrix4( inverseMatrix );
+
+		var vStart = new THREE.Vector3();
+		var vEnd = new THREE.Vector3();
+		var interSegment = new THREE.Vector3();
+		var interRay = new THREE.Vector3();
+		var step = this instanceof THREE.LineSegments ? 2 : 1;
+
+		if ( geometry instanceof THREE.BufferGeometry ) {
+
+			var index = geometry.index;
+			var attributes = geometry.attributes;
+
+			if ( index !== null ) {
+
+				var indices = index.array;
+				var positions = attributes.position.array;
+
+				for ( var i = 0, l = indices.length - 1; i < l; i += step ) {
+
+					var a = indices[ i ];
+					var b = indices[ i + 1 ];
+
+					vStart.fromArray( positions, a * 3 );
+					vEnd.fromArray( positions, b * 3 );
+
+					var distSq = ray.distanceSqToSegment( vStart, vEnd, interRay, interSegment );
+
+					if ( distSq > precisionSq ) continue;
+
+					interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
+
+					var distance = raycaster.ray.origin.distanceTo( interRay );
+
+					if ( distance < raycaster.near || distance > raycaster.far ) continue;
+
+					intersects.push( {
+
+						distance: distance,
+						// What do we want? intersection point on the ray or on the segment??
+						// point: raycaster.ray.at( distance ),
+						point: interSegment.clone().applyMatrix4( this.matrixWorld ),
+						index: i,
+						face: null,
+						faceIndex: null,
+						object: this
+
+					} );
+
+				}
+
+			} else {
+
+				var positions = attributes.position.array;
+
+				for ( var i = 0, l = positions.length / 3 - 1; i < l; i += step ) {
+
+					vStart.fromArray( positions, 3 * i );
+					vEnd.fromArray( positions, 3 * i + 3 );
+
+					var distSq = ray.distanceSqToSegment( vStart, vEnd, interRay, interSegment );
+
+					if ( distSq > precisionSq ) continue;
+
+					interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
+
+					var distance = raycaster.ray.origin.distanceTo( interRay );
+
+					if ( distance < raycaster.near || distance > raycaster.far ) continue;
+
+					intersects.push( {
+
+						distance: distance,
+						// What do we want? intersection point on the ray or on the segment??
+						// point: raycaster.ray.at( distance ),
+						point: interSegment.clone().applyMatrix4( this.matrixWorld ),
+						index: i,
+						face: null,
+						faceIndex: null,
+						object: this
+
+					} );
+
+				}
+
+			}
+
+		} else if ( geometry instanceof THREE.Geometry ) {
+
+			var vertices = geometry.vertices;
+			var nbVertices = vertices.length;
+
+			for ( var i = 0; i < nbVertices - 1; i += step ) {
+
+				var distSq = ray.distanceSqToSegment( vertices[ i ], vertices[ i + 1 ], interRay, interSegment );
+
+				if ( distSq > precisionSq ) continue;
+
+				interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
+
+				var distance = raycaster.ray.origin.distanceTo( interRay );
+
+				if ( distance < raycaster.near || distance > raycaster.far ) continue;
+
+				intersects.push( {
+
+					distance: distance,
+					// What do we want? intersection point on the ray or on the segment??
+					// point: raycaster.ray.at( distance ),
+					point: interSegment.clone().applyMatrix4( this.matrixWorld ),
+					index: i,
+					face: null,
+					faceIndex: null,
+					object: this
+
+				} );
+
+			}
+
+		}
+
+	};
+
+}() );
+
 
 MeshLine.prototype.compareV3 = function( a, b ) {
 
@@ -168,7 +332,7 @@ MeshLine.prototype.process = function() {
 		this.attributes.uv.needsUpdate = true;
 		this.attributes.index.copyArray(new Uint16Array(this.indices_array));
 		this.attributes.index.needsUpdate = true;
-    }
+	}
 
 	this.geometry.addAttribute( 'position', this.attributes.position );
 	this.geometry.addAttribute( 'previous', this.attributes.previous );
@@ -227,7 +391,7 @@ MeshLine.prototype.advance = function(position) {
 	positions[l - 2] = position.y;
 	positions[l - 1] = position.z;
 
-    // NEXT
+	// NEXT
 	memcpy( positions, 6, next, 0, l - 6 );
 
 	next[l - 6]  = position.x;
@@ -574,7 +738,6 @@ function MeshLineMaterial( parameters ) {
 
 MeshLineMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 MeshLineMaterial.prototype.constructor = MeshLineMaterial;
-
 MeshLineMaterial.prototype.isMeshLineMaterial = true;
 
 MeshLineMaterial.prototype.copy = function ( source ) {

@@ -25,7 +25,7 @@ Instead of using GL_LINE, it uses a strip of triangles billboarded. Some example
 * Create a MeshLineMaterial
 * Use MeshLine and MeshLineMaterial to create a THREE.Mesh
 
-#### Include the script
+#### Include the script ####
 
 Include script after THREE is included
 ```js
@@ -75,7 +75,7 @@ line.setGeometry( geometry, function( p ) { return 2 + Math.sin( 50 * p ); } ); 
 A ```MeshLine``` needs a ```MeshLineMaterial```:
 
 ```js
-var material = new MeshLineMaterial();
+var material = new MeshLineMaterial(OPTIONS);
 ```
 
 By default it's a white material of width 1 unit.
