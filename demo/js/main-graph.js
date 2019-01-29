@@ -51,8 +51,8 @@ function makeLine( geo, c ) {
 		color: new THREE.Color( colors[ c ] ),
 		opacity: 1,
 		resolution: resolution,
-		sizeAttenuation: !false,
-		lineWidth: .01,
+		sizeAttenuation: false,
+		lineWidth: 10,
 		near: camera.near,
 		far: camera.far
 	});
