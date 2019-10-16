@@ -2,6 +2,7 @@
 Mesh replacement for ```THREE.Line```
 
 Fork of [THREE.meshline](https://github.com/spite/THREE.MeshLine) as the repo no longer appears to be maintained.
+
 Changes:
  * Includes [PR from axon014](https://github.com/spite/THREE.MeshLine/pull/73) to correct line widths (should now work with orthographic camera)
  * BufferGeometry now supported
@@ -10,7 +11,8 @@ Changes:
  * Extra setters and getters to help with declaritive libraries like [react-three-fiber](https://github.com/react-spring/react-three-fiber)
  * Old api should still work as expected
 
-### I have very little understanding of how this library works. So if you like to help maintain it please let me know! ###
+###NOTE: I have very little understanding of how this library works.### 
+###If you like to help maintain it please let me know! ###
 
 ---
 Instead of using GL_LINE, it uses a strip of triangles billboarded. Some examples:
