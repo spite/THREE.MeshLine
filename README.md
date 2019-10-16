@@ -1,6 +1,17 @@
 # MeshLine
 Mesh replacement for ```THREE.Line```
+Fork of [THREE.meshline](https://github.com/spite/THREE.MeshLine) as the repo no longer appears to be maintained.
+Changes:
+ * Includes [PR from axon014](https://github.com/spite/THREE.MeshLine/pull/73) to correct line widths (should now work with orthographic camera)
+ * BufferGeometry now supported
+ * New ```setVertices``` and ```setBufferArray``` functions so you no longer need to create a geometry first
+ * ```MeshLine``` is now a ```THREE.BufferGeometry```
+ * Extra setters and getters to help with declaritive libraries like [react-three-fiber](https://github.com/react-spring/react-three-fiber)
+ * Old api should still work as expected
 
+### I have very little understanding of how this library works. So if you like to help maintain it please let me know! ###
+
+---
 Instead of using GL_LINE, it uses a strip of triangles billboarded. Some examples:
 
 [![Demo](screenshots/demo.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/index.html)
@@ -33,12 +44,17 @@ Include script after THREE is included
 ```
 or use npm to install it
 ```
-npm i three.meshline
+npm i threejs-meshline
 ```
 and include it in your code (don't forget to require three.js)
 ```js
 var THREE = require( 'three' );
-var MeshLine = require( 'three.meshline' );
+var MeshLine = require( 'threejs-meshline' );
+```
+or
+```js
+import * as THREE from "three";
+import { MeshLine, MeshLineMaterial } from 'threejs-meshline'
 ```
 
 ##### Create and populate a geometry #####
@@ -46,23 +62,23 @@ var MeshLine = require( 'three.meshline' );
 First, create the list of vertices that will define the line. ```MeshLine``` accepts ```THREE.Geometry``` (looking up the ```.vertices``` in it) and ```Array```/```Float32Array```. ```THREE.BufferGeometry``` coming soon, and may be others like ```Array``` of ```THREE.Vector3```.
 
 ```js
-var geometry = new THREE.Geometry();
+var vertices = [];
 for( var j = 0; j < Math.PI; j += 2 * Math.PI / 100 ) {
 	var v = new THREE.Vector3( Math.cos( j ), Math.sin( j ), 0 );
-	geometry.vertices.push( v );
+	vertices.push( v );
 }
 ```
 
 ##### Create a MeshLine and assign the geometry #####
 
-Once you have that, you can create a new ```MeshLine```, and call ```.setGeometry()``` passing the vertices.
+Once you have that, you can create a new ```MeshLine```, and call ```.setVertices()``` passing the vertices.
 
 ```js
 var line = new MeshLine();
-line.setGeometry( geometry );
+line.setVertices( vertices );
 ```
 
-Note: ```.setGeometry``` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 * lineWidth.
+Note: ```.setVertices``` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 * lineWidth.
 
 ```js
 line.setGeometry( geometry, function( p ) { return 2; } ); // makes width 2 * lineWidth
@@ -106,14 +122,13 @@ If you're rendering transparent lines or using a texture with alpha map, you sho
 Finally, we create a mesh and add it to the scene:
 
 ```js
-var mesh = new THREE.Mesh( line.geometry, material ); // this syntax could definitely be improved!
+var mesh = new THREE.Mesh( line, material ); // this syntax could definitely be improved!
 scene.add( mesh );
 ```
 
 ### TODO ###
 
 * Better miters
-* Proper sizes
 
 ### Support ###
 
