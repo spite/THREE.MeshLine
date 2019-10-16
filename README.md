@@ -1,5 +1,6 @@
 # MeshLine
 Mesh replacement for ```THREE.Line```
+
 Fork of [THREE.meshline](https://github.com/spite/THREE.MeshLine) as the repo no longer appears to be maintained.
 Changes:
  * Includes [PR from axon014](https://github.com/spite/THREE.MeshLine/pull/73) to correct line widths (should now work with orthographic camera)
