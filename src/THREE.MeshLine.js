@@ -21,11 +21,44 @@
 		this.indices_array = [];
 		this.uvs = [];
 		this.counters = [];
+		this._vertices = [];
+		this._bufferArray = [];
 
 		this.widthCallback = null;
 
 		// Used to raycast
 		this.matrixWorld = new THREE.Matrix4();
+
+		// to support previous api
+		Object.defineProperties(this, {
+			geometry: {
+				enumerable: true,
+				get: function() {
+					return this;
+				},
+				set: function(value) {
+					this.setFromGeometry(value);
+				}
+			},
+			vertices: {
+				enumerable: true,
+				get: function() {
+					return this._vertices;
+				},
+				set: function(value) {
+					this.setVertices(value);
+				}
+			},
+			bufferArray: {
+				enumerable: true,
+				get: function() {
+					return this._bufferArray;
+				},
+				set: function(value) {
+					this.setBufferArray(value);
+				}
+			}
+		});
 	}
 
 	MeshLine.prototype = Object.create(THREE.BufferGeometry.prototype);
@@ -36,7 +69,7 @@
 		this.matrixWorld = matrixWorld;
 	};
 
-	MeshLine.prototype.setGeometry = function(g, c) {
+	MeshLine.prototype.setFromGeometry = function(g, c) {
 		if (g instanceof THREE.Geometry) {
 			this.setVertices(g.vertices, c);
 		}
@@ -47,10 +80,15 @@
 			// to support previous api
 			this.setBufferArray(g, c);
 		}
-		this.process();
+	};
+
+	// to support previous api
+	MeshLine.prototype.setGeometry = function(g, c) {
+		this.setFromGeometry(g, c);
 	};
 
 	MeshLine.prototype.setVertices = function(vts, wcb) {
+		this._vertices = vts;
 		this.widthCallback = wcb;
 		this.positions = [];
 		this.counters = [];
@@ -66,6 +104,7 @@
 	};
 
 	MeshLine.prototype.setBufferArray = function(ba, wcb) {
+		this._bufferArray = ba;
 		this.widthCallback = wcb;
 		this.positions = [];
 		this.counters = [];
@@ -349,9 +388,6 @@
 		this.addAttribute("counters", this._attributes.counters);
 
 		this.setIndex(this._attributes.index);
-		this.computeBoundingSphere();
-		this.computeBoundingBox();
-		this.computeVertexNormals();
 	};
 
 	function memcpy(src, srcOffset, dst, dstOffset, length) {
