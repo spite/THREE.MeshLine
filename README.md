@@ -6,8 +6,8 @@ Fork of [THREE.meshline](https://github.com/spite/THREE.MeshLine) as the repo no
 Changes:
  * Includes [PR from axon014](https://github.com/spite/THREE.MeshLine/pull/73) to correct line widths (should now work with orthographic camera)
  * BufferGeometry now supported
- * New ```setVertices``` and ```setBufferArray``` functions so you no longer need to create a geometry first
- * ```MeshLine``` is now a ```THREE.BufferGeometry```
+ * New ```setVertices``` and ```setBufferArray``` functions so you no longer need to create a geometry prior to a ```MeshLine```
+ * ```MeshLine``` now extends ```THREE.BufferGeometry``` and can be used in a mesh as a geometry
  * Extra setters and getters to help with declaritive libraries like [react-three-fiber](https://github.com/react-spring/react-three-fiber)
  * Old api should still work as expected
 
