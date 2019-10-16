@@ -33,46 +33,48 @@ MeshLine.prototype.setMatrixWorld = function(matrixWorld) {
 	this.matrixWorld = matrixWorld;
 }
 
+MeshLine.prototype.setGeometry = function(g, c) {
+	if (g instanceof THREE.Geometry) {
+		this.setVertices(g.vertices, c);
+	}
+	if (g instanceof THREE.BufferGeometry) {
+		this.setBufferArray(g.getAttribute("position").array, c);
+	}
+	if (g instanceof Float32Array || g instanceof Array) {
+		// to support previous api
+		this.setBufferArray(g, c);
+	}
+	this.process();
+};
 
-MeshLine.prototype.setGeometry = function( g, c ) {
-	
-	this.widthCallback = c;
-
+MeshLine.prototype.setVertices = function(vts, wcb) {
+	this.widthCallback = wcb;
 	this.positions = [];
 	this.counters = [];
-	// g.computeBoundingBox();
-	// g.computeBoundingSphere();
-
-	// set the normals
-	// g.computeVertexNormals();
-	if( g instanceof THREE.Geometry ) {
-		for( var j = 0; j < g.vertices.length; j++ ) {
-			var v = g.vertices[ j ];
-			var c = j/g.vertices.length;
-			this.positions.push( v.x, v.y, v.z );
-			this.positions.push( v.x, v.y, v.z );
-			this.counters.push(c);
-			this.counters.push(c);
-		}
+	for (var j = 0; j < vts.length; j++) {
+		var v = vts[j];
+		var c = j / vts.length;
+		this.positions.push(v.x, v.y, v.z);
+		this.positions.push(v.x, v.y, v.z);
+		this.counters.push(c);
+		this.counters.push(c);
 	}
-
-	if( g instanceof THREE.BufferGeometry ) {
-		// read attribute positions ?
-	}
-
-	if( g instanceof Float32Array || g instanceof Array ) {
-		for( var j = 0; j < g.length; j += 3 ) {
-			var c = j/g.length;
-			this.positions.push( g[ j ], g[ j + 1 ], g[ j + 2 ] );
-			this.positions.push( g[ j ], g[ j + 1 ], g[ j + 2 ] );
-			this.counters.push(c);
-			this.counters.push(c);
-		}
-	}
-
 	this.process();
+};
 
-}
+MeshLine.prototype.setBufferArray = function(ba, wcb) {
+	this.widthCallback = wcb;
+	this.positions = [];
+	this.counters = [];
+	for (var j = 0; j < ba.length; j += 3) {
+		var c = j / ba.length;
+		this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
+		this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
+		this.counters.push(c);
+		this.counters.push(c);
+	}
+	this.process();
+};
 
 MeshLine.prototype.raycast = ( function () {
 
