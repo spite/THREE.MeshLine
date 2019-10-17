@@ -146,7 +146,7 @@
 		if (index !== null) {
 			var indices = index.array;
 			var positions = attributes.position.array;
-			var widths = attributes.width.array
+			var widths = attributes.width.array;
 
 			for (var i = 0, l = indices.length - 1; i < l; i += step) {
 				var a = indices[i];

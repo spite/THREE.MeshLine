@@ -9,7 +9,7 @@ Changes:
  * New ```setVertices``` and ```setBufferArray``` functions so you no longer need to create a geometry prior to a ```MeshLine```
  * ```MeshLine``` now extends ```THREE.BufferGeometry``` and can be used in a mesh as a geometry
  * Raycast now exposed as ```MeshLineRaycast``` and can be used like ```mesh.raycast = MeshLineRaycast```
- * Raycast is more accurate using the material ```lineWidth``` (however it is not pixel perfect)
+ * Raycast now adjusts based on line width
  * Extra setters and getters to help with declaritive libraries like [react-three-fiber](https://github.com/react-spring/react-three-fiber)
  * Old api should still work as expected
 
