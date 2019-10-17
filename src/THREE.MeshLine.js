@@ -122,7 +122,7 @@
 		var inverseMatrix = new THREE.Matrix4();
 		var ray = new THREE.Ray();
 		var sphere = new THREE.Sphere();
-		var precision = raycaster.linePrecision;
+		var precision = raycaster.linePrecision + this.material.lineWidth / 2;
 		var precisionSq = precision * precision;
 		var interRay = new THREE.Vector3();
 		var geometry = this.geometry;
