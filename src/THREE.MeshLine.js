@@ -184,48 +184,10 @@
 					faceIndex: null,
 					object: this
 				});
+				// make event only fire once
+				i = l;
 			}
-		} else {
-			var positions = attributes.position.array;
-
-			for (
-				var i = 0, l = positions.length / 3 - 1;
-				i < l;
-				i += step
-			) {
-				vStart.fromArray(positions, 3 * i);
-				vEnd.fromArray(positions, 3 * i + 3);
-
-				var distSq = ray.distanceSqToSegment(
-					vStart,
-					vEnd,
-					interRay,
-					interSegment
-				);
-
-				if (distSq > precisionSq) continue;
-
-				interRay.applyMatrix4(this.matrixWorld); //Move back to world space for distance calculation
-
-				var distance = raycaster.ray.origin.distanceTo(interRay);
-
-				if (distance < raycaster.near || distance > raycaster.far)
-					continue;
-
-				intersects.push({
-					distance: distance,
-					// What do we want? intersection point on the ray or on the segment??
-					// point: raycaster.ray.at( distance ),
-					point: interSegment
-						.clone()
-						.applyMatrix4(this.matrixWorld),
-					index: i,
-					face: null,
-					faceIndex: null,
-					object: this
-				});
-			}
-		}
+		} 
 	};
 	MeshLine.prototype.raycast = MeshLineRaycast;
 	MeshLine.prototype.compareV3 = function(a, b) {
