@@ -122,8 +122,6 @@
 		var inverseMatrix = new THREE.Matrix4();
 		var ray = new THREE.Ray();
 		var sphere = new THREE.Sphere();
-		var precision = raycaster.linePrecision + this.material.lineWidth / 2;
-		var precisionSq = precision * precision;
 		var interRay = new THREE.Vector3();
 		var geometry = this.geometry;
 		// Checking boundingSphere distance to ray
@@ -148,6 +146,7 @@
 		if (index !== null) {
 			var indices = index.array;
 			var positions = attributes.position.array;
+			var widths = attributes.width.array
 
 			for (var i = 0, l = indices.length - 1; i < l; i += step) {
 				var a = indices[i];
@@ -155,6 +154,14 @@
 
 				vStart.fromArray(positions, a * 3);
 				vEnd.fromArray(positions, b * 3);
+				var width =
+					widths[Math.floor(i / 3)] != undefined
+						? widths[Math.floor(i / 3)]
+						: 1;
+				var precision =
+					raycaster.linePrecision +
+					(this.material.lineWidth * width) / 2;
+				var precisionSq = precision * precision;
 
 				var distSq = ray.distanceSqToSegment(
 					vStart,
