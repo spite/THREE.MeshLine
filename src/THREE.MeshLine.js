@@ -176,9 +176,7 @@
 					distance: distance,
 					// What do we want? intersection point on the ray or on the segment??
 					// point: raycaster.ray.at( distance ),
-					point: interSegment
-						.clone()
-						.applyMatrix4(this.matrixWorld),
+					point: interSegment.clone().applyMatrix4(this.matrixWorld),
 					index: i,
 					face: null,
 					faceIndex: null,
@@ -187,8 +185,8 @@
 				// make event only fire once
 				i = l;
 			}
-		} 
-	};
+		}
+	}
 	MeshLine.prototype.raycast = MeshLineRaycast;
 	MeshLine.prototype.compareV3 = function(a, b) {
 		var aa = a * 6;
