@@ -13,7 +13,9 @@ Changes:
  * Extra setters and getters to help with declaritive libraries like [react-three-fiber](https://github.com/react-spring/react-three-fiber)
  * Old api should still work as expected
 
-**NOTE: I'm still very new to three.js, esepcially glsl and shaders. [If you like to help maintain this library, please let me know!](https://github.com/ryanking1809/threejs-meshline/issues/3)**
+**NOTE: I'm still very new to three.js, esepcially glsl and shaders.**
+
+**[If you like to help maintain this library, please let me know!](https://github.com/ryanking1809/threejs-meshline/issues/3)**
 
 ---
 Instead of using GL_LINE, it uses a strip of triangles billboarded. Some examples:
