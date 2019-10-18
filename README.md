@@ -9,12 +9,11 @@ Changes:
  * New ```setVertices``` and ```setBufferArray``` functions so you no longer need to create a geometry prior to a ```MeshLine```
  * ```MeshLine``` now extends ```THREE.BufferGeometry``` and can be used in a mesh as a geometry
  * Raycast now exposed as ```MeshLineRaycast``` and can be used like ```mesh.raycast = MeshLineRaycast```
- * Raycast now adjusts based on line width
+ * Raycast updated to account for line width!
  * Extra setters and getters to help with declaritive libraries like [react-three-fiber](https://github.com/react-spring/react-three-fiber)
  * Old api should still work as expected
 
-### NOTE: I have very little understanding of how this library works. ### 
-### If you like to help maintain it please let me know! ###
+**NOTE: I'm still very new to three.js, esepcially glsl and shaders. [If you like to help maintain this library, please let me know!](https://github.com/ryanking1809/threejs-meshline/issues/3)**
 
 ---
 Instead of using GL_LINE, it uses a strip of triangles billboarded. Some examples:
