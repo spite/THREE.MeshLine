@@ -2,13 +2,13 @@
   "name": "threejs-meshline",
   "version": "2.0.7",
   "description": "Mesh replacement for THREE.Line",
-  "main": "src/THREE.MeshLine.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ryanking1809/THREE.MeshLine.git"
+    "url": "git+https://github.com/ryanking1809/threejs-meshline.git"
   },
   "keywords": [
     "lines",
@@ -20,12 +20,20 @@
     "LICENSE",
     "History.md",
     "README.md",
-    "src/THREE.MeshLine.js"
+    "src/index.js"
   ],
   "author": "Jaume Sanchez <the.spite@gmail.com> (https://www.clicktorelease.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ryanking1809/THREE.MeshLine/issues"
+    "url": "https://github.com/ryanking1809/threejs-meshline/issues"
   },
-  "homepage": "https://github.com/ryanking1809/THREE.MeshLine#readme"
+  "homepage": "https://github.com/ryanking1809/threejs-meshline#readme",
+  "prettier": {
+    "semi": false,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "jsxBracketSameLine": true,
+    "tabWidth": 2,
+    "printWidth": 120
+  }
 }
