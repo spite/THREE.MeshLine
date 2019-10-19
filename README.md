@@ -97,20 +97,20 @@ import * as meshline from 'threejs-meshline'
 extend(meshline)
 
 Function Line({ vertices, width, color }) {
-	return (
-		<Canvas>
-			<mesh>
-				<meshLine attach="geometry" vertices={vertices} />
-				<meshLineMaterial
-					attach="material"
-					transparent
-					depthTest={false}
-					lineWidth={width}
-					color={color}
-					dashArray={0.05}
-					dashRatio={0.95}
-				/>
-			</mesh>
-		</Canvas>
+  return (
+    <Canvas>
+      <mesh>
+        <meshLine attach="geometry" vertices={vertices} />
+        <meshLineMaterial
+          attach="material"
+          transparent
+          depthTest={false}
+          lineWidth={width}
+          color={color}
+          dashArray={0.05}
+          dashRatio={0.95} />
+      </mesh>
+    </Canvas>
 	)
+}
 ```
