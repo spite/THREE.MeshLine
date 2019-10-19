@@ -28,7 +28,8 @@ First, create the list of vertices that will define the line. `MeshLine` accepts
 
 ```js
 const vertices = []
-for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100) vertices.push(new THREE.Vector3(Math.cos(j), Math.sin(j), 0))
+for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100)
+  vertices.push(new THREE.Vector3(Math.cos(j), Math.sin(j), 0))
 ```
 
 #### Create a MeshLine and assign the geometry
