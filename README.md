@@ -1,8 +1,9 @@
-    npm install threejs-meshline
-
 <p align="center">
 	<img src="https://imgur.com/mZikTAH.gif" />
 </p>
+<br />
+
+    npm install threejs-meshline
 
 threejs-meshline is a replacement for `THREE.Line`, it allows you to create lines with varable widths. It is a fork of Jaume Sanchez Elias [THREE.meshline](https://github.com/spite/THREE.MeshLine) as the repo no longer appears to be maintained.
 
