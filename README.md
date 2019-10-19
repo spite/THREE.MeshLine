@@ -1,5 +1,6 @@
 <p align="center">
-	<img src="https://imgur.com/mZikTAH.gif" />
+	<a href="https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221"><img style="width:45%" src="https://imgur.com/mZikTAH.gif" /></a>
+	<a href="https://codesandbox.io/s/threejs-meshline-raycast-4jwi4"><img style="width:45%" src="https://imgur.com/rXzw2Oa.gif" /></a>
 </p>
 <br />
 
@@ -24,7 +25,7 @@ import { MeshLine, MeshLineMaterial } from 'threejs-meshline'
 
 #### Create and populate a geometry
 
-First, create the list of vertices that will define the line. `MeshLine` accepts `THREE.Geometry` (looking up the `.vertices` in it) and `Array`/`Float32Array`. Comong soon: `THREE.BufferGeometry` and `THREE.Vector3` arrays.
+First, create the list of vertices that will define the line. `MeshLine` accepts `THREE.Geometry` (looking up the `.vertices` in it) and `Float32Array`, `THREE.BufferGeometry` and `THREE.Vector3` arrays.
 
 ```js
 const vertices = []
@@ -44,9 +45,9 @@ line.setVertices(vertices)
 Note: `.setVertices` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 \* lineWidth.
 
 ```js
-line.setGeometry(geometry, p => 2) // makes width 2 * lineWidth
-line.setGeometry(geometry, p => 1 - p) // makes width taper
-line.setGeometry(geometry, p => 2 + Math.sin(50 * p)) // makes width sinusoidal
+line.setVertices(geometry, p => 2) // makes width 2 * lineWidth
+line.setVertices(geometry, p => 1 - p) // makes width taper
+line.setVertices(geometry, p => 2 + Math.sin(50 * p)) // makes width sinusoidal
 ```
 
 #### Create a MeshLineMaterial
