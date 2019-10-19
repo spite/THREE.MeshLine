@@ -96,7 +96,7 @@ import * as meshline from 'threejs-meshline'
 
 extend(meshline)
 
-Function Line({ vertices, width, color }) {
+function Line({ vertices, width, color }) {
   return (
     <Canvas>
       <mesh>
@@ -111,6 +111,6 @@ Function Line({ vertices, width, color }) {
           dashRatio={0.95} />
       </mesh>
     </Canvas>
-	)
+  )
 }
 ```
