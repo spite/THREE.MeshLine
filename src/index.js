@@ -209,26 +209,10 @@
     this.indices_array = []
     this.uvs = []
 
-    for (var j = 0; j < l; j++) {
-      this.side.push(1)
-      this.side.push(-1)
-    }
-
     var w
-    for (var j = 0; j < l; j++) {
-      if (this.widthCallback) w = this.widthCallback(j / (l - 1))
-      else w = 1
-      this.width.push(w)
-      this.width.push(w)
-    }
-
-    for (var j = 0; j < l; j++) {
-      this.uvs.push(j / (l - 1), 0)
-      this.uvs.push(j / (l - 1), 1)
-    }
 
     var v
-
+    // initial previous points
     if (this.compareV3(0, l - 1)) {
       v = this.copyV3(l - 2)
     } else {
@@ -236,18 +220,42 @@
     }
     this.previous.push(v[0], v[1], v[2])
     this.previous.push(v[0], v[1], v[2])
-    for (var j = 0; j < l - 1; j++) {
-      v = this.copyV3(j)
-      this.previous.push(v[0], v[1], v[2])
-      this.previous.push(v[0], v[1], v[2])
+
+    for (var j = 0; j < l; j++) {
+      // sides
+      this.side.push(1)
+      this.side.push(-1)
+
+      // widths
+      if (this.widthCallback) w = this.widthCallback(j / (l - 1))
+      else w = 1
+      this.width.push(w)
+      this.width.push(w)
+
+      // uvs
+      this.uvs.push(j / (l - 1), 0)
+      this.uvs.push(j / (l - 1), 1)
+
+      if (j < l - 1) {
+        // points previous to poisitions
+        v = this.copyV3(j)
+        this.previous.push(v[0], v[1], v[2])
+        this.previous.push(v[0], v[1], v[2])
+
+        // indices
+        var n = j * 2
+        this.indices_array.push(n, n + 1, n + 2)
+        this.indices_array.push(n + 2, n + 1, n + 3)
+      }
+      if (j > 0) {
+        // points after poisitions
+        v = this.copyV3(j)
+        this.next.push(v[0], v[1], v[2])
+        this.next.push(v[0], v[1], v[2])
+      }
     }
 
-    for (var j = 1; j < l; j++) {
-      v = this.copyV3(j)
-      this.next.push(v[0], v[1], v[2])
-      this.next.push(v[0], v[1], v[2])
-    }
-
+    // last next point
     if (this.compareV3(l - 1, 0)) {
       v = this.copyV3(1)
     } else {
@@ -256,11 +264,6 @@
     this.next.push(v[0], v[1], v[2])
     this.next.push(v[0], v[1], v[2])
 
-    for (var j = 0; j < l - 1; j++) {
-      var n = j * 2
-      this.indices_array.push(n, n + 1, n + 2)
-      this.indices_array.push(n + 2, n + 1, n + 3)
-    }
     if (!this._attributes) {
       this._attributes = {
         position: new THREE.BufferAttribute(new Float32Array(this.positions), 3),
