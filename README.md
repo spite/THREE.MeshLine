@@ -1,5 +1,6 @@
 <p align="center">
-	<a href="https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221"><img src="https://imgur.com/mZikTAH.gif" /></a>
+	<a href="https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221"><img width="432" height="240" src="https://imgur.com/mZikTAH.gif" /></a>
+	<a href="https://codesandbox.io/s/threejs-meshline-raycast-4jwi4"><img width="432" height="240" src="https://imgur.com/g8ts0vJ.gif" /></a>
 </p>
 <br />
 
