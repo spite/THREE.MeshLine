@@ -2,7 +2,8 @@
 	<a href="https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221"><img width="432" height="240" src="https://imgur.com/mZikTAH.gif" /></a>
 	<a href="https://codesandbox.io/s/threejs-meshline-raycast-4jwi4"><img width="432" height="240" src="https://imgur.com/g8ts0vJ.gif" /></a>
 </p>
-<br />
+
+Click examples above to view the code and the examples found at [THREE.meshline](https://github.com/spite/THREE.MeshLine) will work with this fork.
 
     npm install threejs-meshline
 
@@ -20,12 +21,12 @@ threejs-meshline is a replacement for `THREE.Line`, it allows you to create line
 #### Fetch imports
 
 ```js
-import { MeshLine, MeshLineMaterial } from 'threejs-meshline'
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'threejs-meshline'
 ```
 
 #### Create and populate a geometry
 
-First, create the list of vertices that will define the line. `MeshLine` accepts `THREE.Geometry` (looking up the `.vertices` in it) and `Float32Array`, `THREE.BufferGeometry` and `THREE.Vector3` arrays.
+First, create the list of vertices that will define the line. `MeshLine` accepts an array of vertices.
 
 ```js
 const vertices = []
@@ -33,7 +34,7 @@ for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100)
   vertices.push(new THREE.Vector3(Math.cos(j), Math.sin(j), 0))
 ```
 
-#### Create a MeshLine and assign the geometry
+#### Create a MeshLine and set the vertices
 
 Once you have that, you can create a new `MeshLine`, and call `.setVertices()` passing the vertices.
 
@@ -42,9 +43,11 @@ const line = new MeshLine()
 line.setVertices(vertices)
 ```
 
-Note: `.setVertices` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 \* lineWidth.
+Note: `.setVertices` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 \* lineWidth in the material.
 
 ```js
+// p is a decimal percentage of the number of points
+// ie. point 200 of 250 points, p = 0.8
 line.setVertices(geometry, p => 2) // makes width 2 * lineWidth
 line.setVertices(geometry, p => 1 - p) // makes width taper
 line.setVertices(geometry, p => 2 + Math.sin(50 * p)) // makes width sinusoidal
@@ -90,20 +93,26 @@ const mesh = new THREE.Mesh(line, material)
 scene.add(mesh)
 ```
 
+You can optionally add raycast support with the following.
+
+```js
+mesh.raycast = MeshLineRaycast
+```
+
 # Declarative use
 
 threejs-meshline has getters and setters that make declarative usage a little easier. This is how it would look like in react/[react-three-fiber](https://github.com/drcmda/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221).
 
 ```jsx
 import { extend, Canvas } from 'react-three-fiber'
-import * as meshline from 'threejs-meshline'
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'threejs-meshline'
 
-extend(meshline)
+extend(MeshLine, MeshLineMaterial)
 
 function Line({ vertices, width, color }) {
   return (
     <Canvas>
-      <mesh>
+      <mesh raycast={MeshLineRaycast}>
         <meshLine attach="geometry" vertices={vertices} />
         <meshLineMaterial
           attach="material"
