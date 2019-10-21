@@ -264,7 +264,9 @@
     this.next.push(v[0], v[1], v[2])
     this.next.push(v[0], v[1], v[2])
 
-    if (!this._attributes) {
+    // redefining the attribute seems to prevent range errors 
+    // if the user sets a differing number of vertices
+    if (!this._attributes || this._attributes.position.count !== this.positions.length) {
       this._attributes = {
         position: new THREE.BufferAttribute(new Float32Array(this.positions), 3),
         previous: new THREE.BufferAttribute(new Float32Array(this.previous), 3),
