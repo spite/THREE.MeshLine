@@ -107,7 +107,7 @@ threejs-meshline has getters and setters that make declarative usage a little ea
 import { extend, Canvas } from 'react-three-fiber'
 import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'threejs-meshline'
 
-extend(MeshLine, MeshLineMaterial)
+extend({ MeshLine, MeshLineMaterial })
 
 function Line({ vertices, width, color }) {
   return (
