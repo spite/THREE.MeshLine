@@ -37,7 +37,7 @@ var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 init()
 render();
 
-var material = new THREE.MeshLineMaterial( { 
+var material = new MeshLineMaterial( {
 	map: THREE.ImageUtils.loadTexture( 'assets/stroke.png' ),
 	useMap: false,
 	color: new THREE.Color( colors[ 3 ] ),
@@ -54,7 +54,7 @@ var material = new THREE.MeshLineMaterial( {
 
 function makeLine( geo ) {
 
-	var g = new THREE.MeshLine();
+	var g = new MeshLine();
 	g.setGeometry( geo );
 
 	var mesh = new THREE.Mesh( g.geometry, material );
@@ -89,15 +89,26 @@ function readModel() {
 
 function collectPoints( source ) {
 
-    console.log( source );
-    var g = source.children[ 0 ].geometry;
-    THREE.GeometryUtils.center( g );
+	var total = 0;
+	source.children.forEach( function( o ) {
+		total += o.geometry.attributes.position.count;
+	})
+	var g = new THREE.BufferGeometry();
+	g.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array( total * 3 ), 3 ) );
+
+	var offset = 0;
+	source.children.forEach( function( o ) {
+		g.merge( o.geometry, offset );
+		offset += o.geometry.attributes.position.count;
+	})
+
+    g.center( g );
     var scaleMatrix = new THREE.Matrix4();
     scaleMatrix.makeScale( 1000, 1000, 1000 );
     g.applyMatrix( scaleMatrix );
-    
+
     var o = new THREE.Mesh( g, new THREE.MeshNormalMaterial() );
-    //scene.add( o );
+    scene.add( o );
 
     var raycaster = new THREE.Raycaster();
 
@@ -122,13 +133,15 @@ function collectPoints( source ) {
         }
     }
 
-    var l = new THREE.MeshLine();
+    scene.remove( o );
+
+    var l = new MeshLine();
     l.setGeometry( points, function( p ) { return p } );
     var line = new THREE.Mesh( l.geometry, material );
     scene.add( line );
 
     document.querySelector( '#title p' ).style.display = 'none';
-	
+
 }
 
 onWindowResize();

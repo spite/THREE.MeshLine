@@ -39,7 +39,7 @@ scene.add( svg );
 init()
 render();
 
-var material = new THREE.MeshLineMaterial( { 
+var material = new MeshLineMaterial( {
 	map: THREE.ImageUtils.loadTexture( 'assets/stroke.png' ),
 	useMap: false,
 	color: new THREE.Color( colors[ 3 ] ),
@@ -56,7 +56,7 @@ var material = new THREE.MeshLineMaterial( {
 
 function makeLine( geo ) {
 
-	var g = new THREE.MeshLine();
+	var g = new MeshLine();
 	g.setGeometry( geo );
 
 	var mesh = new THREE.Mesh( g.geometry, material );
@@ -183,7 +183,7 @@ function drawSVG( source ) {
 	lines.forEach( function( l ) {
 		makeLine( l );
 	})
- 
+
 }
 
 function addLine( line ) {
