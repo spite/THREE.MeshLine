@@ -384,8 +384,6 @@
     'uniform float lineWidth;',
     'uniform vec3 color;',
     'uniform float opacity;',
-    'uniform float near;',
-    'uniform float far;',
     'uniform float sizeAttenuation;',
     '',
     'varying vec2 vUV;',
@@ -442,8 +440,7 @@
     '        normal.xy /= ( vec4( resolution, 0., 1. ) * projectionMatrix ).xy;',
     '    }',
     '',
-    '    vec4 offset = vec4( normal.xy * side, 0.0, 1.0 );',
-    '    finalPosition.xy += offset.xy;',
+    '    finalPosition.xy += normal.xy * side;',
     '',
     '    gl_Position = finalPosition;',
     '',
@@ -451,7 +448,7 @@
     THREE.ShaderChunk.fog_vertex && '    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
     THREE.ShaderChunk.fog_vertex,
     '}',
-  ].join('\r\n')
+  ].join('\n')
 
   THREE.ShaderChunk['meshline_frag'] = [
     '',
@@ -490,7 +487,7 @@
     '',
     THREE.ShaderChunk.fog_fragment,
     '}',
-  ].join('\r\n')
+  ].join('\n')
 
   function MeshLineMaterial(parameters) {
     THREE.ShaderMaterial.call(this, {
@@ -504,8 +501,6 @@
         opacity: { value: 1 },
         resolution: { value: new THREE.Vector2(1, 1) },
         sizeAttenuation: { value: 1 },
-        near: { value: 1 },
-        far: { value: 1 },
         dashArray: { value: 0 },
         dashOffset: { value: 0 },
         dashRatio: { value: 0.5 },
@@ -604,24 +599,6 @@
           this.uniforms.sizeAttenuation.value = value
         },
       },
-      near: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.near.value
-        },
-        set: function(value) {
-          this.uniforms.near.value = value
-        },
-      },
-      far: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.far.value
-        },
-        set: function(value) {
-          this.uniforms.far.value = value
-        },
-      },
       dashArray: {
         enumerable: true,
         get: function() {
@@ -707,8 +684,6 @@
     this.opacity = source.opacity
     this.resolution.copy(source.resolution)
     this.sizeAttenuation = source.sizeAttenuation
-    this.near = source.near
-    this.far = source.far
     this.dashArray.copy(source.dashArray)
     this.dashOffset.copy(source.dashOffset)
     this.dashRatio.copy(source.dashRatio)
