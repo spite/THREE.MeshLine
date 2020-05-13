@@ -155,7 +155,7 @@
         vStart.fromArray(positions, a * 3)
         vEnd.fromArray(positions, b * 3)
         var width = widths[Math.floor(i / 3)] != undefined ? widths[Math.floor(i / 3)] : 1
-        var precision = raycaster.linePrecision + (this.material.lineWidth * width) / 2
+        var precision = raycaster.params.Line.threshold + (this.material.lineWidth * width) / 2
         var precisionSq = precision * precision
 
         var distSq = ray.distanceSqToSegment(vStart, vEnd, interRay, interSegment)
