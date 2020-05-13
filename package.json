@@ -1,6 +1,6 @@
 {
   "name": "threejs-meshline",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "Mesh replacement for THREE.Line",
   "main": "src/index.js",
   "scripts": {
