@@ -38,7 +38,7 @@ init()
 render();
 
 var material = new MeshLineMaterial( {
-	map: THREE.ImageUtils.loadTexture( 'assets/stroke.png' ),
+	map: null,
 	useMap: false,
 	color: new THREE.Color( colors[ 3 ] ),
 	opacity: .5,
@@ -50,6 +50,11 @@ var material = new MeshLineMaterial( {
 	depthWrite: false,
 	depthTest: false,
 	transparent: true
+});
+
+var loader = new THREE.TextureLoader();
+loader.load('assets/stroke.png', function(texture) {
+	material.map = texture;
 });
 
 function makeLine( geo ) {
@@ -94,7 +99,7 @@ function collectPoints( source ) {
 		total += o.geometry.attributes.position.count;
 	})
 	var g = new THREE.BufferGeometry();
-	g.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array( total * 3 ), 3 ) );
+	g.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array( total * 3 ), 3 ) );
 
 	var offset = 0;
 	source.children.forEach( function( o ) {
@@ -105,7 +110,7 @@ function collectPoints( source ) {
     g.center( g );
     var scaleMatrix = new THREE.Matrix4();
     scaleMatrix.makeScale( 1000, 1000, 1000 );
-    g.applyMatrix( scaleMatrix );
+    g.applyMatrix4( scaleMatrix );
 
     var o = new THREE.Mesh( g, new THREE.MeshNormalMaterial() );
     scene.add( o );

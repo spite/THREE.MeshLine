@@ -40,7 +40,7 @@ init()
 render();
 
 var material = new MeshLineMaterial( {
-	map: THREE.ImageUtils.loadTexture( 'assets/stroke.png' ),
+	map: null,
 	useMap: false,
 	color: new THREE.Color( colors[ 3 ] ),
 	opacity: 1,
@@ -53,6 +53,12 @@ var material = new MeshLineMaterial( {
 	depthTest: false,
 	transparent: true
 });
+
+var loader = new THREE.TextureLoader();
+loader.load('assets/stroke.png', function(texture) {
+	material.map = texture;
+});
+
 
 function makeLine( geo ) {
 
