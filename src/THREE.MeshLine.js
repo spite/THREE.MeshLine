@@ -84,6 +84,7 @@ MeshLine.prototype.raycast = ( function () {
 
 		var precision = raycaster.linePrecision;
 		var precisionSq = precision * precision;
+		var interRay = new THREE.Vector3();
 
 		var geometry = this.geometry;
 
@@ -94,7 +95,7 @@ MeshLine.prototype.raycast = ( function () {
 		sphere.copy( geometry.boundingSphere );
 		sphere.applyMatrix4( this.matrixWorld );
 
-		if ( raycaster.ray.intersectSphere( sphere ) === false ) {
+		if ( raycaster.ray.intersectSphere( sphere, interRay ) === false ) {
 
 			return;
 
@@ -106,7 +107,6 @@ MeshLine.prototype.raycast = ( function () {
 		var vStart = new THREE.Vector3();
 		var vEnd = new THREE.Vector3();
 		var interSegment = new THREE.Vector3();
-		var interRay = new THREE.Vector3();
 		var step = this instanceof THREE.LineSegments ? 2 : 1;
 
 		if ( geometry instanceof THREE.BufferGeometry ) {
