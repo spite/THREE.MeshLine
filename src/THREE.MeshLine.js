@@ -18,6 +18,7 @@ function MeshLine() {
 	this.next = [];
 	this.side = [];
 	this.width = [];
+	this.time = [];
 	this.indices_array = [];
 	this.uvs = [];
 	this.counters = [];
@@ -31,6 +32,10 @@ function MeshLine() {
 
 MeshLine.prototype.setMatrixWorld = function(matrixWorld) {
 	this.matrixWorld = matrixWorld;
+}
+	
+MeshLine.prototype.setTime = function(time) {
+	this.time = time;
 }
 
 
@@ -313,6 +318,7 @@ MeshLine.prototype.process = function() {
 			next: new THREE.BufferAttribute( new Float32Array( this.next ), 3 ),
 			side: new THREE.BufferAttribute( new Float32Array( this.side ), 1 ),
 			width: new THREE.BufferAttribute( new Float32Array( this.width ), 1 ),
+			time: new THREE.BufferAttribute( new Float32Array( this.time ), 1 ),
 			uv: new THREE.BufferAttribute( new Float32Array( this.uvs ), 2 ),
 			index: new THREE.BufferAttribute( new Uint16Array( this.indices_array ), 1 ),
 			counters: new THREE.BufferAttribute( new Float32Array( this.counters ), 1 )
@@ -328,6 +334,8 @@ MeshLine.prototype.process = function() {
 		this.attributes.side.needsUpdate = true;
 		this.attributes.width.copyArray(new Float32Array(this.width));
 		this.attributes.width.needsUpdate = true;
+		this.attributes.time.copyArray(new Float32Array(this.time));
+		this.attributes.time.needsUpdate = true;
 		this.attributes.uv.copyArray(new Float32Array(this.uvs));
 		this.attributes.uv.needsUpdate = true;
 		this.attributes.index.copyArray(new Uint16Array(this.indices_array));
@@ -339,6 +347,7 @@ MeshLine.prototype.process = function() {
 	this.geometry.setAttribute( 'next', this.attributes.next );
 	this.geometry.setAttribute( 'side', this.attributes.side );
 	this.geometry.setAttribute( 'width', this.attributes.width );
+	this.geometry.setAttribute( 'time', this.attributes.time );
 	this.geometry.setAttribute( 'uv', this.attributes.uv );
 	this.geometry.setAttribute( 'counters', this.attributes.counters );
 
@@ -416,6 +425,7 @@ THREE.ShaderChunk[ 'meshline_vert' ] = [
 	'attribute vec3 next;',
 	'attribute float side;',
 	'attribute float width;',
+	'attribute float time;',
 	'attribute float counters;',
 	'',
 	'uniform vec2 resolution;',
@@ -426,6 +436,7 @@ THREE.ShaderChunk[ 'meshline_vert' ] = [
 	'uniform float far;',
 	'uniform float sizeAttenuation;',
 	'',
+	'varying float vTime;',
 	'varying vec2 vUV;',
 	'varying vec4 vColor;',
 	'varying float vCounters;',
@@ -444,6 +455,7 @@ THREE.ShaderChunk[ 'meshline_vert' ] = [
 	'    float aspect = resolution.x / resolution.y;',
 	'    float pixelWidthRatio = 1. / (resolution.x * projectionMatrix[0][0]);',
 	'',
+	'    vTime = time;',
 	'    vColor = vec4( color, opacity );',
 	'    vUV = uv;',
 	'',
@@ -508,8 +520,10 @@ THREE.ShaderChunk[ 'meshline_frag' ] = [
 	'uniform float dashRatio;',
 	'uniform float visibility;',
 	'uniform float alphaTest;',
+	'uniform float currentTime;',
 	'uniform vec2 repeat;',
 	'',
+	'varying float vTime;',
 	'varying vec2 vUV;',
 	'varying vec4 vColor;',
 	'varying float vCounters;',
@@ -518,6 +532,10 @@ THREE.ShaderChunk[ 'meshline_frag' ] = [
 	'',
 	THREE.ShaderChunk.logdepthbuf_fragment,
 	'',
+	'    if( vTime < currentTime.x || vTime > currentTime.y ){',
+        '        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);',
+        '        return;',
+        '    }',
 	'    vec4 c = vColor;',
 	'    if( useMap == 1. ) c *= texture2D( map, vUV * repeat );',
 	'    if( useAlphaMap == 1. ) c.a *= texture2D( alphaMap, vUV * repeat ).a;',
@@ -539,6 +557,7 @@ function MeshLineMaterial( parameters ) {
 			THREE.UniformsLib.fog,
 			{
 				lineWidth: { value: 1 },
+				currentTime: { value: new THREE.Vector2( -1, 1 ) },
 				map: { value: null },
 				useMap: { value: 0 },
 				alphaMap: { value: null },
@@ -731,6 +750,15 @@ function MeshLineMaterial( parameters ) {
 				this.uniforms.repeat.value.copy( value );
 			}
 		},
+		currentTime: {
+			enumerable: true,
+			get: function () {
+				return this.uniforms.currentTime.value;
+			},
+			set: function ( value ) {
+				this.uniforms.currentTime.value.copy( value );
+			}
+		},
 	});
 
 	this.setValues( parameters );
@@ -762,6 +790,7 @@ MeshLineMaterial.prototype.copy = function ( source ) {
 	this.visibility = source.visibility;
 	this.alphaTest = source.alphaTest;
 	this.repeat.copy( source.repeat );
+	this.currentTime.copy( source.currentTime );
 
 	return this;
 
