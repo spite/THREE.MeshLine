@@ -35,7 +35,11 @@ MeshLine.prototype.setMatrixWorld = function(matrixWorld) {
 }
 	
 MeshLine.prototype.setTime = function(time) {
-	this.time = time;
+	this.time = time.reduce((acc, t) => {
+		acc.push(t);
+		acc.push(t);
+		return acc;
+	}, []);
 }
 
 
