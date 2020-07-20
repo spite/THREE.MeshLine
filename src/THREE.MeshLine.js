@@ -520,7 +520,7 @@ THREE.ShaderChunk[ 'meshline_frag' ] = [
 	'uniform float dashRatio;',
 	'uniform float visibility;',
 	'uniform float alphaTest;',
-	'uniform float currentTime;',
+	'uniform vec2 currentTime;',
 	'uniform vec2 repeat;',
 	'',
 	'varying float vTime;',
