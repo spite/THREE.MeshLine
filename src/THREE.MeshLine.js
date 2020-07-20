@@ -537,7 +537,7 @@ THREE.ShaderChunk[ 'meshline_frag' ] = [
 	THREE.ShaderChunk.logdepthbuf_fragment,
 	'',
 	'    if( vTime < currentTime.x || vTime > currentTime.y ){',
-        '        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);',
+        '        discard;',
         '    }',
 	'    vec4 c = vColor;',
 	'    if( useMap == 1. ) c *= texture2D( map, vUV * repeat );',
