@@ -37,7 +37,7 @@
           return this
         },
         set: function(value) {
-          this.setFromGeometry(value)
+          this.setGeometry(value)
         },
       },
       vertices: {
@@ -69,22 +69,18 @@
     this.matrixWorld = matrixWorld
   }
 
-  MeshLine.prototype.setFromGeometry = function(g, c) {
+  // to support previous api
+  MeshLine.prototype.setGeometry = function(g, c) {
     if (g instanceof THREE.Geometry) {
-      this.setVertices(g.vertices, c)
+      this.setVertices(g.vertices, c);
     }
     if (g instanceof THREE.BufferGeometry) {
-      this.setBufferArray(g.getAttribute('position').array, c)
+      this.setBufferArray(g.getAttribute("position").array, c);
     }
     if (g instanceof Float32Array || g instanceof Array) {
       // to support previous api
-      this.setBufferArray(g, c)
+      this.setBufferArray(g, c);
     }
-  }
-
-  // to support previous api
-  MeshLine.prototype.setGeometry = function(g, c) {
-    this.setFromGeometry(g, c)
   }
 
   MeshLine.prototype.setVertices = function(vts, wcb) {
