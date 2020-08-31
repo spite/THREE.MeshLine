@@ -29,8 +29,9 @@
     // Used to raycast
     this.matrixWorld = new THREE.Matrix4()
 
-    // to support previous api
     Object.defineProperties(this, {
+      // this is now a bufferGeometry
+      // add getter to support previous api
       geometry: {
         enumerable: true,
         get: function() {
@@ -40,6 +41,13 @@
           this.setGeometry(value)
         },
       },
+      // declaritive architectures need this.vertices
+      // to return the same value that sets the vertices
+      // eg. this.vertices = vertices
+      // console.log(this.vertices) -> vertices
+
+      // ideally set vertices() would replace setVertices()
+      // but exists for backwards compatability
       vertices: {
         enumerable: true,
         get: function() {
@@ -49,6 +57,7 @@
           this.setVertices(value)
         },
       },
+      // for declaritive architectures
       bufferArray: {
         enumerable: true,
         get: function() {
@@ -69,7 +78,9 @@
     this.matrixWorld = matrixWorld
   }
 
-  // to support previous api
+  // setting via a geometry is rather superfluous 
+  // as you're creating a unecessary geometry just to throw away
+  // but exists to support previous api
   MeshLine.prototype.setGeometry = function(g, c) {
     if (g instanceof THREE.Geometry) {
       this.setVertices(g.vertices, c);
@@ -84,34 +95,40 @@
   }
 
   MeshLine.prototype.setVertices = function(vts, wcb) {
-    this._vertices = vts
-    this.widthCallback = wcb || this.widthCallback
-    this.positions = []
-    this.counters = []
-    for (var j = 0; j < vts.length; j++) {
-      var v = vts[j]
-      var c = j / vts.length
-      this.positions.push(v.x, v.y, v.z)
-      this.positions.push(v.x, v.y, v.z)
-      this.counters.push(c)
-      this.counters.push(c)
-    }
-    this.process()
+		// as the input vertices are mutated we store them
+		// for later retreival when necessary
+		this._vertices = vts;
+		// make sure widthCallback isn't overriden if defined earlier
+		this.widthCallback = wcb || this.widthCallback;
+		this.positions = [];
+		this.counters = [];
+		for (var j = 0; j < vts.length; j++) {
+			var v = vts[j];
+			var c = j / vts.length;
+			this.positions.push(v.x, v.y, v.z);
+			this.positions.push(v.x, v.y, v.z);
+			this.counters.push(c);
+			this.counters.push(c);
+		}
+		this.process();
   }
 
   MeshLine.prototype.setBufferArray = function(ba, wcb) {
-    this._bufferArray = ba
-    this.widthCallback = wcb || this.widthCallback
-    this.positions = []
-    this.counters = []
-    for (var j = 0; j < ba.length; j += 3) {
-      var c = j / ba.length
-      this.positions.push(ba[j], ba[j + 1], ba[j + 2])
-      this.positions.push(ba[j], ba[j + 1], ba[j + 2])
-      this.counters.push(c)
-      this.counters.push(c)
-    }
-    this.process()
+		// as the input buffer is mutated we store them
+		// for later retreival when necessary
+    this._bufferArray = ba;
+    // make sure widthCallback isn't overriden if defined earlier
+		this.widthCallback = wcb || this.widthCallback;
+		this.positions = [];
+		this.counters = [];
+		for (var j = 0; j < ba.length; j += 3) {
+			var c = j / ba.length;
+			this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
+			this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
+			this.counters.push(c);
+			this.counters.push(c);
+		}
+		this.process();
   }
 
   function MeshLineRaycast(raycaster, intersects) {
