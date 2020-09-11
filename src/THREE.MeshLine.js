@@ -21,8 +21,7 @@
     this.indices_array = []
     this.uvs = []
     this.counters = []
-    this._vertices = []
-    this._bufferArray = []
+    this._points = []
 
     this.widthCallback = null
 
@@ -41,30 +40,18 @@
           this.setGeometry(value)
         },
       },
-      // declaritive architectures need this.vertices
-      // to return the same value that sets the vertices
-      // eg. this.vertices = vertices
-      // console.log(this.vertices) -> vertices
-
-      // ideally set vertices() would replace setVertices()
-      // but exists for backwards compatability
-      vertices: {
-        enumerable: true,
-        get: function() {
-          return this._vertices
-        },
-        set: function(value) {
-          this.setVertices(value)
-        },
-      },
       // for declaritive architectures
-      bufferArray: {
+      // to return the same value that sets the points
+      // eg. this.points = points
+      // console.log(this.points) -> points
+
+      points: {
         enumerable: true,
         get: function() {
-          return this._bufferArray
+          return this._points
         },
         set: function(value) {
-          this.setBufferArray(value)
+          this.setPoints(value)
         },
       },
     })
@@ -78,57 +65,45 @@
     this.matrixWorld = matrixWorld
   }
 
-  // setting via a geometry is rather superfluous 
+  // setting via a geometry is rather superfluous
   // as you're creating a unecessary geometry just to throw away
   // but exists to support previous api
   MeshLine.prototype.setGeometry = function(g, c) {
     if (g instanceof THREE.Geometry) {
-      this.setVertices(g.vertices, c);
-    }
-    if (g instanceof THREE.BufferGeometry) {
-      this.setBufferArray(g.getAttribute("position").array, c);
-    }
-    if (g instanceof Float32Array || g instanceof Array) {
-      // to support previous api
-      this.setBufferArray(g, c);
+      // Setup the geometry data as needed
+      var points = [];
+      for (var j = 0; j < g.vertices.length; j++) {
+        points.push(g.vertices[j].x, g.vertices[j].y, g.vertices[j].z);
+      }
+      this.setPoints(points, c);
+    } else if (g instanceof THREE.BufferGeometry) {
+      this.setPoints(g.getAttribute("position").array, c);
+    } else {
+      this.setPoints(g, c);
     }
   }
 
-  MeshLine.prototype.setVertices = function(vts, wcb) {
-		// as the input vertices are mutated we store them
-		// for later retreival when necessary
-		this._vertices = vts;
-		// make sure widthCallback isn't overriden if defined earlier
-		this.widthCallback = wcb || this.widthCallback;
-		this.positions = [];
-		this.counters = [];
-		for (var j = 0; j < vts.length; j++) {
-			var v = vts[j];
-			var c = j / vts.length;
-			this.positions.push(v.x, v.y, v.z);
-			this.positions.push(v.x, v.y, v.z);
-			this.counters.push(c);
-			this.counters.push(c);
-		}
-		this.process();
-  }
+  MeshLine.prototype.setPoints = function(points, wcb) {
+    if (!(points instanceof Float32Array) || !(g instanceof Array)) {
+      console.warn('ERROR: The BufferArray of points is not instancied correctly.');
+      return;
+    }
 
-  MeshLine.prototype.setBufferArray = function(ba, wcb) {
-		// as the input buffer is mutated we store them
-		// for later retreival when necessary
-    this._bufferArray = ba;
-    // make sure widthCallback isn't overriden if defined earlier
-		this.widthCallback = wcb || this.widthCallback;
-		this.positions = [];
-		this.counters = [];
-		for (var j = 0; j < ba.length; j += 3) {
-			var c = j / ba.length;
-			this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
-			this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
-			this.counters.push(c);
-			this.counters.push(c);
-		}
-		this.process();
+    // as the input vertices are mutated we store them
+    // for later retreival when necessary
+    this._points = points;
+
+    this.widthCallback = wcb;
+    this.positions = [];
+    this.counters = [];
+    for (var j = 0; j < ba.length; j += 3) {
+      var c = j / ba.length;
+      this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
+      this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
+      this.counters.push(c);
+      this.counters.push(c);
+    }
+    this.process();
   }
 
   function MeshLineRaycast(raycaster, intersects) {
@@ -277,7 +252,7 @@
     this.next.push(v[0], v[1], v[2])
     this.next.push(v[0], v[1], v[2])
 
-    // redefining the attribute seems to prevent range errors 
+    // redefining the attribute seems to prevent range errors
     // if the user sets a differing number of vertices
     if (!this._attributes || this._attributes.position.count !== this.positions.length) {
       this._attributes = {
