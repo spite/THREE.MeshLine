@@ -78,7 +78,7 @@
   }
 
   MeshLine.prototype.setPoints = function(points, wcb) {
-    if (!(points instanceof Float32Array) || !(points instanceof Array)) {
+    if (!(points instanceof Float32Array) && !(points instanceof Array)) {
       console.error('ERROR: The BufferArray of points is not instancied correctly.');
       return;
     }

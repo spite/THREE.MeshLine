@@ -70,8 +70,6 @@ function prepareMesh() {
 		resolution: resolution,
 		sizeAttenuation: true,
 		lineWidth: 5,
-		near: camera.near,
-		far: camera.far,
 		depthTest: false,
 		blending: THREE.NormalBlending,
 		transparent: true,
