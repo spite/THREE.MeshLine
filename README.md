@@ -60,21 +60,21 @@ for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100)
 
 ##### Create a MeshLine and assign the geometry #####
 
-Once you have that, you can create a new `MeshLine`, and call `.setVertices()` passing the vertices.
+Once you have that, you can create a new `MeshLine`, and call `.setPoints()` passing the vertices.
 
 ```js
 const line = new MeshLine()
-line.setVertices(vertices)
+line.setPoints(vertices)
 ```
 
-Note: `.setVertices` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 \* lineWidth in the material.
+Note: `.setPoints` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 \* lineWidth in the material.
 
 ```js
 // p is a decimal percentage of the number of points
 // ie. point 200 of 250 points, p = 0.8
-line.setVertices(geometry, p => 2) // makes width 2 * lineWidth
-line.setVertices(geometry, p => 1 - p) // makes width taper
-line.setVertices(geometry, p => 2 + Math.sin(50 * p)) // makes width sinusoidal
+line.setPoints(geometry, p => 2) // makes width 2 * lineWidth
+line.setPoints(geometry, p => 1 - p) // makes width taper
+line.setPoints(geometry, p => 2 + Math.sin(50 * p)) // makes width sinusoidal
 ```
 
 ##### Create a MeshLineMaterial #####
@@ -136,11 +136,11 @@ import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline'
 
 extend({ MeshLine, MeshLineMaterial })
 
-function Line({ vertices, width, color }) {
+function Line({ points, width, color }) {
   return (
     <Canvas>
       <mesh raycast={MeshLineRaycast}>
-        <meshLine attach="geometry" vertices={vertices} />
+        <meshLine attach="geometry" points={points} />
         <meshLineMaterial
           attach="material"
           transparent
