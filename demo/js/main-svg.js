@@ -47,8 +47,6 @@ var material = new MeshLineMaterial( {
 	resolution: resolution,
 	sizeAttenuation: false,
 	lineWidth: 1,
-	near: camera.near,
-	far: camera.far,
 	depthWrite: false,
 	depthTest: false,
 	transparent: true

@@ -169,8 +169,6 @@ function makeLine( geo ) {
 		resolution: resolution,
 		sizeAttenuation: params.sizeAttenuation,
 		lineWidth: params.lineWidth,
-		near: camera.near,
-		far: camera.far,
 		depthWrite: false,
 		depthTest: !params.strokes,
 		alphaTest: params.strokes ? .5 : 0,
