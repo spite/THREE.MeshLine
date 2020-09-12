@@ -69,7 +69,12 @@
   // but exists to support previous api
   MeshLine.prototype.setGeometry = function(g, c) {
     if (g instanceof THREE.Geometry) {
-      this.setPoints(g.vertices, c);
+      // Setup the geometry data as needed
+      var points = [];
+      for (var j = 0; j < g.vertices.length; j++) {
+        points.push(g.vertices[j].x, g.vertices[j].y, g.vertices[j].z);
+      }
+      this.setPoints(points, c);
     } else if (g instanceof THREE.BufferGeometry) {
       this.setPoints(g.getAttribute("position").array, c);
     } else {
@@ -93,23 +98,12 @@
     this.widthCallback = wcb || this.widthCallback;
     this.positions = [];
     this.counters = [];
-    if (points instanceof Float32Array) {
-      for (var j = 0; j < points.length; j += 3) {
-        var c = j / points.length;
-        this.positions.push(points[j], points[j + 1], points[j + 2]);
-        this.positions.push(points[j], points[j + 1], points[j + 2]);
-        this.counters.push(c);
-        this.counters.push(c);
-      }
-    } else if (points instanceof Array) {
-      for (var j = 0; j < points.length; j++) {
-        var p = points[j];
-        var c = j / points.length;
-        this.positions.push(p.x, p.y, p.z);
-        this.positions.push(p.x, p.y, p.z);
-        this.counters.push(c);
-        this.counters.push(c);
-      }
+    for (var j = 0; j < points.length; j += 3) {
+      var c = j / points.length;
+      this.positions.push(points[j], points[j + 1], points[j + 2]);
+      this.positions.push(points[j], points[j + 1], points[j + 2]);
+      this.counters.push(c);
+      this.counters.push(c);
     }
     this.process();
   }
