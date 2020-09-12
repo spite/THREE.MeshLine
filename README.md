@@ -20,8 +20,8 @@ Instead of using GL_LINE, it uses a strip of triangles billboarded. Some example
 ### How to use ####
 
 * Include script
-* Create and populate a geometry
-* Create a MeshLine and assign the geometry
+* Create an array of 3D coordinates
+* Create a MeshLine and assign the points
 * Create a MeshLineMaterial
 * Use MeshLine and MeshLineMaterial to create a THREE.Mesh
 
@@ -37,34 +37,45 @@ npm i three.meshline
 ```
 and include it in your code (don't forget to require three.js)
 ```js
-var THREE = require( 'three' );
-var MeshLine = require( 'three.meshline' ).MeshLine;
-var MeshLineMaterial = require( 'three.meshline' ).MeshLineMaterial;
-var MeshLineRaycast = require( 'three.meshline' ).MeshLineRaycast;
+const THREE = require('three');
+const MeshLine = require('three.meshline').MeshLine;
+const MeshLineMaterial = require('three.meshline').MeshLineMaterial;
+const MeshLineRaycast = require('three.meshline').MeshLineRaycast;
 ```
 or
 ```js
 import * as THREE from 'three';
-import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline'
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline';
 ```
 
-##### Create and populate a geometry #####
+##### Create an array of 3D coordinates #####
 
-First, create the list of vertices that will define the line. `MeshLine` accepts an array of vertices.
+First, create the list of numbers that will define the 3D points for the line.
 
 ```js
-const vertices = []
-for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100)
-  vertices.push(new THREE.Vector3(Math.cos(j), Math.sin(j), 0))
+const points = [];
+for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100) {
+  points.push(Math.cos(j), Math.sin(j), 0);
+}
 ```
 
-##### Create a MeshLine and assign the geometry #####
-
-Once you have that, you can create a new `MeshLine`, and call `.setPoints()` passing the vertices.
+```MeshLine``` also accepts a ```Geometry``` or ```BufferGeometry``` looking up the vertices in it.
 
 ```js
-const line = new MeshLine()
-line.setPoints(vertices)
+const geometry = new THREE.Geometry();
+for (let j = 0; j < Math.PI; j += 2 * Math.PI / 100) {
+	const v = new THREE.Vector3(Math.cos(j), Math.sin(j), 0);
+	geometry.vertices.push(v);
+}
+```
+
+##### Create a MeshLine and assign the points #####
+
+Once you have that, you can create a new `MeshLine`, and call `.setPoints()` passing the list of points.
+
+```js
+const line = new MeshLine();
+line.setPoints(points);
 ```
 
 Note: `.setPoints` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 \* lineWidth in the material.
@@ -72,9 +83,9 @@ Note: `.setPoints` accepts a second parameter, which is a function to define the
 ```js
 // p is a decimal percentage of the number of points
 // ie. point 200 of 250 points, p = 0.8
-line.setPoints(geometry, p => 2) // makes width 2 * lineWidth
-line.setPoints(geometry, p => 1 - p) // makes width taper
-line.setPoints(geometry, p => 2 + Math.sin(50 * p)) // makes width sinusoidal
+line.setPoints(geometry, p => 2); // makes width 2 * lineWidth
+line.setPoints(geometry, p => 1 - p); // makes width taper
+line.setPoints(geometry, p => 2 + Math.sin(50 * p)); // makes width sinusoidal
 ```
 
 ##### Create a MeshLineMaterial #####
@@ -82,7 +93,7 @@ line.setPoints(geometry, p => 2 + Math.sin(50 * p)) // makes width sinusoidal
 A ```MeshLine``` needs a ```MeshLineMaterial```:
 
 ```js
-var material = new MeshLineMaterial(OPTIONS);
+const material = new MeshLineMaterial(OPTIONS);
 ```
 
 By default it's a white material of width 1 unit.
@@ -111,19 +122,19 @@ If you're rendering transparent lines or using a texture with alpha map, you sho
 Finally, we create a mesh and add it to the scene:
 
 ```js
-const mesh = new THREE.Mesh(line, material)
-scene.add(mesh)
+const mesh = new THREE.Mesh(line, material);
+scene.add(mesh);
 ```
 
 You can optionally add raycast support with the following.
 
 ```js
-mesh.raycast = MeshLineRaycast
+mesh.raycast = MeshLineRaycast;
 ```
 
 ### Declarative use ###
 
-three.meshline can be used declaritively. This is how it would look like in react/[react-three-fiber](https://github.com/drcmda/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-three.meshline-example-vl221).
+THREE.meshline can be used declaritively. This is how it would look like in [react-three-fiber](https://github.com/drcmda/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-three.meshline-example-vl221).
 
 <p align="center">
 	<a href="https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221"><img width="432" height="240" src="https://imgur.com/mZikTAH.gif" /></a>
