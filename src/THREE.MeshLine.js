@@ -83,7 +83,7 @@
   }
 
   MeshLine.prototype.setPoints = function(points, wcb) {
-    if (!(points instanceof Float32Array) || !(g instanceof Array)) {
+    if (!(points instanceof Float32Array) && !(points instanceof Array)) {
       console.error('ERROR: The BufferArray of points is not instancied correctly.');
       return;
     }
@@ -95,10 +95,10 @@
     this.widthCallback = wcb;
     this.positions = [];
     this.counters = [];
-    for (var j = 0; j < ba.length; j += 3) {
-      var c = j / ba.length;
-      this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
-      this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
+    for (var j = 0; j < points.length; j += 3) {
+      var c = j / points.length;
+      this.positions.push(points[j], points[j + 1], points[j + 2]);
+      this.positions.push(points[j], points[j + 1], points[j + 2]);
       this.counters.push(c);
       this.counters.push(c);
     }
