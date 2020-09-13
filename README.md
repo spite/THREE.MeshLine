@@ -20,8 +20,8 @@ Instead of using GL_LINE, it uses a strip of triangles billboarded. Some example
 ### How to use ####
 
 * Include script
-* Create and populate a geometry
-* Create a MeshLine and assign the geometry
+* Create an array of 3D coordinates
+* Create a MeshLine and assign the points
 * Create a MeshLineMaterial
 * Use MeshLine and MeshLineMaterial to create a THREE.Mesh
 
@@ -37,37 +37,55 @@ npm i three.meshline
 ```
 and include it in your code (don't forget to require three.js)
 ```js
-var THREE = require( 'three' );
-var MeshLine = require( 'three.meshline' );
+const THREE = require('three');
+const MeshLine = require('three.meshline').MeshLine;
+const MeshLineMaterial = require('three.meshline').MeshLineMaterial;
+const MeshLineRaycast = require('three.meshline').MeshLineRaycast;
+```
+or
+```js
+import * as THREE from 'three';
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline';
 ```
 
-##### Create and populate a geometry #####
+##### Create an array of 3D coordinates #####
 
-First, create the list of vertices that will define the line. ```MeshLine``` accepts ```THREE.Geometry``` (looking up the ```.vertices``` in it) and ```Array```/```Float32Array```. ```THREE.BufferGeometry``` coming soon, and may be others like ```Array``` of ```THREE.Vector3```.
+First, create the list of numbers that will define the 3D points for the line.
 
 ```js
-var geometry = new THREE.Geometry();
-for( var j = 0; j < Math.PI; j += 2 * Math.PI / 100 ) {
-	var v = new THREE.Vector3( Math.cos( j ), Math.sin( j ), 0 );
-	geometry.vertices.push( v );
+const points = [];
+for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100) {
+  points.push(Math.cos(j), Math.sin(j), 0);
 }
 ```
 
-##### Create a MeshLine and assign the geometry #####
-
-Once you have that, you can create a new ```MeshLine```, and call ```.setGeometry()``` passing the vertices.
+```MeshLine``` also accepts a ```Geometry``` or ```BufferGeometry``` looking up the vertices in it.
 
 ```js
-var line = new MeshLine();
-line.setGeometry( geometry );
+const geometry = new THREE.Geometry();
+for (let j = 0; j < Math.PI; j += 2 * Math.PI / 100) {
+	const v = new THREE.Vector3(Math.cos(j), Math.sin(j), 0);
+	geometry.vertices.push(v);
+}
 ```
 
-Note: ```.setGeometry``` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 * lineWidth.
+##### Create a MeshLine and assign the points #####
+
+Once you have that, you can create a new `MeshLine`, and call `.setPoints()` passing the list of points.
 
 ```js
-line.setGeometry( geometry, function( p ) { return 2; } ); // makes width 2 * lineWidth
-line.setGeometry( geometry, function( p ) { return 1 - p; } ); // makes width taper
-line.setGeometry( geometry, function( p ) { return 2 + Math.sin( 50 * p ); } ); // makes width sinusoidal
+const line = new MeshLine();
+line.setPoints(points);
+```
+
+Note: `.setPoints` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 \* lineWidth in the material.
+
+```js
+// p is a decimal percentage of the number of points
+// ie. point 200 of 250 points, p = 0.8
+line.setPoints(geometry, p => 2); // makes width 2 * lineWidth
+line.setPoints(geometry, p => 1 - p); // makes width taper
+line.setPoints(geometry, p => 2 + Math.sin(50 * p)); // makes width sinusoidal
 ```
 
 ##### Create a MeshLineMaterial #####
@@ -75,7 +93,7 @@ line.setGeometry( geometry, function( p ) { return 2 + Math.sin( 50 * p ); } ); 
 A ```MeshLine``` needs a ```MeshLineMaterial```:
 
 ```js
-var material = new MeshLineMaterial(OPTIONS);
+const material = new MeshLineMaterial(OPTIONS);
 ```
 
 By default it's a white material of width 1 unit.
@@ -96,8 +114,6 @@ By default it's a white material of width 1 unit.
 * ```resolution``` - ```THREE.Vector2``` specifying the canvas size (REQUIRED)
 * ```sizeAttenuation``` - makes the line width constant regardless distance (1 unit is 1px on screen) (0 - attenuate, 1 - don't attenuate)
 * ```lineWidth``` - float defining width (if ```sizeAttenuation``` is true, it's world units; else is screen pixels)
-* ```near``` - camera near clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
-* ```far``` - camera far clip plane distance  (REQUIRED if ```sizeAttenuation``` set to false)
 
 If you're rendering transparent lines or using a texture with alpha map, you should set ```depthTest``` to ```false```, ```transparent``` to ```true``` and ```blending``` to an appropriate blending mode, or use ```alphaTest```.
 
@@ -106,8 +122,49 @@ If you're rendering transparent lines or using a texture with alpha map, you sho
 Finally, we create a mesh and add it to the scene:
 
 ```js
-var mesh = new THREE.Mesh( line.geometry, material ); // this syntax could definitely be improved!
-scene.add( mesh );
+const mesh = new THREE.Mesh(line, material);
+scene.add(mesh);
+```
+
+You can optionally add raycast support with the following.
+
+```js
+mesh.raycast = MeshLineRaycast;
+```
+
+### Declarative use ###
+
+THREE.meshline can be used declaritively. This is how it would look like in [react-three-fiber](https://github.com/drcmda/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-three.meshline-example-vl221).
+
+<p align="center">
+	<a href="https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221"><img width="432" height="240" src="https://imgur.com/mZikTAH.gif" /></a>
+	<a href="https://codesandbox.io/s/threejs-meshline-custom-spring-3-ypkxx"><img width="432" height="240" src="https://imgur.com/g8ts0vJ.gif" /></a>
+</p>
+
+```jsx
+import { extend, Canvas } from 'react-three-fiber'
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline'
+
+extend({ MeshLine, MeshLineMaterial })
+
+function Line({ points, width, color }) {
+  return (
+    <Canvas>
+      <mesh raycast={MeshLineRaycast}>
+        <meshLine attach="geometry" points={points} />
+        <meshLineMaterial
+          attach="material"
+          transparent
+          depthTest={false}
+          lineWidth={width}
+          color={color}
+          dashArray={0.05}
+          dashRatio={0.95}
+        />
+      </mesh>
+    </Canvas>
+  )
+}
 ```
 
 ### TODO ###

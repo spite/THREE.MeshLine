@@ -51,10 +51,8 @@ function makeLine( geo, c ) {
 		color: new THREE.Color( colors[ c ] ),
 		opacity: 1,
 		resolution: resolution,
-		sizeAttenuation: !false,
-		lineWidth: .01,
-		near: camera.near,
-		far: camera.far
+		sizeAttenuation: false,
+		lineWidth: 10,
 	});
 	var mesh = new THREE.Mesh( g.geometry, material );
 	graph.add( mesh );
