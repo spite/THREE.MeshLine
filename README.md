@@ -3,19 +3,19 @@ Mesh replacement for ```THREE.Line```
 
 Instead of using GL_LINE, it uses a strip of triangles billboarded. Some examples:
 
-[![Demo](screenshots/demo.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/index.html)
-[![Graph](screenshots/graph.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/graph.html)
-[![Spinner](screenshots/spinner.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/spinner.html)
-[![SVG](screenshots/svg.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/svg.html)
-[![Shape](screenshots/shape.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/shape.html)
-[![Shape](screenshots/birds.jpg)](https://www.clicktorelease.com/code/THREE.MeshLine/demo/birds.html)
+[![Demo](screenshots/demo.jpg)](http://spite.github.io/THREE.MeshLine/demo/index.html)
+[![Graph](screenshots/graph.jpg)](http://spite.github.io/THREE.MeshLine/demo/graph.html)
+[![Spinner](screenshots/spinner.jpg)](http://spite.github.io/THREE.MeshLine/demo/spinner.html)
+[![SVG](screenshots/svg.jpg)](http://spite.github.io/THREE.MeshLine/demo/svg.html)
+[![Shape](screenshots/shape.jpg)](http://spite.github.io/THREE.MeshLine/demo/shape.html)
+[![Shape](screenshots/birds.jpg)](http://spite.github.io/THREE.MeshLine/demo/birds.html)
 
-* [Demo](https://www.clicktorelease.com/code/THREE.MeshLine/demo/index.html): play with the different settings of materials
-* [Graph](https://www.clicktorelease.com/code/THREE.MeshLine/demo/graph.html): example of using ```MeshLine``` to plot graphs
-* [Spinner](https://www.clicktorelease.com/code/THREE.MeshLine/demo/spinner.html): example of dynamic ```MeshLine``` with texture
-* [SVG](https://www.clicktorelease.com/code/THREE.MeshLine/demo/svg.html): example of ```MeshLine``` rendering SVG Paths
-* [Shape](https://www.clicktorelease.com/code/THREE.MeshLine/demo/shape.html): example of ```MeshLine``` created from a mesh
-* [Birds](https://www.clicktorelease.com/code/THREE.MeshLine/demo/birds.html): example of ```MeshLine.advance()``` by @caramelcode (Jared Sprague) and @mwcz (Michael Clayton)
+* [Demo](http://spite.github.io/THREE.MeshLine/demo/index.html): play with the different settings of materials
+* [Graph](http://spite.github.io/THREE.MeshLine/demo/graph.html): example of using ```MeshLine``` to plot graphs
+* [Spinner](http://spite.github.io/THREE.MeshLine/demo/spinner.html): example of dynamic ```MeshLine``` with texture
+* [SVG](http://spite.github.io/THREE.MeshLine/demo/svg.html): example of ```MeshLine``` rendering SVG Paths
+* [Shape](http://spite.github.io/THREE.MeshLine/demo/shape.html): example of ```MeshLine``` created from a mesh
+* [Birds](http://spite.github.io/THREE.MeshLine/demo/birds.html): example of ```MeshLine.advance()``` by @caramelcode (Jared Sprague) and @mwcz (Michael Clayton)
 
 ### How to use ####
 
