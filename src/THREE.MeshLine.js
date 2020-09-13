@@ -22,6 +22,7 @@
     this.uvs = []
     this.counters = []
     this._points = []
+    this._geom = null
 
     this.widthCallback = null
 
@@ -36,22 +37,27 @@
         get: function() {
           return this
         },
+      },
+      geom: {
+        enumerable: true,
+        get: function() {
+          return this._geom
+        },
         set: function(value) {
-          this.setGeometry(value)
+          this.setGeometry(value, this.widthCallback)
         },
       },
       // for declaritive architectures
       // to return the same value that sets the points
       // eg. this.points = points
       // console.log(this.points) -> points
-
       points: {
         enumerable: true,
         get: function() {
           return this._points
         },
         set: function(value) {
-          this.setPoints(value)
+          this.setPoints(value, this.widthCallback)
         },
       },
     })
@@ -69,41 +75,53 @@
   // as you're creating a unecessary geometry just to throw away
   // but exists to support previous api
   MeshLine.prototype.setGeometry = function(g, c) {
-    if (g instanceof THREE.Geometry) {
-      // Setup the geometry data as needed
-      var points = [];
-      for (var j = 0; j < g.vertices.length; j++) {
-        points.push(g.vertices[j].x, g.vertices[j].y, g.vertices[j].z);
-      }
-      this.setPoints(points, c);
-    } else if (g instanceof THREE.BufferGeometry) {
-      this.setPoints(g.getAttribute("position").array, c);
-    } else {
-      this.setPoints(g, c);
-    }
+		// as the input geometry are mutated we store them
+		// for later retreival when necessary (declaritive architectures)
+		this._geometry = g;
+		if (g instanceof THREE.Geometry) {
+			this.setPoints(g.vertices, c);
+		} else if (g instanceof THREE.BufferGeometry) {
+			this.setPoints(g.getAttribute("position").array, c);
+		} else {
+			this.setPoints(g, c);
+		}
   }
 
   MeshLine.prototype.setPoints = function(points, wcb) {
-    if (!(points instanceof Float32Array) || !(g instanceof Array)) {
-      console.warn('ERROR: The BufferArray of points is not instancied correctly.');
-      return;
-    }
-
-    // as the input vertices are mutated we store them
-    // for later retreival when necessary
-    this._points = points;
-
-    this.widthCallback = wcb;
-    this.positions = [];
-    this.counters = [];
-    for (var j = 0; j < ba.length; j += 3) {
-      var c = j / ba.length;
-      this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
-      this.positions.push(ba[j], ba[j + 1], ba[j + 2]);
-      this.counters.push(c);
-      this.counters.push(c);
-    }
-    this.process();
+		if (!(points instanceof Float32Array) && !(points instanceof Array)) {
+			console.error(
+				"ERROR: The BufferArray of points is not instancied correctly."
+			);
+			return;
+		}
+		// as the points are mutated we store them
+		// for later retreival when necessary (declaritive architectures)
+		this._points = points;
+		this.widthCallback = wcb;
+		this.positions = [];
+		this.counters = [];
+		if (points.length && points[0] instanceof THREE.Vector3) {
+			// could transform Vector3 array into the array used below
+			// but this approach will only loop through the array once
+			// and is more performant
+			for (var j = 0; j < vts.length; j++) {
+				var p = points[j];
+				var c = j / vts.length;
+				this.positions.push(p.x, p.y, p.z);
+				this.positions.push(p.x, p.y, p.z);
+				this.counters.push(c);
+				this.counters.push(c);
+			}
+		} else {
+			for (var j = 0; j < points.length; j += 3) {
+				var c = j / points.length;
+				this.positions.push(points[j], points[j + 1], points[j + 2]);
+				this.positions.push(points[j], points[j + 1], points[j + 2]);
+				this.counters.push(c);
+				this.counters.push(c);
+			}
+		}
+		this.process();
   }
 
   function MeshLineRaycast(raycaster, intersects) {

@@ -53,8 +53,6 @@ function makeLine( geo, c ) {
 		resolution: resolution,
 		sizeAttenuation: false,
 		lineWidth: 10,
-		near: camera.near,
-		far: camera.far
 	});
 	var mesh = new THREE.Mesh( g.geometry, material );
 	graph.add( mesh );
