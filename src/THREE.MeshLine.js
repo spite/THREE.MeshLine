@@ -22,6 +22,7 @@
     this.uvs = []
     this.counters = []
     this._points = []
+    this._geom = null
 
     this.widthCallback = null
 
