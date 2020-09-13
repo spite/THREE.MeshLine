@@ -104,9 +104,9 @@
 			// could transform Vector3 array into the array used below
 			// but this approach will only loop through the array once
 			// and is more performant
-			for (var j = 0; j < vts.length; j++) {
+			for (var j = 0; j < points.length; j++) {
 				var p = points[j];
-				var c = j / vts.length;
+				var c = j / points.length;
 				this.positions.push(p.x, p.y, p.z);
 				this.positions.push(p.x, p.y, p.z);
 				this.counters.push(c);
