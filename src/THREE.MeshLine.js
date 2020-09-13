@@ -34,7 +34,13 @@
       geometry: {
         enumerable: true,
         get: function() {
-          return this._geometry
+          return this
+        },
+      },
+      geom: {
+        enumerable: true,
+        get: function() {
+          return this._geom
         },
         set: function(value) {
           this.setGeometry(value, this.widthCallback)
