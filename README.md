@@ -167,6 +167,11 @@ function Line({ points, width, color }) {
 }
 ```
 
+Dynamic line widths can be set along each point using the `widthCallback` prop.
+```jsx
+<meshLine attach='geometry' points={points} widthCallback={pointWidth => pointWidth * Math.random()} />
+```
+
 ### TODO ###
 
 * Better miters
