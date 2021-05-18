@@ -1,6 +1,12 @@
 # MeshLine
 Mesh replacement for ```THREE.Line```
 
+temporary package:
+```js
+import * as THREE from 'three';
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'meshline';
+```
+
 Instead of using GL_LINE, it uses a strip of triangles billboarded. Some examples:
 
 [![Demo](screenshots/demo.jpg)](http://spite.github.io/THREE.MeshLine/demo/index.html)
@@ -197,8 +203,4 @@ Tested successfully on
 
 MIT licensed
 
-<<<<<<< HEAD
 Copyright (C) 2015-2016 Jaume Sanchez Elias, http://www.clicktorelease.com
-=======
-Copyright (C) 2015-2016 Jaume Sanchez Elias, http://www.clicktorelease.com
->>>>>>> new-architecture
