@@ -19,12 +19,17 @@
     </div>
 </body>
 
-<script src="js/three.min.js"></script>
-<script src="js/OrbitControls.js"></script>
+
+<script type="module">
+    import * as THREE from 'https://cdn.skypack.dev/three';
+    import {MeshLine, MeshLineMaterial} from 'https://cdn.skypack.dev/meshline';
+    import {OrbitControls} from 'https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls.js'
+    import {Geometry} from 'https://cdn.skypack.dev/three/examples/jsm/deprecated/Geometry.js'
+</script>
 <script src="js/THREE.ConstantSpline.js"></script>
 <script src="js/Maf.js"></script>
 <script src="js/dat.gui.min.js"></script>
-<script src="../src/THREE.MeshLine.js"></script>
+<script src="../dist/meshline.umd.js"></script>
 <script src="js/main.js"></script>
 
 </html>

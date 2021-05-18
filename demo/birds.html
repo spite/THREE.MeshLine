@@ -15,13 +15,12 @@
 			<h1>THREE.MeshLine - advance() Demo</h1>
 			<p>Efficient and fast line updating. Move your mouse around.</p>
 		</div>
+		<script type="module">
+			import * as THREE from 'https://cdn.skypack.dev/three';
+			import {MeshLine, MeshLineMaterial} from 'https://cdn.skypack.dev/meshline';
+			import {OrbitControls} from 'https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls.js'
+			import {Geometry} from 'https://cdn.skypack.dev/three/examples/jsm/deprecated/Geometry.js'
 
-		<script src="js/three.min.js"></script>
-		<script src="js/OrbitControls.js"></script>
-		<script src="../src/THREE.MeshLine.js"></script>
-		<script src="js/Bird.js"></script>
-
-		<script>
 
 			var scene = new THREE.Scene();
 
@@ -59,7 +58,7 @@
 
 				this.initTrail = function () {
 					// Create the line geometry used for storing verticies
-					this.trail_geometry = new THREE.Geometry();
+					this.trail_geometry = new Geometry();
 					for (var i = 0; i < 100; i++) {
 						// must initialize it to the number of positions it will keep or it will throw an error
 						this.trail_geometry.vertices.push(this.position.clone());
@@ -392,12 +391,12 @@
 					boid.setAvoidWalls( true );
 					boid.setWorldSize( 300, 300, 300 );
 
-					bird = birds[ i ] = new THREE.Mesh( new Bird(), new THREE.MeshBasicMaterial( { color:Math.random() * 0xffffff, side: THREE.DoubleSide } ) );
+					bird = birds[ i ] = new THREE.Mesh( new THREE.BoxBufferGeometry(), new THREE.MeshBasicMaterial( { color:Math.random() * 0xffffff, side: THREE.DoubleSide } ) );
 					bird.phase = Math.floor( Math.random() * 62.83 );
 					scene.add( bird );
 				}
 
-				controls = new THREE.OrbitControls( camera,  renderer.domElement  );
+				controls = new OrbitControls( camera,  renderer.domElement  );
 				controls.enableDamping = true;
 				controls.dampingFactor = 0.25;
 				controls.enableZoom = false;
