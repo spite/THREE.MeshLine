@@ -15,7 +15,7 @@ export class MeshLine extends THREE.BufferGeometry {
 }
 
 export class MeshLineMaterial extends THREE.ShaderMaterial {
-  constructor(parametes?: {
+  constructor(parameters?: {
     lineWidth?: number,
     map?: THREE.Texture,
     useMap?: number,
@@ -34,7 +34,7 @@ export class MeshLineMaterial extends THREE.ShaderMaterial {
     repeat?: THREE.Vector2,
   });
 
-  linwWidth: number;
+  lineWidth: number;
   map: THREE.Texture;
   useMap: number;
   alphaMap: THREE.Texture;
