@@ -15,6 +15,7 @@
   "files": [
     "dist"
   ],
+  "types": "./src/meshline.d.ts",
   "peerDependencies": {
     "three": ">=0.128.0"
   },
