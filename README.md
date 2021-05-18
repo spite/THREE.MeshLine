@@ -197,4 +197,8 @@ Tested successfully on
 
 MIT licensed
 
+<<<<<<< HEAD
 Copyright (C) 2015-2016 Jaume Sanchez Elias, http://www.clicktorelease.com
+=======
+Copyright (C) 2015-2016 Jaume Sanchez Elias, http://www.clicktorelease.com
+>>>>>>> new-architecture
