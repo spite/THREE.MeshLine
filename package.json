@@ -1,6 +1,6 @@
 {
   "name": "meshline",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "author": "Jaume Sanchez <the.spite@gmail.com> (https://www.clicktorelease.com)",
   "license": "MIT",
   "bugs": {
@@ -12,6 +12,9 @@
     "build": "tsc --declaration && vite build ",
     "serve": "vite preview"
   },
+  "files": [
+    "dist", "index.d.ts"
+  ],
   "peerDependencies": {
     "three": ">=0.126.0"
   },
