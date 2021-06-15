@@ -1,6 +1,6 @@
 {
   "name": "meshline",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "Jaume Sanchez <the.spite@gmail.com> (https://www.clicktorelease.com)",
   "license": "MIT",
   "bugs": {
@@ -9,16 +9,16 @@
   "homepage": "https://github.com/spite/THREE.MeshLine#readme",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc --declaration && vite build ",
     "serve": "vite preview"
   },
   "files": [
     "dist"
   ],
-  "types": "./src/meshline.d.ts",
   "peerDependencies": {
-    "three": ">=0.128.0"
+    "three": ">=0.126.0"
   },
+  "types": "./index.d.ts",
   "main": "./dist/meshline.umd.js",
   "module": "./dist/meshline.es.js",
   "exports": {
@@ -28,11 +28,11 @@
     }
   },
   "devDependencies": {
-    "@types/three": "^0.128.0",
-    "typescript": "^4.2.3",
-    "vite": "^2.3.3"
+    "@types/three": "^0.129.1",
+    "typescript": "^4.3.2",
+    "vite": "^2.3.7"
   },
   "dependencies": {
-    "three": "^0.128.0"
+    "three": "^0.129.0"
   }
 }
