@@ -134,7 +134,7 @@ mesh.raycast = MeshLineRaycast;
 
 ### Declarative use ###
 
-THREE.meshline can be used declaritively. This is how it would look like in [react-three-fiber](https://github.com/drcmda/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-three.meshline-example-vl221).
+THREE.meshline can be used declaritively. This is how it would look like in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-three.meshline-example-vl221).
 
 <p align="center">
 	<a href="https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221"><img width="432" height="240" src="https://imgur.com/mZikTAH.gif" /></a>
@@ -142,34 +142,30 @@ THREE.meshline can be used declaritively. This is how it would look like in [rea
 </p>
 
 ```jsx
-import { extend, Canvas } from 'react-three-fiber'
+import { extend, Canvas } from '@react-three/fiber'
 import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline'
 
-extend({ MeshLine, MeshLineMaterial })
+extend({ MeshLineGeometry: MeshLine, MeshLineMaterial })
 
 function Line({ points, width, color }) {
   return (
-    <Canvas>
-      <mesh raycast={MeshLineRaycast}>
-        <meshLine attach="geometry" points={points} />
-        <meshLineMaterial
-          attach="material"
-          transparent
-          depthTest={false}
-          lineWidth={width}
-          color={color}
-          dashArray={0.05}
-          dashRatio={0.95}
-        />
-      </mesh>
-    </Canvas>
+    <mesh raycast={MeshLineRaycast}>
+      <meshLineGeometry points={points} />
+      <meshLineMaterial
+        transparent
+        depthTest={false}
+        lineWidth={width}
+        color={color}
+        dashArray={0.05}
+        dashRatio={0.95} />
+    </mesh>
   )
 }
 ```
 
 Dynamic line widths can be set along each point using the `widthCallback` prop.
 ```jsx
-<meshLine attach='geometry' points={points} widthCallback={pointWidth => pointWidth * Math.random()} />
+<meshLineGeometry points={points} widthCallback={pointWidth => pointWidth * Math.random()} />
 ```
 
 ### TODO ###
