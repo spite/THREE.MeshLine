@@ -149,7 +149,7 @@ THREE.meshline can be used declaritively. This is how it would look like in [rea
 
 ```jsx
 import { extend, Canvas } from 'react-three-fiber'
-import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline'
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'meshline'
 
 extend({ MeshLine, MeshLineMaterial })
 
