@@ -59,14 +59,16 @@ for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100) {
 }
 ```
 
-```MeshLine``` also accepts a ```Geometry``` or ```BufferGeometry``` looking up the vertices in it.
+```MeshLine``` also accepts a ```BufferGeometry``` looking up the vertices in it.
 
 ```js
-const geometry = new THREE.Geometry();
+const points = [];
 for (let j = 0; j < Math.PI; j += 2 * Math.PI / 100) {
-	const v = new THREE.Vector3(Math.cos(j), Math.sin(j), 0);
-	geometry.vertices.push(v);
+  points.push(new THREE.Vector3(Math.cos(j), Math.sin(j), 0));
 }
+const geometry = new THREE.BufferGeometry().setFromPoints(points);
+const line = new MeshLine();
+line.setGeometry(geometry);
 ```
 
 ##### Create a MeshLine and assign the points #####
