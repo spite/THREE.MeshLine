@@ -8,64 +8,64 @@
   var THREE = root.THREE || (has_require && require('three'))
   if (!THREE) throw new Error('MeshLine requires three.js')
 
-  function MeshLine() {
-    THREE.BufferGeometry.call(this)
-    this.type = 'MeshLine'
+  class MeshLine extends THREE.BufferGeometry {
+    constructor()
+    {
+      super();
+      this.isMeshLine = true;
+      this.type = 'MeshLine'
 
-    this.positions = []
+      this.positions = []
 
-    this.previous = []
-    this.next = []
-    this.side = []
-    this.width = []
-    this.indices_array = []
-    this.uvs = []
-    this.counters = []
-    this._points = []
-    this._geom = null
+      this.previous = []
+      this.next = []
+      this.side = []
+      this.width = []
+      this.indices_array = []
+      this.uvs = []
+      this.counters = []
+      this._points = []
+      this._geom = null
 
-    this.widthCallback = null
+      this.widthCallback = null
 
-    // Used to raycast
-    this.matrixWorld = new THREE.Matrix4()
+      // Used to raycast
+      this.matrixWorld = new THREE.Matrix4()
 
-    Object.defineProperties(this, {
-      // this is now a bufferGeometry
-      // add getter to support previous api
-      geometry: {
-        enumerable: true,
-        get: function() {
-          return this
+      Object.defineProperties(this, {
+        // this is now a bufferGeometry
+        // add getter to support previous api
+        geometry: {
+          enumerable: true,
+          get: function() {
+            return this
+          },
         },
-      },
-      geom: {
-        enumerable: true,
-        get: function() {
-          return this._geom
+        geom: {
+          enumerable: true,
+          get: function() {
+            return this._geom
+          },
+          set: function(value) {
+            this.setGeometry(value, this.widthCallback)
+          },
         },
-        set: function(value) {
-          this.setGeometry(value, this.widthCallback)
+        // for declaritive architectures
+        // to return the same value that sets the points
+        // eg. this.points = points
+        // console.log(this.points) -> points
+        points: {
+          enumerable: true,
+          get: function() {
+            return this._points
+          },
+          set: function(value) {
+            this.setPoints(value, this.widthCallback)
+          },
         },
-      },
-      // for declaritive architectures
-      // to return the same value that sets the points
-      // eg. this.points = points
-      // console.log(this.points) -> points
-      points: {
-        enumerable: true,
-        get: function() {
-          return this._points
-        },
-        set: function(value) {
-          this.setPoints(value, this.widthCallback)
-        },
-      },
-    })
+      })
+    }
   }
-
-  MeshLine.prototype = Object.create(THREE.BufferGeometry.prototype)
-  MeshLine.prototype.constructor = MeshLine
-  MeshLine.prototype.isMeshLine = true
 
   MeshLine.prototype.setMatrixWorld = function(matrixWorld) {
     this.matrixWorld = matrixWorld
@@ -78,13 +78,7 @@
 		// as the input geometry are mutated we store them
 		// for later retreival when necessary (declaritive architectures)
 		this._geometry = g;
-		if (g instanceof THREE.Geometry) {
-			this.setPoints(g.vertices, c);
-		} else if (g instanceof THREE.BufferGeometry) {
-			this.setPoints(g.getAttribute("position").array, c);
-		} else {
-			this.setPoints(g, c);
-		}
+        this.setPoints(g.getAttribute("position").array, c);
   }
 
   MeshLine.prototype.setPoints = function(points, wcb) {
@@ -132,6 +126,7 @@
     var geometry = this.geometry
     // Checking boundingSphere distance to ray
 
+    if (!geometry.boundingSphere) geometry.computeBoundingSphere()
     sphere.copy(geometry.boundingSphere)
     sphere.applyMatrix4(this.matrixWorld)
 
@@ -139,7 +134,7 @@
       return
     }
 
-    inverseMatrix.getInverse(this.matrixWorld)
+    inverseMatrix.copy( this.matrixWorld ).invert();
     ray.copy(raycaster.ray).applyMatrix4(inverseMatrix)
 
     var vStart = new THREE.Vector3()
@@ -160,7 +155,7 @@
 
         vStart.fromArray(positions, a * 3)
         vEnd.fromArray(positions, b * 3)
-        var width = widths[Math.floor(i / 3)] != undefined ? widths[Math.floor(i / 3)] : 1
+        var width = widths[Math.floor(i / 3)] !== undefined ? widths[Math.floor(i / 3)] : 1
         var precision = raycaster.params.Line.threshold + (this.material.lineWidth * width) / 2
         var precisionSq = precision * precision
 
@@ -495,188 +490,187 @@
     '}',
   ].join('\n')
 
-  function MeshLineMaterial(parameters) {
-    THREE.ShaderMaterial.call(this, {
-      uniforms: Object.assign({}, THREE.UniformsLib.fog, {
-        lineWidth: { value: 1 },
-        map: { value: null },
-        useMap: { value: 0 },
-        alphaMap: { value: null },
-        useAlphaMap: { value: 0 },
-        color: { value: new THREE.Color(0xffffff) },
-        opacity: { value: 1 },
-        resolution: { value: new THREE.Vector2(1, 1) },
-        sizeAttenuation: { value: 1 },
-        dashArray: { value: 0 },
-        dashOffset: { value: 0 },
-        dashRatio: { value: 0.5 },
-        useDash: { value: 0 },
-        visibility: { value: 1 },
-        alphaTest: { value: 0 },
-        repeat: { value: new THREE.Vector2(1, 1) },
-      }),
+  class MeshLineMaterial extends THREE.ShaderMaterial {
+    constructor(parameters)
+    {
+      super({
+        uniforms: Object.assign({}, THREE.UniformsLib.fog, {
+          lineWidth: { value: 1 },
+          map: { value: null },
+          useMap: { value: 0 },
+          alphaMap: { value: null },
+          useAlphaMap: { value: 0 },
+          color: { value: new THREE.Color(0xffffff) },
+          opacity: { value: 1 },
+          resolution: { value: new THREE.Vector2(1, 1) },
+          sizeAttenuation: { value: 1 },
+          dashArray: { value: 0 },
+          dashOffset: { value: 0 },
+          dashRatio: { value: 0.5 },
+          useDash: { value: 0 },
+          visibility: { value: 1 },
+          alphaTest: { value: 0 },
+          repeat: { value: new THREE.Vector2(1, 1) },
+        }),
 
-      vertexShader: THREE.ShaderChunk.meshline_vert,
+        vertexShader: THREE.ShaderChunk.meshline_vert,
 
-      fragmentShader: THREE.ShaderChunk.meshline_frag,
-    })
+        fragmentShader: THREE.ShaderChunk.meshline_frag,
+      });
+      this.isMeshLineMaterial = true
+      this.type = 'MeshLineMaterial'
 
-    this.type = 'MeshLineMaterial'
+      Object.defineProperties(this, {
+        lineWidth: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.lineWidth.value
+          },
+          set: function(value) {
+            this.uniforms.lineWidth.value = value
+          },
+        },
+        map: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.map.value
+          },
+          set: function(value) {
+            this.uniforms.map.value = value
+          },
+        },
+        useMap: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.useMap.value
+          },
+          set: function(value) {
+            this.uniforms.useMap.value = value
+          },
+        },
+        alphaMap: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.alphaMap.value
+          },
+          set: function(value) {
+            this.uniforms.alphaMap.value = value
+          },
+        },
+        useAlphaMap: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.useAlphaMap.value
+          },
+          set: function(value) {
+            this.uniforms.useAlphaMap.value = value
+          },
+        },
+        color: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.color.value
+          },
+          set: function(value) {
+            this.uniforms.color.value = value
+          },
+        },
+        opacity: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.opacity.value
+          },
+          set: function(value) {
+            this.uniforms.opacity.value = value
+          },
+        },
+        resolution: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.resolution.value
+          },
+          set: function(value) {
+            this.uniforms.resolution.value.copy(value)
+          },
+        },
+        sizeAttenuation: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.sizeAttenuation.value
+          },
+          set: function(value) {
+            this.uniforms.sizeAttenuation.value = value
+          },
+        },
+        dashArray: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.dashArray.value
+          },
+          set: function(value) {
+            this.uniforms.dashArray.value = value
+            this.useDash = value !== 0 ? 1 : 0
+          },
+        },
+        dashOffset: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.dashOffset.value
+          },
+          set: function(value) {
+            this.uniforms.dashOffset.value = value
+          },
+        },
+        dashRatio: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.dashRatio.value
+          },
+          set: function(value) {
+            this.uniforms.dashRatio.value = value
+          },
+        },
+        useDash: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.useDash.value
+          },
+          set: function(value) {
+            this.uniforms.useDash.value = value
+          },
+        },
+        visibility: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.visibility.value
+          },
+          set: function(value) {
+            this.uniforms.visibility.value = value
+          },
+        },
+        alphaTest: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.alphaTest.value
+          },
+          set: function(value) {
+            this.uniforms.alphaTest.value = value
+          },
+        },
+        repeat: {
+          enumerable: true,
+          get: function() {
+            return this.uniforms.repeat.value
+          },
+          set: function(value) {
+            this.uniforms.repeat.value.copy(value)
+          },
+        },
+      })
 
-    Object.defineProperties(this, {
-      lineWidth: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.lineWidth.value
-        },
-        set: function(value) {
-          this.uniforms.lineWidth.value = value
-        },
-      },
-      map: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.map.value
-        },
-        set: function(value) {
-          this.uniforms.map.value = value
-        },
-      },
-      useMap: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.useMap.value
-        },
-        set: function(value) {
-          this.uniforms.useMap.value = value
-        },
-      },
-      alphaMap: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.alphaMap.value
-        },
-        set: function(value) {
-          this.uniforms.alphaMap.value = value
-        },
-      },
-      useAlphaMap: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.useAlphaMap.value
-        },
-        set: function(value) {
-          this.uniforms.useAlphaMap.value = value
-        },
-      },
-      color: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.color.value
-        },
-        set: function(value) {
-          this.uniforms.color.value = value
-        },
-      },
-      opacity: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.opacity.value
-        },
-        set: function(value) {
-          this.uniforms.opacity.value = value
-        },
-      },
-      resolution: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.resolution.value
-        },
-        set: function(value) {
-          this.uniforms.resolution.value.copy(value)
-        },
-      },
-      sizeAttenuation: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.sizeAttenuation.value
-        },
-        set: function(value) {
-          this.uniforms.sizeAttenuation.value = value
-        },
-      },
-      dashArray: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.dashArray.value
-        },
-        set: function(value) {
-          this.uniforms.dashArray.value = value
-          this.useDash = value !== 0 ? 1 : 0
-        },
-      },
-      dashOffset: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.dashOffset.value
-        },
-        set: function(value) {
-          this.uniforms.dashOffset.value = value
-        },
-      },
-      dashRatio: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.dashRatio.value
-        },
-        set: function(value) {
-          this.uniforms.dashRatio.value = value
-        },
-      },
-      useDash: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.useDash.value
-        },
-        set: function(value) {
-          this.uniforms.useDash.value = value
-        },
-      },
-      visibility: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.visibility.value
-        },
-        set: function(value) {
-          this.uniforms.visibility.value = value
-        },
-      },
-      alphaTest: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.alphaTest.value
-        },
-        set: function(value) {
-          this.uniforms.alphaTest.value = value
-        },
-      },
-      repeat: {
-        enumerable: true,
-        get: function() {
-          return this.uniforms.repeat.value
-        },
-        set: function(value) {
-          this.uniforms.repeat.value.copy(value)
-        },
-      },
-    })
-
-    this.setValues(parameters)
+      this.setValues(parameters)
+    }
   }
-
-  MeshLineMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype)
-  MeshLineMaterial.prototype.constructor = MeshLineMaterial
-  MeshLineMaterial.prototype.isMeshLineMaterial = true
 
   MeshLineMaterial.prototype.copy = function(source) {
     THREE.ShaderMaterial.prototype.copy.call(this, source)
