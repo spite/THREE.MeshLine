@@ -100,7 +100,7 @@
 			// and is more performant
 			for (var j = 0; j < points.length; j++) {
 				var p = points[j];
-				var c = j / points.length;
+				var c = j / (points.length - 1)
 				this.positions.push(p.x, p.y, p.z);
 				this.positions.push(p.x, p.y, p.z);
 				this.counters.push(c);
@@ -108,7 +108,7 @@
 			}
 		} else {
 			for (var j = 0; j < points.length; j += 3) {
-				var c = j / points.length;
+				var c = j / (points.length - 1)
 				this.positions.push(points[j], points[j + 1], points[j + 2]);
 				this.positions.push(points[j], points[j + 1], points[j + 2]);
 				this.counters.push(c);
