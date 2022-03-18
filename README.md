@@ -39,19 +39,19 @@ Include script after THREE is included
 ```
 or use npm to install it
 ```
-npm i three.meshline
+npm i meshline
 ```
 and include it in your code (don't forget to require three.js)
 ```js
 const THREE = require('three');
-const MeshLine = require('three.meshline').MeshLine;
-const MeshLineMaterial = require('three.meshline').MeshLineMaterial;
-const MeshLineRaycast = require('three.meshline').MeshLineRaycast;
+const MeshLine = require('meshline').MeshLine;
+const MeshLineMaterial = require('meshline').MeshLineMaterial;
+const MeshLineRaycast = require('meshline').MeshLineRaycast;
 ```
 or
 ```js
 import * as THREE from 'three';
-import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline';
+import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'meshline';
 ```
 
 ##### Create an array of 3D coordinates #####
