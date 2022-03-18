@@ -28,11 +28,13 @@
     }
   },
   "devDependencies": {
-    "@types/three": "^0.129.1",
+    "@types/three": "^0.138.0",
     "typescript": "^4.3.2",
-    "vite": "^2.3.7"
+    "vite": "^2.3.7",
+    "three": "^0.138.0",
   },
-  "dependencies": {
-    "three": "^0.129.0"
-  }
+  "peerDependencies": {
+    "three": ">=0.137"
+  },
+  "dependencies": {}
 }
