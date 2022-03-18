@@ -15,9 +15,6 @@
   "files": [
     "dist", "index.d.ts"
   ],
-  "peerDependencies": {
-    "three": ">=0.126.0"
-  },
   "types": "./index.d.ts",
   "main": "./dist/meshline.umd.js",
   "module": "./dist/meshline.es.js",
@@ -31,7 +28,7 @@
     "@types/three": "^0.138.0",
     "typescript": "^4.3.2",
     "vite": "^2.3.7",
-    "three": "^0.138.0",
+    "three": "^0.138.0"
   },
   "peerDependencies": {
     "three": ">=0.137"
