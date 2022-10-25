@@ -222,14 +222,35 @@
     this.previous.push(v[0], v[1], v[2])
     this.previous.push(v[0], v[1], v[2])
 
+	  
+    this.makeDashArray = function (p,dashObj) {
+      // A function to allow dashed arrays
+      
+      const total = dashObj.dashArray.reduce ((partialSum, a) => partialSum + a, 0);
+      const state = p % total;
+
+      var talley = dashObj.dashArray[0];
+      for (let i = 1; i < dashObj.dashArray.length; i++) {
+        if (state > talley) { // odd even 
+          return dashObj.width * (i % 2);
+        }
+        talley += dashObj.dashArray[i];
+      }
+    }	  
+	  
+	  
     for (var j = 0; j < l; j++) {
       // sides
       this.side.push(1)
       this.side.push(-1)
 
       // widths
-      if (this.widthCallback) w = this.widthCallback(j / (l - 1))
-      else w = 1
+      if (typeof this.widthCallback == 'function') {
+        w = this.widthCallback(j / (l - 1))
+      } else if (typeof this.widthCallback == 'object'){
+        w = this.makeDashArray(j,this.widthCallback)
+      } else w = 1
+	    
       this.width.push(w)
       this.width.push(w)
 
