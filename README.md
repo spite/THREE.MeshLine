@@ -89,6 +89,15 @@ line.setPoints(geometry, p => 2); // makes width 2 * lineWidth
 line.setPoints(geometry, p => 1 - p); // makes width taper
 line.setPoints(geometry, p => 2 + Math.sin(50 * p)); // makes width sinusoidal
 ```
+Should we want to use a dashed array similar to the css command stroke-dasharray, we can supply an object with the number of points we require to be shown / hidden and the total line width:
+
+```js 
+
+const dashObj = { dashArray: [2,4,6,8,2], width:2 } 
+
+const line = new MeshLine ();
+line.setGeometry (geometry, dashObj)
+```
 
 ##### Create a MeshLineMaterial #####
 
