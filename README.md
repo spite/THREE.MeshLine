@@ -3,12 +3,12 @@
 A mesh replacement for `THREE.Line`. Instead of using GL_LINE, it uses a strip of billboarded triangles.
 
 <p align="center">
-  <img width="30%" src="screenshots/demo.jpg" alt=""/>
-  <img width="30%" src="screenshots/graph.jpg" alt=""/>
-  <img width="30%" src="screenshots/spinner.jpg" alt=""/>
-  <img width="30%" src="screenshots/svg.jpg" alt=""/>
-  <img width="30%" src="screenshots/shape.jpg" alt=""/>
-  <img width="30%" src="screenshots/birds.jpg" alt=""/>
+  <img width="32%" src="screenshots/demo.jpg" alt=""/>
+  <img width="32%" src="screenshots/graph.jpg" alt=""/>
+  <img width="32%" src="screenshots/spinner.jpg" alt=""/>
+  <img width="32%" src="screenshots/svg.jpg" alt=""/>
+  <img width="32%" src="screenshots/shape.jpg" alt=""/>
+  <img width="32%" src="screenshots/birds.jpg" alt=""/>
 </p>
 
 ### How to use
