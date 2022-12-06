@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 
-export class MeshLine extends THREE.BufferGeometry {
+export class MeshLineGeometry extends THREE.BufferGeometry {
   constructor()
-  geometry: MeshLine
+  geometry: MeshLineGeometry
   points: Float32Array | Array<number>
   isMeshLine: boolean
 
@@ -52,4 +52,4 @@ export class MeshLineMaterial extends THREE.ShaderMaterial {
   repeat: THREE.Vector2
 }
 
-export function MeshLineRaycast(raycaster: THREE.Raycaster, intersects: THREE.Intersection[]): void
+export function raycast(raycaster: THREE.Raycaster, intersects: THREE.Intersection[]): void

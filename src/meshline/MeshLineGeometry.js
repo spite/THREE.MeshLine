@@ -1,14 +1,31 @@
 import * as THREE from 'three'
-import { MeshLineRaycast } from './raycast'
-import { memcpy } from './utils'
 
-export class MeshLine extends THREE.BufferGeometry {
+function memcpy(src, srcOffset, dst, dstOffset, length) {
+  let i
+  src = src.subarray || src.slice ? src : src.buffer
+  dst = dst.subarray || dst.slice ? dst : dst.buffer
+  src = srcOffset
+    ? src.subarray
+      ? src.subarray(srcOffset, length && srcOffset + length)
+      : src.slice(srcOffset, length && srcOffset + length)
+    : src
+
+  if (dst.set) {
+    dst.set(src, dstOffset)
+  } else {
+    for (i = 0; i < src.length; i++) {
+      dst[i + dstOffset] = src[i]
+    }
+  }
+  return dst
+}
+
+export class MeshLineGeometry extends THREE.BufferGeometry {
   constructor() {
     super()
     this.type = 'MeshLine'
     this.isMeshLine = true
     this.positions = []
-    this.raycast = MeshLineRaycast
     this.previous = []
     this.next = []
     this.side = []
@@ -68,11 +85,9 @@ export class MeshLine extends THREE.BufferGeometry {
   setGeometry(g, c) {
     // as the input geometry are mutated we store them
     // for later retreival when necessary (declaritive architectures)
-    this._geometry = g
     if (g instanceof THREE.BufferGeometry) {
+      this._geometry = g
       this.setPoints(g.getAttribute('position').array, c)
-    } else {
-      this.setPoints(g, c)
     }
   }
 

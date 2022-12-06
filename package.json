@@ -9,26 +9,20 @@
   "homepage": "https://github.com/spite/THREE.MeshLine#readme",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --declaration && vite build ",
+    "build": "vite build && cp ./src/index.d.ts ./dist",
     "serve": "vite preview"
   },
   "files": [
-    "dist", "index.d.ts"
+    "dist"
   ],
-  "types": "./index.d.ts",
-  "main": "./dist/meshline.umd.js",
-  "module": "./dist/meshline.es.js",
-  "exports": {
-    ".": {
-      "import": "./dist/meshline.es.js",
-      "require": "./dist/meshline.umd.js"
-    }
-  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "devDependencies": {
-    "@types/three": "^0.138.0",
-    "typescript": "^4.3.2",
-    "vite": "^2.3.7",
-    "three": "^0.138.0"
+    "@types/three": "^0.146.0",
+    "typescript": "^4.9.3",
+    "vite": "^3.2.5",
+    "three": "^0.147.0"
   },
   "peerDependencies": {
     "three": ">=0.137"

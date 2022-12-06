@@ -1,6 +1,0 @@
-*{ box-sizing: border-box; margin :0; padding: 0;}
-body{ overflow: hidden; font-family: Lato, sans-serif; width: 100%; height: 100% ; background-color: #dedede; color: #202020; padding: 20px; text-shadow: 0 1px 0 rgba(255,255,255,.5);}
-#container{ position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100%; border: 1px solid transparent;}
-h1{ font-weight: 300; font-style: italic; font-size: 24px; margin-bottom: .5em;}
-#title{ position: absolute; left: 20px; top: 20px;}
-#directions{ position: absolute; left: 0; top: 50%; right: 0; text-align: center; margin-top: -2em; font-style: italic; font-size: 4vw; pointer-events: none; transition: opacity 250ms ease-out;}
