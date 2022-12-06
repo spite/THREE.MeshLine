@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-export function MeshLineRaycast(raycaster, intersects) {
+export function raycast(raycaster, intersects) {
   const inverseMatrix = new THREE.Matrix4()
   const ray = new THREE.Ray()
   const sphere = new THREE.Sphere()
@@ -11,10 +11,9 @@ export function MeshLineRaycast(raycaster, intersects) {
   sphere.copy(geometry.boundingSphere)
   sphere.applyMatrix4(this.matrixWorld)
 
-  if (raycaster.ray.intersectSphere(sphere, interRay) === false) {
-    return
-  }
-  inverseMatrix.copy( this.matrixWorld ).invert();
+  if (raycaster.ray.intersectSphere(sphere, interRay) === false) return
+
+  inverseMatrix.copy(this.matrixWorld).invert()
   ray.copy(raycaster.ray).applyMatrix4(inverseMatrix)
 
   const vStart = new THREE.Vector3()
@@ -46,7 +45,6 @@ export function MeshLineRaycast(raycaster, intersects) {
       interRay.applyMatrix4(this.matrixWorld) //Move back to world space for distance calculation
 
       const distance = raycaster.ray.origin.distanceTo(interRay)
-
       if (distance < raycaster.near || distance > raycaster.far) continue
 
       intersects.push({
@@ -57,7 +55,7 @@ export function MeshLineRaycast(raycaster, intersects) {
         index: i,
         face: null,
         faceIndex: null,
-        object: this
+        object: this,
       })
       // make event only fire once
       i = l

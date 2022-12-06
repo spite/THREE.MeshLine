@@ -1,3 +1,21 @@
-node_modules
+node_modules/
+coverage/
+dist/
+build/
+types/
+# commit types in src
+!packages/*/src/types/
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
 .DS_Store
+.vscode
+.docz/
 *.local
+package-lock.json
+coverage/
+.idea
+yarn-error.log
+.size-snapshot.json
+__tests__/__image_snapshots__/__diff_output__
