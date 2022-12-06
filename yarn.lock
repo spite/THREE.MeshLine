@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@types/three@^0.129.1":
-  version "0.129.1"
-  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.129.1.tgz#e488e686132256dfd61cffd4d97ea6cf176a4a8d"
-  integrity sha512-31VTcjAQNggIrCH9NVotTYsr5Ws/QMGGTaMK6RP3EgyzW2WEuZdm25TNidd6PJ3e4a6/hbswNacnTsjwc7ksbw==
+"@types/three@^0.138.0":
+  version "0.138.0"
+  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.138.0.tgz#ec9f1d1fd8dffea2e0572f9d815ff5a35cf4dc6b"
+  integrity sha512-D8AoV7h2kbCfrv/DcebHOFh1WDwyus3HdooBkAwcBikXArdqnsQ38PQ85JCunnvun160oA9jz53GszF3zch3tg==
 
 colorette@^1.2.2:
   version "1.2.2"
@@ -80,10 +80,10 @@ source-map-js@^0.6.2:
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-0.6.2.tgz#0bb5de631b41cfbda6cfba8bd05a80efdfd2385e"
   integrity sha512-/3GptzWzu0+0MBQFrDKzw/DvvMTUORvgY6k6jd/VS6iCR4RDTKWH6v6WPwQoUO8667uQEf9Oe38DxAYWY5F/Ug==
 
-three@^0.129.0:
-  version "0.129.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.129.0.tgz#f5e530bbc96eac5d5b4749cb5da886ef0d42f554"
-  integrity sha512-wiWio1yVRg2Oj6WEWsTHQo5eSzYpEwSBtPSi3OofNpvFbf26HFfb9kw4FZJNjII4qxzp0b1xLB11+tKkBGB1ZA==
+three@^0.138.0:
+  version "0.138.3"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.138.3.tgz#7be5153d79dcbf9e9baad82e7faf8c29edda4ed0"
+  integrity sha512-4t1cKC8gimNyJChJbaklg8W/qj3PpsLJUIFm5LIuAy/hVxxNm1ru2FGTSfbTSsuHmC/7ipsyuGKqrSAKLNtkzg==
 
 typescript@^4.3.2:
   version "4.3.2"

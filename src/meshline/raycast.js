@@ -14,7 +14,7 @@ export function MeshLineRaycast(raycaster, intersects) {
   if (raycaster.ray.intersectSphere(sphere, interRay) === false) {
     return
   }
-  inverseMatrix.copy( this.matrixWorld ).invert();
+  inverseMatrix.copy(this.matrixWorld).invert()
   ray.copy(raycaster.ray).applyMatrix4(inverseMatrix)
 
   const vStart = new THREE.Vector3()
@@ -57,7 +57,7 @@ export function MeshLineRaycast(raycaster, intersects) {
         index: i,
         face: null,
         faceIndex: null,
-        object: this
+        object: this,
       })
       // make event only fire once
       i = l

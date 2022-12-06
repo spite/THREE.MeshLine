@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import { MeshLineRaycast } from "./raycast"
-import { memcpy } from "./utils"
+import { MeshLineRaycast } from './raycast'
+import { memcpy } from './utils'
 
 export class MeshLine extends THREE.BufferGeometry {
   constructor() {
@@ -31,7 +31,7 @@ export class MeshLine extends THREE.BufferGeometry {
         enumerable: true,
         get() {
           return this
-        }
+        },
       },
       geom: {
         enumerable: true,
@@ -40,7 +40,7 @@ export class MeshLine extends THREE.BufferGeometry {
         },
         set(value) {
           this.setGeometry(value, this.widthCallback)
-        }
+        },
       },
       // for declaritive architectures
       // to return the same value that sets the points
@@ -53,8 +53,8 @@ export class MeshLine extends THREE.BufferGeometry {
         },
         set(value) {
           this.setPoints(value, this.widthCallback)
-        }
-      }
+        },
+      },
     })
   }
 
@@ -114,7 +114,11 @@ export class MeshLine extends THREE.BufferGeometry {
   compareV3(a, b) {
     const aa = a * 6
     const ab = b * 6
-    return this.positions[aa] === this.positions[ab] && this.positions[aa + 1] === this.positions[ab + 1] && this.positions[aa + 2] === this.positions[ab + 2]
+    return (
+      this.positions[aa] === this.positions[ab] &&
+      this.positions[aa + 1] === this.positions[ab + 1] &&
+      this.positions[aa + 2] === this.positions[ab + 2]
+    )
   }
 
   copyV3(a) {
@@ -198,7 +202,7 @@ export class MeshLine extends THREE.BufferGeometry {
         width: new THREE.BufferAttribute(new Float32Array(this.width), 1),
         uv: new THREE.BufferAttribute(new Float32Array(this.uvs), 2),
         index: new THREE.BufferAttribute(new Uint16Array(this.indices_array), 1),
-        counters: new THREE.BufferAttribute(new Float32Array(this.counters), 1)
+        counters: new THREE.BufferAttribute(new Float32Array(this.counters), 1),
       }
     } else {
       this._attributes.position.copyArray(new Float32Array(this.positions))
@@ -269,4 +273,3 @@ export class MeshLine extends THREE.BufferGeometry {
     this._attributes.next.needsUpdate = true
   }
 }
-

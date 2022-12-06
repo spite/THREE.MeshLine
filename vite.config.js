@@ -4,7 +4,7 @@ module.exports = {
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/main.js'),
-      name: 'MeshLine'
+      name: 'MeshLine',
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
@@ -15,8 +15,8 @@ module.exports = {
         // for externalized deps
         globals: {
           three: 'THREE',
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 }
