@@ -82,7 +82,7 @@ By default it's a white material of width 1 unit.
 * `dashOffset` - defines the location where the dash will begin. Ideal to animate the line.
 * `dashRatio` - defines the ratio between that is visible or not (0 - more visible, 1 - more invisible).
 * `resolution` - `THREE.Vector2` specifying the canvas size (REQUIRED)
-* `sizeAttenuation` - constant lineWidth regardless of distance (1 is 1px on screen) (0 - attenuate, 1 - don't attenuate)
+* `sizeAttenuation` - constant lineWidth regardless of distance (1 is 1px on screen) (0 - attenuate, 1 - don't)
 * `lineWidth` - float defining width (if `sizeAttenuation` is true, it's world units; else is screen pixels)
 
 If you're rendering transparent lines or using a texture with alpha map, you should set `depthTest` to `false`, `transparent` to `true` and `blending` to an appropriate blending mode, or use `alphaTest`.
