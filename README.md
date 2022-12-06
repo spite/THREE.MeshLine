@@ -52,7 +52,7 @@ geometry.setPoints(geometry, p => 1 - p) // makes width taper
 geometry.setPoints(geometry, p => 2 + Math.sin(50 * p)) // makes width sinusoidal
 ```
 
-Cou can also provider a `BufferGeometry` by calling `.setGeometry()` instead.
+Cou can also provide a `BufferGeometry` by calling `.setGeometry()` instead.
 
 ```jsx
 geometry.setGeometry(myGeometry)
