@@ -1,6 +1,6 @@
 # MeshLine
 
-A mesh replacement for `THREE.Line`. Instead of using GL_LINE, it uses a strip of billboarded triangles.
+A mesh replacement for `THREE.Line`. Instead of using GL_LINE, it uses a strip of billboarded triangles. This is a fork of [spite/THREE.MeshLine](https://github.com/spite/THREE.MeshLine).
 
 <p align="center">
   <img width="32%" src="screenshots/demo.jpg" alt=""/>
