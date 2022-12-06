@@ -108,11 +108,6 @@ mesh.raycast = raycast
 
 Meshline can be used declaritively. This is how it would look like in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-three.meshline-example-vl221).
 
-<p align="center">
-	<a href="https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221"><img width="432" height="240" src="https://imgur.com/mZikTAH.gif" /></a>
-	<a href="https://codesandbox.io/s/threejs-meshline-custom-spring-3-ypkxx"><img width="432" height="240" src="https://imgur.com/g8ts0vJ.gif" /></a>
-</p>
-
 ```jsx
 import { Canvas, extend } from '@react-three/fiber'
 import { MeshLineGeometry, MeshLineMaterial, raycast } from 'meshline'
