@@ -60,7 +60,7 @@ THREE.ShaderChunk['meshline_vert'] = `
     //vec2 normal = (cross(vec3(dir, 0.), vec3(0., 0., 1.))).xy;
     vec4 normal = vec4(-dir.y, dir.x, 0., 1.);
     normal.xy *= .5 * w;
-    normal *= projectionMatrix;
+    //normal *= projectionMatrix;
     if (sizeAttenuation == 0.) {
       normal.xy *= finalPosition.w;
       normal.xy /= (vec4(resolution, 0., 1.) * projectionMatrix).xy;
