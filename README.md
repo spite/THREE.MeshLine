@@ -42,20 +42,22 @@ const geometry = new MeshLineGeometry()
 geometry.setPoints(points)
 ```
 
-Note: `.setPoints` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 * lineWidth in the material.
+Note: `.setPoints` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 \* lineWidth in the material.
 
 ```jsx
 // p is a decimal percentage of the number of points
 // ie. point 200 of 250 points, p = 0.8
-geometry.setPoints(geometry, p => 2) // makes width 2 * lineWidth
-geometry.setPoints(geometry, p => 1 - p) // makes width taper
-geometry.setPoints(geometry, p => 2 + Math.sin(50 * p)) // makes width sinusoidal
+geometry.setPoints(points, (p) => 2) // makes width 2 * lineWidth
+geometry.setPoints(points, (p) => 1 - p) // makes width taper
+geometry.setPoints(points, (p) => 2 + Math.sin(50 * p)) // makes width sinusoidal
 ```
 
 Cou can also provide a `BufferGeometry` by calling `.setGeometry()` instead.
 
 ```jsx
 geometry.setGeometry(myGeometry)
+geometry.setGeometry(myGeometry, (p) => 2)
+geometry.setGeometry(myGeometry, { dashArray: [2, 4, 6, 8, 2], width: 2 })
 ```
 
 ##### Create a MeshLineMaterial
@@ -70,20 +72,20 @@ By default it's a white material of width 1 unit.
 
 `MeshLineMaterial` has several attributes to control the appereance of the `MeshLine`:
 
-* `map` - a `THREE.Texture` to paint along the line (requires `useMap` set to true)
-* `useMap` - tells the material to use `map` (0 - solid color, 1 use texture)
-* `alphaMap` - a `THREE.Texture` to use as alpha along the line (requires `useAlphaMap` set to true)
-* `useAlphaMap` - tells the material to use `alphaMap` (0 - no alpha, 1 modulate alpha)
-* `repeat` - THREE.Vector2 to define the texture tiling (applies to map and alphaMap)
-* `color` - `THREE.Color` to paint the line width, or tint the texture with
-* `opacity` - alpha value from 0 to 1 (requires `transparent` set to `true`)
-* `alphaTest` - cutoff value from 0 to 1
-* `dashArray` - the length and space between dashes. (0 - no dash)
-* `dashOffset` - defines the location where the dash will begin. Ideal to animate the line.
-* `dashRatio` - defines the ratio between that is visible or not (0 - more visible, 1 - more invisible).
-* `resolution` - `THREE.Vector2` specifying the canvas size (REQUIRED)
-* `sizeAttenuation` - constant lineWidth regardless of distance (1 is 1px on screen) (0 - attenuate, 1 - don't)
-* `lineWidth` - float defining width (if `sizeAttenuation` is true, it's world units; else is screen pixels)
+- `map` - a `THREE.Texture` to paint along the line (requires `useMap` set to true)
+- `useMap` - tells the material to use `map` (0 - solid color, 1 use texture)
+- `alphaMap` - a `THREE.Texture` to use as alpha along the line (requires `useAlphaMap` set to true)
+- `useAlphaMap` - tells the material to use `alphaMap` (0 - no alpha, 1 modulate alpha)
+- `repeat` - THREE.Vector2 to define the texture tiling (applies to map and alphaMap)
+- `color` - `THREE.Color` to paint the line width, or tint the texture with
+- `opacity` - alpha value from 0 to 1 (requires `transparent` set to `true`)
+- `alphaTest` - cutoff value from 0 to 1
+- `dashArray` - the length and space between dashes. (0 - no dash)
+- `dashOffset` - defines the location where the dash will begin. Ideal to animate the line.
+- `dashRatio` - defines the ratio between that is visible or not (0 - more visible, 1 - more invisible).
+- `resolution` - `THREE.Vector2` specifying the canvas size (REQUIRED)
+- `sizeAttenuation` - constant lineWidth regardless of distance (1 is 1px on screen) (0 - attenuate, 1 - don't)
+- `lineWidth` - float defining width (if `sizeAttenuation` is true, it's world units; else is screen pixels)
 
 If you're rendering transparent lines or using a texture with alpha map, you should set `depthTest` to `false`, `transparent` to `true` and `blending` to an appropriate blending mode, or use `alphaTest`.
 
@@ -118,12 +120,12 @@ import { MeshLineGeometry, MeshLineMaterial, raycast } from 'meshline'
 
 extend({ MeshLine, MeshLineMaterial })
 
-function Line({ points, width, color }) {  
+function Line({ points, width, color }) {
   return (
     <Canvas>
       <mesh raycast={raycast}>
         <meshLineGeometry points={points} />
-        <meshLineMaterial          
+        <meshLineMaterial
           transparent
           depthTest={false}
           lineWidth={width}
@@ -140,7 +142,7 @@ function Line({ points, width, color }) {
 Dynamic line widths can be set along each point using the `widthCallback` prop.
 
 ```jsx
-<meshLineGeometry points={points} widthCallback={pointWidth => pointWidth * Math.random()} />
+<meshLineGeometry points={points} widthCallback={(p) => p * Math.random()} />
 ```
 
 ##### Types
@@ -151,7 +153,7 @@ Add these declarations to your entry point.
 import { Object3DNode, MaterialNode } from '@react-three/fiber'
 
 declare module '@react-three/fiber' {
-  interface ThreeElements {    
+  interface ThreeElements {
     meshLineGeometry: Object3DNode<MeshLineGeometry, typeof MeshLineGeometry>
     meshLineMaterial: MaterialNode<MeshLineMaterial, typeof MeshLineMaterial>
   }
@@ -160,6 +162,6 @@ declare module '@react-three/fiber' {
 
 ### References
 
-* [Drawing lines is hard](http://mattdesl.svbtle.com/drawing-lines-is-hard)
-* [WebGL rendering of solid trails](http://codeflow.org/entries/2012/aug/05/webgl-rendering-of-solid-trails/)
-* [Drawing Antialiased Lines with OpenGL](https://www.mapbox.com/blog/drawing-antialiased-lines/)
+- [Drawing lines is hard](http://mattdesl.svbtle.com/drawing-lines-is-hard)
+- [WebGL rendering of solid trails](http://codeflow.org/entries/2012/aug/05/webgl-rendering-of-solid-trails/)
+- [Drawing Antialiased Lines with OpenGL](https://www.mapbox.com/blog/drawing-antialiased-lines/)
