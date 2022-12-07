@@ -57,7 +57,6 @@ Cou can also provide a `BufferGeometry` by calling `.setGeometry()` instead.
 ```jsx
 geometry.setGeometry(myGeometry)
 geometry.setGeometry(myGeometry, (p) => 2)
-geometry.setGeometry(myGeometry, { dashArray: [2, 4, 6, 8, 2], width: 2 })
 ```
 
 ##### Create a MeshLineMaterial
