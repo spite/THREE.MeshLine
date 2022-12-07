@@ -6,10 +6,15 @@ module.exports = {
       entry: path.resolve(__dirname, 'src/index.js'),
       name: 'MeshLine',
       fileName: 'index',
-      formats: ['es', 'cjs'],
+      formats: ['es', 'cjs', 'umd'],
     },
     rollupOptions: {
       external: ['three'],
+      output: {
+        globals: {
+          three: 'THREE',
+        },
+      },
     },
   },
 }
