@@ -96,7 +96,9 @@ const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 ```
 
-You can optionally add raycast support with the following.
+##### Add raycast support
+
+Raycast can be optionally added by overwriting `mesh.raycast` with the one that meshline provides.
 
 ```jsx
 import { raycast } from 'meshline'
