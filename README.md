@@ -139,6 +139,21 @@ Dynamic line widths can be set along each point using the `widthCallback` prop.
 <meshLineGeometry points={points} widthCallback={pointWidth => pointWidth * Math.random()} />
 ```
 
+##### Types
+
+Add these declarations to your entry point.
+
+```tsx
+import { ReactThreeFiber } from '@react-three/fiber'
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {    
+    meshLineGeometry: ReactThreeFiber.Object3DNode<MeshLineGeometry, typeof MeshLineGeometry>
+    meshLineMaterial: ReactThreeFiber.Object3DNode<MeshLineMaterial, typeof MeshLineMaterial>
+  }
+}
+```
+
 ### References
 
 * [Drawing lines is hard](http://mattdesl.svbtle.com/drawing-lines-is-hard)
