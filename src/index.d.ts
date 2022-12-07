@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 export class MeshLineGeometry extends THREE.BufferGeometry {
   constructor()
-  geometry: MeshLineGeometry
+  geometry: THREE.BufferGeometry
   points: Float32Array | Array<number>
   isMeshLine: boolean
 

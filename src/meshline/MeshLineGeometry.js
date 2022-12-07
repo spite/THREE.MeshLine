@@ -42,15 +42,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     this.matrixWorld = new THREE.Matrix4()
 
     Object.defineProperties(this, {
-      // this is now a bufferGeometry
-      // add getter to support previous api
       geometry: {
-        enumerable: true,
-        get() {
-          return this
-        },
-      },
-      geom: {
         enumerable: true,
         get() {
           return this._geom
@@ -59,10 +51,6 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
           this.setGeometry(value, this.widthCallback)
         },
       },
-      // for declaritive architectures
-      // to return the same value that sets the points
-      // eg. this.points = points
-      // console.log(this.points) -> points
       points: {
         enumerable: true,
         get() {

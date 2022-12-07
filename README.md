@@ -110,6 +110,8 @@ mesh.raycast = raycast
 
 Meshline can be used declaritively. This is how it would look like in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-three.meshline-example-vl221).
 
+`MeshLineGeometry` has two convenience setter/getters, `points`, which accepts a `Float32Array` or an `Array<number>`, and `geometry`, which accepts a `BufferGeometry`. You don't have to explicitely call `.setPoints` or `.setGeometry`.
+
 ```jsx
 import { Canvas, extend } from '@react-three/fiber'
 import { MeshLineGeometry, MeshLineMaterial, raycast } from 'meshline'
