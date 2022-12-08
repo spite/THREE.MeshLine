@@ -15,8 +15,9 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "devDependencies": {
     "@types/three": "^0.146.0",

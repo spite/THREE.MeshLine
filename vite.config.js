@@ -1,10 +1,9 @@
-const path = require('path')
+import { defineConfig } from 'vite'
 
-module.exports = {
+export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.js'),
-      name: 'MeshLine',
+      entry: 'src/index.js',
       fileName: 'index',
       formats: ['es', 'cjs'],
     },
@@ -12,4 +11,4 @@ module.exports = {
       external: ['three'],
     },
   },
-}
+})
