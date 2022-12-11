@@ -22,23 +22,26 @@ import * as THREE from 'three'
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 ```
 
-##### Create an array of 3D coordinates
+##### Create a MeshLine
 
-First, create the list of numbers that will define the 3D points for the line.
+Create a `MeshLineGeometry` instance.
+
+```jsx
+const geometry = new MeshLineGeometry()
+```
+
+##### Create and assign points
+
+Pass a list of points into `.setPoints()`. Expected inputs are:
+
+- `Float32Array`
+- `Array<THREE.Vector3 | THREE.Vector2 | [number, number, number] | [number, number] | number>`
 
 ```jsx
 const points = []
 for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100) {
   points.push(Math.cos(j), Math.sin(j), 0)
 }
-```
-
-##### Create a MeshLine and assign the points
-
-Once you have that, you can create a new `MeshLineGeometry`, and call `.setPoints()` passing the list of points.
-
-```jsx
-const geometry = new MeshLineGeometry()
 geometry.setPoints(points)
 ```
 

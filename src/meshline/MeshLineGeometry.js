@@ -20,6 +20,24 @@ function memcpy(src, srcOffset, dst, dstOffset, length) {
   return dst
 }
 
+function convertPoints(points) {
+  if (points instanceof Float32Array) return points
+  return points
+    .map((p) => {
+      const isArray = Array.isArray(p)
+      return p instanceof THREE.Vector3
+        ? [p.x, p.y, p.z]
+        : p instanceof THREE.Vector2
+        ? [p.x, p.y, 0]
+        : isArray && p.length === 3
+        ? [p[0], p[1], p[2]]
+        : isArray && p.length === 2
+        ? [p[0], p[1], 0]
+        : p
+    })
+    .flat()
+}
+
 export class MeshLineGeometry extends THREE.BufferGeometry {
   constructor() {
     super()
@@ -78,8 +96,9 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
       this.setPoints(g.getAttribute('position').array, c)
     }
   }
-
+  
   setPoints(points, wcb) {
+    points = convertPoints(points)
     if (!(points instanceof Float32Array) && !(points instanceof Array)) {
       console.error('ERROR: The BufferArray of points is not instancied correctly.')
       return

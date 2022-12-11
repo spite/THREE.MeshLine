@@ -3,10 +3,13 @@ import * as THREE from 'three'
 export class MeshLineGeometry extends THREE.BufferGeometry {
   constructor()
   geometry: THREE.BufferGeometry
-  points: Float32Array | Array<number>
+  points: Float32Array | Array<THREE.Vector3 | THREE.Vector2 | [number, number, number] | [number, number] | number>
   isMeshLine: boolean
 
-  setPoints(points: Float32Array | Array<number>, wcb?: (p: number) => any): void
+  setPoints(
+    points: Float32Array | Array<THREE.Vector3 | THREE.Vector2 | [number, number, number] | [number, number] | number>,
+    wcb?: (p: number) => any,
+  ): void
   setMatrixWorld(matrixWorld: THREE.Matrix4): void
   setGeometry(g: THREE.BufferGeometry, c: (p: number) => any): void
   raycast: (raycaster: THREE.Raycaster, intersects: THREE.Intersection[]) => void
