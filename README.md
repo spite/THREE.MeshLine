@@ -114,7 +114,7 @@ mesh.raycast = raycast
 
 Meshline can be used declaritively. This is how it would look like in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-three.meshline-example-vl221).
 
-`MeshLineGeometry` has two convenience setter/getters, `points`, which accepts a `Float32Array` or an `Array<number>`, and `geometry`, which accepts a `BufferGeometry`. You don't have to explicitely call `.setPoints` or `.setGeometry`.
+`MeshLineGeometry` has two convenience setter/getters, `points` for `.setPoints()`, and `geometry` for `.setGeometry()`.
 
 ```jsx
 import { Canvas, extend } from '@react-three/fiber'
@@ -141,7 +141,7 @@ function Line({ points, width, color }) {
 }
 ```
 
-Dynamic line widths can be set along each point using the `widthCallback` prop.
+Dynamic line widths can be set for each point using the `widthCallback` prop.
 
 ```jsx
 <meshLineGeometry points={points} widthCallback={(p) => p * Math.random()} />
