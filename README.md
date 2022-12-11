@@ -24,8 +24,6 @@ import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 
 ##### Create a MeshLine
 
-Create a `MeshLineGeometry` instance.
-
 ```jsx
 const geometry = new MeshLineGeometry()
 ```
