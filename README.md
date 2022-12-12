@@ -133,13 +133,15 @@ function Line({ points, width, color }) {
 }
 ```
 
+#### Variable line widths
+
 Variable line widths can be set for each point using the `widthCallback` prop.
 
 ```jsx
 <meshLineGeometry points={points} widthCallback={(p) => p * Math.random()} />
 ```
 
-### Types
+#### Types
 
 Add these declarations to your entry point.
 
