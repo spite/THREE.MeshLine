@@ -1,6 +1,11 @@
 import * as THREE from 'three'
+import type { MeshLineMaterial } from './MeshLineMaterial'
 
-export function raycast(raycaster, intersects) {
+export function raycast(
+  this: THREE.Mesh<THREE.BufferGeometry, MeshLineMaterial>,
+  raycaster: THREE.Raycaster,
+  intersects: THREE.Intersection[],
+): void {
   const inverseMatrix = new THREE.Matrix4()
   const ray = new THREE.Ray()
   const sphere = new THREE.Sphere()
@@ -8,10 +13,10 @@ export function raycast(raycaster, intersects) {
   const geometry = this.geometry
   // Checking boundingSphere distance to ray
 
-  sphere.copy(geometry.boundingSphere)
+  sphere.copy(geometry.boundingSphere!)
   sphere.applyMatrix4(this.matrixWorld)
 
-  if (raycaster.ray.intersectSphere(sphere, interRay) === false) return
+  if (!raycaster.ray.intersectSphere(sphere, interRay)) return
 
   inverseMatrix.copy(this.matrixWorld).invert()
   ray.copy(raycaster.ray).applyMatrix4(inverseMatrix)
@@ -35,7 +40,7 @@ export function raycast(raycaster, intersects) {
       vStart.fromArray(positions, a * 3)
       vEnd.fromArray(positions, b * 3)
       const width = widths[Math.floor(i / 3)] != undefined ? widths[Math.floor(i / 3)] : 1
-      const precision = raycaster.params.Line.threshold + (this.material.lineWidth * width) / 2
+      const precision = raycaster.params.Line!.threshold + (this.material.lineWidth * width) / 2
       const precisionSq = precision * precision
 
       const distSq = ray.distanceSqToSegment(vStart, vEnd, interRay, interSegment)
@@ -54,7 +59,7 @@ export function raycast(raycaster, intersects) {
         point: interSegment.clone().applyMatrix4(this.matrixWorld),
         index: i,
         face: null,
-        faceIndex: null,
+        faceIndex: undefined,
         object: this,
       })
       // make event only fire once
