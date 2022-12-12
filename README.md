@@ -22,7 +22,7 @@ import * as THREE from 'three'
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 ```
 
-##### Create a MeshLine
+#### Create a geometry
 
 ```jsx
 const geometry = new MeshLineGeometry()
@@ -53,16 +53,14 @@ geometry.setPoints(points, (p) => 1 - p) // makes width taper
 geometry.setPoints(points, (p) => 2 + Math.sin(50 * p)) // makes width sinusoidal
 ```
 
-You can also provide a `BufferGeometry` by calling `.setGeometry()` instead.
+##### Alternatively, pass a BufferGeometry
 
 ```jsx
 geometry.setGeometry(myGeometry)
 geometry.setGeometry(myGeometry, (p) => 2)
 ```
 
-##### Create a MeshLineMaterial
-
-`MeshLineGeometry` needs to be paired with `MeshLineMaterial`.
+#### Create a material
 
 ```jsx
 const material = new MeshLineMaterial(options)
@@ -70,7 +68,7 @@ const material = new MeshLineMaterial(options)
 
 By default it's a white material of width 1 unit.
 
-`MeshLineMaterial` has several attributes to control the appereance of the `MeshLine`:
+`MeshLineMaterial` has several attributes to control the appereance:
 
 - `map` - a `THREE.Texture` to paint along the line (requires `useMap` set to true)
 - `useMap` - tells the material to use `map` (0 - solid color, 1 use texture)
@@ -89,16 +87,14 @@ By default it's a white material of width 1 unit.
 
 If you're rendering transparent lines or using a texture with alpha map, you should set `depthTest` to `false`, `transparent` to `true` and `blending` to an appropriate blending mode, or use `alphaTest`.
 
-##### Use MeshLine and MeshLineMaterial to create a THREE.Mesh
-
-Finally, we create a mesh and add it to the scene:
+#### Finally, create a THREE.Mesh
 
 ```jsx
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 ```
 
-##### Add raycast support
+### Raycasting
 
 Raycast can be optionally added by overwriting `mesh.raycast` with the one that meshline provides.
 
@@ -145,7 +141,7 @@ Dynamic line widths can be set for each point using the `widthCallback` prop.
 <meshLineGeometry points={points} widthCallback={(p) => p * Math.random()} />
 ```
 
-##### Types
+### Types
 
 Add these declarations to your entry point.
 
