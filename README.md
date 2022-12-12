@@ -20,6 +20,12 @@ npm install meshline
 ```jsx
 import * as THREE from 'three'
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
+
+const geometry = new MeshLineGeometry()
+geometry.setPoints([...])
+const material = new MeshLineMaterial({ ... })
+const mesh = new THREE.Mesh(geometry, material)
+scene.add(mesh)
 ```
 
 #### Create a geometry
@@ -28,7 +34,7 @@ import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 const geometry = new MeshLineGeometry()
 ```
 
-##### Create and assign points
+##### Assign points
 
 Pass a list of points into `.setPoints()`. Expected inputs are:
 
@@ -87,7 +93,7 @@ By default it's a white material of width 1 unit.
 
 If you're rendering transparent lines or using a texture with alpha map, you should set `depthTest` to `false`, `transparent` to `true` and `blending` to an appropriate blending mode, or use `alphaTest`.
 
-#### Finally, create a THREE.Mesh
+#### Form a mesh
 
 ```jsx
 const mesh = new THREE.Mesh(geometry, material)
