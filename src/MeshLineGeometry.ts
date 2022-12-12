@@ -79,7 +79,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
   // Used to raycast
   matrixWorld = new THREE.Matrix4()
 
-  geometry!: THREE.BufferGeometry | null
+  geometry!: THREE.BufferGeometry | null
   points!: Float32Array | number[]
 
   constructor() {
@@ -243,7 +243,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
 
     // redefining the attribute seems to prevent range errors
     // if the user sets a differing number of vertices
-    if (!this.attributes || this.attributes.position.count !== this.positions.length) {
+    /*if (!this.attributes || this.attributes.position.count !== this.positions.length) {
       this.attributes = {
         position: new THREE.BufferAttribute(new Float32Array(this.positions), 3),
         previous: new THREE.BufferAttribute(new Float32Array(this.previous), 3),
@@ -277,7 +277,43 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
       uv.needsUpdate = true
       index.copyArray(new Uint16Array(this.indices_array))
       index.needsUpdate = true
+    }*/
+
+    if (!this.attributes || this.attributes.position.count !== this.positions.length) {
+      this.attributes = {
+        position: new THREE.BufferAttribute(new Float32Array(this.positions), 3),
+        previous: new THREE.BufferAttribute(new Float32Array(this.previous), 3),
+        next: new THREE.BufferAttribute(new Float32Array(this.next), 3),
+        side: new THREE.BufferAttribute(new Float32Array(this.side), 1),
+        width: new THREE.BufferAttribute(new Float32Array(this.width), 1),
+        uv: new THREE.BufferAttribute(new Float32Array(this.uvs), 2),
+        index: new THREE.BufferAttribute(new Uint16Array(this.indices_array), 1),
+        counters: new THREE.BufferAttribute(new Float32Array(this.counters), 1),
+      }
+    } else {
+      ;(this.attributes.position as THREE.BufferAttribute).copyArray(new Float32Array(this.positions))
+      this.attributes.position.needsUpdate = true
+      ;(this.attributes.previous as THREE.BufferAttribute).copyArray(new Float32Array(this.previous))
+      this.attributes.previous.needsUpdate = true
+      ;(this.attributes.next as THREE.BufferAttribute).copyArray(new Float32Array(this.next))
+      this.attributes.next.needsUpdate = true
+      ;(this.attributes.side as THREE.BufferAttribute).copyArray(new Float32Array(this.side))
+      this.attributes.side.needsUpdate = true
+      ;(this.attributes.width as THREE.BufferAttribute).copyArray(new Float32Array(this.width))
+      this.attributes.width.needsUpdate = true
+      ;(this.attributes.uv as THREE.BufferAttribute).copyArray(new Float32Array(this.uvs))
+      this.attributes.uv.needsUpdate = true
+      ;(this.attributes.index as THREE.BufferAttribute).copyArray(new Uint16Array(this.indices_array))
+      this.attributes.index.needsUpdate = true
     }
+
+    this.setAttribute('position', this.attributes.position)
+    this.setAttribute('previous', this.attributes.previous)
+    this.setAttribute('next', this.attributes.next)
+    this.setAttribute('side', this.attributes.side)
+    this.setAttribute('width', this.attributes.width)
+    this.setAttribute('uv', this.attributes.uv)
+    this.setAttribute('counters', this.attributes.counters)
 
     this.setAttribute('position', this.attributes.position)
     this.setAttribute('previous', this.attributes.previous)
