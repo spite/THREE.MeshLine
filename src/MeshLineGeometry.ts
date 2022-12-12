@@ -73,11 +73,14 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
   counters: number[] = []
   widthCallback: WidthCallback | null = null
 
+  _points: Float32Array | number[] = []
+  _geometry: THREE.BufferGeometry | null = null
+
   // Used to raycast
   matrixWorld = new THREE.Matrix4()
 
-  geometry!: THREE.BufferGeometry
-  points!: PointsRepresentation
+  geometry!: THREE.BufferGeometry | null
+  points!: Float32Array | number[]
 
   constructor() {
     super()
@@ -86,7 +89,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
       geometry: {
         enumerable: true,
         get() {
-          return this._geom
+          return this._geometry
         },
         set(value) {
           this.setGeometry(value, this.widthCallback)
@@ -115,7 +118,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     // as the input geometry are mutated we store them
     // for later retreival when necessary (declaritive architectures)
     if (g instanceof THREE.BufferGeometry) {
-      this.geometry = g
+      this._geometry = g
       this.setPoints(g.getAttribute('position').array as number[], c)
     }
   }
@@ -128,7 +131,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     }
     // as the points are mutated we store them
     // for later retreival when necessary (declaritive architectures)
-    this.points = points
+    this._points = points
     this.widthCallback = wcb ?? null
     this.positions = []
     this.counters = []
