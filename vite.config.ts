@@ -1,3 +1,4 @@
+import * as path from 'node:path'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
@@ -10,7 +11,7 @@ export default defineConfig({
       fileName: '[name]',
     },
     rollupOptions: {
-      external: ['three'],
+      external: (id: string) => !id.startsWith('.') && !path.isAbsolute(id),
     },
   },
 })

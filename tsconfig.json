@@ -1,17 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "declaration": true,
-    "outDir": "./dist",
-    "lib": ["ESNext", "DOM"],
-    "moduleResolution": "Node",
+    "outDir": "dist",
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext", "dom"],
+    "moduleResolution": "node",
+    "pretty": true,
     "strict": true,
-    "sourceMap": true,
-    "types": ["vite/client"],
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["./src/**/*", "./src/index.d.ts"]
+  "include": ["src/**/*"]
 }
