@@ -122,14 +122,7 @@ function Line({ points, width, color }) {
     <Canvas>
       <mesh raycast={raycast}>
         <meshLineGeometry points={points} />
-        <meshLineMaterial
-          transparent
-          depthTest={false}
-          lineWidth={width}
-          color={color}
-          dashArray={0.05}
-          dashRatio={0.95}
-        />
+        <meshLineMaterial lineWidth={width} color={color} />
       </mesh>
     </Canvas>
   )
