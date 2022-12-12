@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 
-THREE.ShaderChunk['meshline_vert'] = `
+const vertexShader = /* glsl */ `
   #include <common>
-  ${THREE.ShaderChunk.logdepthbuf_pars_vertex}
-  ${THREE.ShaderChunk.fog_pars_vertex}
+  #include <logdepthbuf_pars_vertex>
+  #include <fog_pars_vertex>
 
   attribute vec3 previous;
   attribute vec3 next;
@@ -68,16 +68,16 @@ THREE.ShaderChunk['meshline_vert'] = `
   
     finalPosition.xy += normal.xy * side;
     gl_Position = finalPosition;
-    ${THREE.ShaderChunk.logdepthbuf_vertex}
-    ${THREE.ShaderChunk.fog_vertex}
+    #include <logdepthbuf_vertex>
+    #include <fog_vertex>
     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    ${THREE.ShaderChunk.fog_vertex}
-  }`
+    #include <fog_vertex>
+  }
+`
 
-THREE.ShaderChunk['meshline_frag'] = `
-  
-  ${THREE.ShaderChunk.fog_pars_fragment}
-  ${THREE.ShaderChunk.logdepthbuf_pars_fragment}
+const fragmentShader = /* glsl */ `
+  #include <fog_pars_fragment>
+  #include <logdepthbuf_pars_fragment>
   
   uniform sampler2D map;
   uniform sampler2D alphaMap;
@@ -96,7 +96,7 @@ THREE.ShaderChunk['meshline_frag'] = `
   varying float vCounters;
   
   void main() {
-    ${THREE.ShaderChunk.logdepthbuf_fragment}
+    #include <logdepthbuf_fragment>
     vec4 c = vColor;
     if (useMap == 1.) c *= texture2D(map, vUV * repeat);
     if (useAlphaMap == 1.) c.a *= texture2D(alphaMap, vUV * repeat).a;
@@ -106,15 +106,53 @@ THREE.ShaderChunk['meshline_frag'] = `
     }
     gl_FragColor = c;
     gl_FragColor.a *= step(vCounters, visibility);
-    ${THREE.ShaderChunk.fog_fragment}
+    #include <fog_fragment>
     #include <tonemapping_fragment>
     #include <encodings_fragment>
-  }`
+  }
+`
 
-export class MeshLineMaterial extends THREE.ShaderMaterial {
-  constructor(parameters) {
+export interface MeshLineMaterialParameters {
+  lineWidth?: number
+  map?: THREE.Texture
+  useMap?: number
+  alphaMap?: THREE.Texture
+  useAlphaMap?: number
+  color?: string | THREE.Color | number
+  opacity?: number
+  resolution: THREE.Vector2 // required
+  sizeAttenuation?: number
+  dashArray?: number
+  dashOffset?: number
+  dashRatio?: number
+  useDash?: number
+  visibility?: number
+  alphaTest?: number
+  repeat?: THREE.Vector2
+}
+
+export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMaterialParameters {
+  lineWidth!: number
+  map!: THREE.Texture
+  useMap!: number
+  alphaMap!: THREE.Texture
+  useAlphaMap!: number
+  color!: THREE.Color
+  declare opacity: number
+  resolution!: THREE.Vector2
+  sizeAttenuation!: number
+  dashArray!: number
+  dashOffset!: number
+  dashRatio!: number
+  useDash!: number
+  visibility!: number
+  declare alphaTest: number
+  repeat!: THREE.Vector2
+
+  constructor(parameters: MeshLineMaterialParameters) {
     super({
-      uniforms: Object.assign({}, THREE.UniformsLib.fog, {
+      uniforms: {
+        ...THREE.UniformsLib.fog,
         lineWidth: { value: 1 },
         map: { value: null },
         useMap: { value: 0 },
@@ -131,9 +169,9 @@ export class MeshLineMaterial extends THREE.ShaderMaterial {
         visibility: { value: 1 },
         alphaTest: { value: 0 },
         repeat: { value: new THREE.Vector2(1, 1) },
-      }),
-      vertexShader: THREE.ShaderChunk.meshline_vert,
-      fragmentShader: THREE.ShaderChunk.meshline_frag,
+      },
+      vertexShader,
+      fragmentShader,
     })
 
     this.type = 'MeshLineMaterial'
@@ -284,11 +322,10 @@ export class MeshLineMaterial extends THREE.ShaderMaterial {
         },
       },
     })
-
     this.setValues(parameters)
   }
 
-  copy(source) {
+  copy(source: MeshLineMaterial): this {
     super.copy(source)
     this.lineWidth = source.lineWidth
     this.map = source.map
@@ -299,9 +336,9 @@ export class MeshLineMaterial extends THREE.ShaderMaterial {
     this.opacity = source.opacity
     this.resolution.copy(source.resolution)
     this.sizeAttenuation = source.sizeAttenuation
-    this.dashArray.copy(source.dashArray)
-    this.dashOffset.copy(source.dashOffset)
-    this.dashRatio.copy(source.dashRatio)
+    this.dashArray = source.dashArray
+    this.dashOffset = source.dashOffset
+    this.dashRatio = source.dashRatio
     this.useDash = source.useDash
     this.visibility = source.visibility
     this.alphaTest = source.alphaTest

@@ -1,26 +1,46 @@
 import * as THREE from 'three'
 
-function memcpy(src, srcOffset, dst, dstOffset, length) {
-  let i
+// https://stackoverflow.com/a/56532878
+function memcpy(
+  src: BufferSource | ArrayLike<number>,
+  srcOffset: number,
+  dst: BufferSource | ArrayLike<number>,
+  dstOffset: number,
+  length: number,
+): any {
+  let i: number
+  // @ts-ignore
   src = src.subarray || src.slice ? src : src.buffer
+  // @ts-ignore
   dst = dst.subarray || dst.slice ? dst : dst.buffer
   src = srcOffset
-    ? src.subarray
-      ? src.subarray(srcOffset, length && srcOffset + length)
-      : src.slice(srcOffset, length && srcOffset + length)
+    ? // @ts-ignore
+      src.subarray
+      ? // @ts-ignore
+        src.subarray(srcOffset, length && srcOffset + length)
+      : // @ts-ignore
+        src.slice(srcOffset, length && srcOffset + length)
     : src
-
+  // @ts-ignore
   if (dst.set) {
+    // @ts-ignore
     dst.set(src, dstOffset)
   } else {
-    for (i = 0; i < src.length; i++) {
-      dst[i + dstOffset] = src[i]
-    }
+    // @ts-ignore
+    for (i = 0; i < src.length; i++) dst[i + dstOffset] = src[i]
   }
   return dst
 }
 
-function convertPoints(points) {
+export type PointsRepresentation =
+  | Float32Array
+  | THREE.Vector3[]
+  | THREE.Vector2[]
+  | THREE.Vector3Tuple[]
+  | THREE.Vector2Tuple[]
+  | number[]
+
+function convertPoints(points: PointsRepresentation): Float32Array | number[] {
   if (points instanceof Float32Array) return points
   return points
     .map((p) => {
@@ -38,26 +58,29 @@ function convertPoints(points) {
     .flat()
 }
 
+export type WidthCallback = (p: number) => any
+
 export class MeshLineGeometry extends THREE.BufferGeometry {
+  type = 'MeshLine'
+  isMeshLine = true
+  positions: number[] = []
+  previous: number[] = []
+  next: number[] = []
+  side: number[] = []
+  width: number[] = []
+  indices_array: number[] = []
+  uvs: number[] = []
+  counters: number[] = []
+  widthCallback: WidthCallback | null = null
+
+  // Used to raycast
+  matrixWorld = new THREE.Matrix4()
+
+  geometry!: THREE.BufferGeometry
+  points!: PointsRepresentation
+
   constructor() {
     super()
-    this.type = 'MeshLine'
-    this.isMeshLine = true
-    this.positions = []
-    this.previous = []
-    this.next = []
-    this.side = []
-    this.width = []
-    this.indices_array = []
-    this.uvs = []
-    this.counters = []
-    this._points = []
-    this._geom = null
-
-    this.widthCallback = null
-
-    // Used to raycast
-    this.matrixWorld = new THREE.Matrix4()
 
     Object.defineProperties(this, {
       geometry: {
@@ -81,23 +104,23 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     })
   }
 
-  setMatrixWorld(matrixWorld) {
+  setMatrixWorld(matrixWorld: THREE.Matrix4): void {
     this.matrixWorld = matrixWorld
   }
 
   // setting via a geometry is rather superfluous
   // as you're creating a unecessary geometry just to throw away
   // but exists to support previous api
-  setGeometry(g, c) {
+  setGeometry(g: THREE.BufferGeometry, c: (p: number) => any): void {
     // as the input geometry are mutated we store them
     // for later retreival when necessary (declaritive architectures)
     if (g instanceof THREE.BufferGeometry) {
-      this._geometry = g
-      this.setPoints(g.getAttribute('position').array, c)
+      this.geometry = g
+      this.setPoints(g.getAttribute('position').array as number[], c)
     }
   }
-  
-  setPoints(points, wcb) {
+
+  setPoints(points: PointsRepresentation, wcb?: WidthCallback): void {
     points = convertPoints(points)
     if (!(points instanceof Float32Array) && !(points instanceof Array)) {
       console.error('ERROR: The BufferArray of points is not instancied correctly.')
@@ -105,16 +128,18 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     }
     // as the points are mutated we store them
     // for later retreival when necessary (declaritive architectures)
-    this._points = points
-    this.widthCallback = wcb
+    this.points = points
+    this.widthCallback = wcb ?? null
     this.positions = []
     this.counters = []
-    if (points.length && points[0] instanceof THREE.Vector3) {
+
+    // TODO: this is unreachable
+    if (points.length && (points[0] as any) instanceof THREE.Vector3) {
       // could transform Vector3 array into the array used below
       // but this approach will only loop through the array once
       // and is more performant
       for (let j = 0; j < points.length; j++) {
-        const p = points[j]
+        const p = points[j] as unknown as THREE.Vector3
         const c = j / (points.length - 1)
         this.positions.push(p.x, p.y, p.z)
         this.positions.push(p.x, p.y, p.z)
@@ -133,7 +158,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     this.process()
   }
 
-  compareV3(a, b) {
+  compareV3(a: number, b: number): boolean {
     const aa = a * 6
     const ab = b * 6
     return (
@@ -143,12 +168,12 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     )
   }
 
-  copyV3(a) {
+  copyV3(a: number): THREE.Vector3Tuple {
     const aa = a * 6
     return [this.positions[aa], this.positions[aa + 1], this.positions[aa + 2]]
   }
 
-  process() {
+  process(): void {
     const l = this.positions.length / 6
 
     this.previous = []
@@ -160,7 +185,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
 
     let w
 
-    let v
+    let v: THREE.Vector3Tuple
     // initial previous points
     if (this.compareV3(0, l - 1)) {
       v = this.copyV3(l - 2)
@@ -215,8 +240,8 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
 
     // redefining the attribute seems to prevent range errors
     // if the user sets a differing number of vertices
-    if (!this._attributes || this._attributes.position.count !== this.positions.length) {
-      this._attributes = {
+    if (!this.attributes || this.attributes.position.count !== this.positions.length) {
+      this.attributes = {
         position: new THREE.BufferAttribute(new Float32Array(this.positions), 3),
         previous: new THREE.BufferAttribute(new Float32Array(this.previous), 3),
         next: new THREE.BufferAttribute(new Float32Array(this.next), 3),
@@ -227,31 +252,39 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
         counters: new THREE.BufferAttribute(new Float32Array(this.counters), 1),
       }
     } else {
-      this._attributes.position.copyArray(new Float32Array(this.positions))
-      this._attributes.position.needsUpdate = true
-      this._attributes.previous.copyArray(new Float32Array(this.previous))
-      this._attributes.previous.needsUpdate = true
-      this._attributes.next.copyArray(new Float32Array(this.next))
-      this._attributes.next.needsUpdate = true
-      this._attributes.side.copyArray(new Float32Array(this.side))
-      this._attributes.side.needsUpdate = true
-      this._attributes.width.copyArray(new Float32Array(this.width))
-      this._attributes.width.needsUpdate = true
-      this._attributes.uv.copyArray(new Float32Array(this.uvs))
-      this._attributes.uv.needsUpdate = true
-      this._attributes.index.copyArray(new Uint16Array(this.indices_array))
-      this._attributes.index.needsUpdate = true
+      const position = this.attributes.position as THREE.BufferAttribute
+      const previous = this.attributes.next as THREE.BufferAttribute
+      const next = this.attributes.next as THREE.BufferAttribute
+      const side = this.attributes.next as THREE.BufferAttribute
+      const width = this.attributes.next as THREE.BufferAttribute
+      const uv = this.attributes.next as THREE.BufferAttribute
+      const index = this.attributes.next as THREE.BufferAttribute
+
+      position.copyArray(new Float32Array(this.positions))
+      position.needsUpdate = true
+      previous.copyArray(new Float32Array(this.previous))
+      previous.needsUpdate = true
+      next.copyArray(new Float32Array(this.next))
+      next.needsUpdate = true
+      side.copyArray(new Float32Array(this.side))
+      side.needsUpdate = true
+      width.copyArray(new Float32Array(this.width))
+      width.needsUpdate = true
+      uv.copyArray(new Float32Array(this.uvs))
+      uv.needsUpdate = true
+      index.copyArray(new Uint16Array(this.indices_array))
+      index.needsUpdate = true
     }
 
-    this.setAttribute('position', this._attributes.position)
-    this.setAttribute('previous', this._attributes.previous)
-    this.setAttribute('next', this._attributes.next)
-    this.setAttribute('side', this._attributes.side)
-    this.setAttribute('width', this._attributes.width)
-    this.setAttribute('uv', this._attributes.uv)
-    this.setAttribute('counters', this._attributes.counters)
+    this.setAttribute('position', this.attributes.position)
+    this.setAttribute('previous', this.attributes.previous)
+    this.setAttribute('next', this.attributes.next)
+    this.setAttribute('side', this.attributes.side)
+    this.setAttribute('width', this.attributes.width)
+    this.setAttribute('uv', this.attributes.uv)
+    this.setAttribute('counters', this.attributes.counters)
 
-    this.setIndex(this._attributes.index)
+    this.setIndex(this.attributes.index as THREE.BufferAttribute)
 
     this.computeBoundingSphere()
     this.computeBoundingBox()
@@ -261,10 +294,10 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
    * Fast method to advance the line by one position.  The oldest position is removed.
    * @param position
    */
-  advance({ x, y, z }) {
-    const positions = this._attributes.position.array
-    const previous = this._attributes.previous.array
-    const next = this._attributes.next.array
+  advance({ x, y, z }: THREE.Vector3) {
+    const positions = this.attributes.position.array as number[]
+    const previous = this.attributes.previous.array as number[]
+    const next = this.attributes.next.array as number[]
     const l = positions.length
 
     // PREVIOUS
@@ -290,8 +323,8 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     next[l - 2] = y
     next[l - 1] = z
 
-    this._attributes.position.needsUpdate = true
-    this._attributes.previous.needsUpdate = true
-    this._attributes.next.needsUpdate = true
+    this.attributes.position.needsUpdate = true
+    this.attributes.previous.needsUpdate = true
+    this.attributes.next.needsUpdate = true
   }
 }

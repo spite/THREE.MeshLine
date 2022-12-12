@@ -9,7 +9,7 @@
   "homepage": "https://github.com/spite/THREE.MeshLine#readme",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp ./src/index.d.ts ./dist",
+    "build": "vite build && tsc",
     "serve": "vite preview"
   },
   "files": [
