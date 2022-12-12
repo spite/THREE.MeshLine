@@ -34,6 +34,7 @@ scene.add(mesh)
 Create a `MeshLineGeometry` and pass a list of points into `.setPoints()`. Expected inputs are:
 
 - `Float32Array`
+- `THREE.BufferGeometry`
 - `Array<THREE.Vector3 | THREE.Vector2 | [number, number, number] | [number, number] | number>`
 
 ```jsx
@@ -54,13 +55,6 @@ Note: `.setPoints` accepts a second parameter, which is a function to define a v
 geometry.setPoints(points, (p) => 2) // makes width 2 * lineWidth
 geometry.setPoints(points, (p) => 1 - p) // makes width taper
 geometry.setPoints(points, (p) => 2 + Math.sin(50 * p)) // makes width sinusoidal
-```
-
-##### Alternatively, pass a BufferGeometry
-
-```jsx
-geometry.setGeometry(myGeometry)
-geometry.setGeometry(myGeometry, (p) => 2)
 ```
 
 #### Create a material
@@ -109,7 +103,7 @@ mesh.raycast = raycast
 
 ### Declarative use
 
-Meshline can be used declaritively in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). `MeshLineGeometry` has two convenience setter/getters, `points` for `.setPoints()`, and `geometry` for `.setGeometry()`.
+Meshline can be used declaritively in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). `MeshLineGeometry` has a convenience setter/getter for `.setPoints()`, `points`.
 
 ```jsx
 import { Canvas, extend } from '@react-three/fiber'

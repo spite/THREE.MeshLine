@@ -33,6 +33,7 @@ function memcpy(
 }
 
 export type PointsRepresentation =
+  | THREE.BufferGeometry
   | Float32Array
   | THREE.Vector3[]
   | THREE.Vector2[]
@@ -42,6 +43,7 @@ export type PointsRepresentation =
 
 function convertPoints(points: PointsRepresentation): Float32Array | number[] {
   if (points instanceof Float32Array) return points
+  if (points instanceof THREE.BufferGeometry) return points.getAttribute('position').array as Float32Array
   return points
     .map((p) => {
       const isArray = Array.isArray(p)
@@ -84,27 +86,15 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     counters: THREE.BufferAttribute
   }
   _points: Float32Array | number[] = []
-  _geometry: THREE.BufferGeometry | null = null
+  points!: Float32Array | number[]
 
   // Used to raycast
   matrixWorld = new THREE.Matrix4()
-
-  geometry!: THREE.BufferGeometry | null
-  points!: Float32Array | number[]
 
   constructor() {
     super()
 
     Object.defineProperties(this, {
-      geometry: {
-        enumerable: true,
-        get() {
-          return this._geometry
-        },
-        set(value) {
-          this.setGeometry(value, this.widthCallback)
-        },
-      },
       points: {
         enumerable: true,
         get() {
@@ -121,24 +111,8 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     this.matrixWorld = matrixWorld
   }
 
-  // setting via a geometry is rather superfluous
-  // as you're creating a unecessary geometry just to throw away
-  // but exists to support previous api
-  setGeometry(g: THREE.BufferGeometry, c: (p: number) => any): void {
-    // as the input geometry are mutated we store them
-    // for later retreival when necessary (declaritive architectures)
-    if (g instanceof THREE.BufferGeometry) {
-      this._geometry = g
-      this.setPoints(g.getAttribute('position').array as number[], c)
-    }
-  }
-
   setPoints(points: PointsRepresentation, wcb?: WidthCallback): void {
     points = convertPoints(points)
-    if (!(points instanceof Float32Array) && !(points instanceof Array)) {
-      console.error('ERROR: The BufferArray of points is not instancied correctly.')
-      return
-    }
     // as the points are mutated we store them
     // for later retreival when necessary (declaritive architectures)
     this._points = points
@@ -250,7 +224,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     }
     this.next.push(v[0], v[1], v[2])
     this.next.push(v[0], v[1], v[2])
-    
+
     if (!this._attributes || this._attributes.position.count !== this.positions.length) {
       this._attributes = {
         position: new THREE.BufferAttribute(new Float32Array(this.positions), 3),
