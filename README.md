@@ -117,12 +117,12 @@ import { MeshLineGeometry, MeshLineMaterial, raycast } from 'meshline'
 
 extend({ MeshLine, MeshLineMaterial })
 
-function Line({ points, width, color }) {
+function App() {
   return (
     <Canvas>
-      <mesh raycast={raycast}>
-        <meshLineGeometry points={points} />
-        <meshLineMaterial lineWidth={width} color={color} />
+      <mesh raycast={raycast} onPointerOver={console.log}>
+        <meshLineGeometry points={[0, 0, 0, 1, 0, 0]} />
+        <meshLineMaterial lineWidth={1} color="hotpink" />
       </mesh>
     </Canvas>
   )
