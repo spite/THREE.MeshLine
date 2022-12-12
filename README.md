@@ -19,31 +19,34 @@ npm install meshline
 
 ```jsx
 import * as THREE from 'three'
-import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
-```
+import { MeshLineGeometry, MeshLineMaterial, raycast } from 'meshline'
 
-##### Create a MeshLine
-
-```jsx
 const geometry = new MeshLineGeometry()
+geometry.setPoints([...])
+const material = new MeshLineMaterial({ ... })
+const mesh = new THREE.Mesh(geometry, material)
+mesh.raycast = raycast
+scene.add(mesh)
 ```
 
-##### Create and assign points
+#### Assign points
 
-Pass a list of points into `.setPoints()`. Expected inputs are:
+Create a `MeshLineGeometry` and pass a list of points into `.setPoints()`. Expected inputs are:
 
 - `Float32Array`
 - `Array<THREE.Vector3 | THREE.Vector2 | [number, number, number] | [number, number] | number>`
 
 ```jsx
+const geometry = new MeshLineGeometry()
+
 const points = []
-for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100) {
+for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100)
   points.push(Math.cos(j), Math.sin(j), 0)
-}
+
 geometry.setPoints(points)
 ```
 
-Note: `.setPoints` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 \* lineWidth in the material.
+Note: `.setPoints` accepts a second parameter, which is a function to define a variable width for each point along the line. By default that value is 1, making the line width 1 \* lineWidth.
 
 ```jsx
 // p is a decimal percentage of the number of points
@@ -53,16 +56,14 @@ geometry.setPoints(points, (p) => 1 - p) // makes width taper
 geometry.setPoints(points, (p) => 2 + Math.sin(50 * p)) // makes width sinusoidal
 ```
 
-You can also provide a `BufferGeometry` by calling `.setGeometry()` instead.
+##### Alternatively, pass a BufferGeometry
 
 ```jsx
 geometry.setGeometry(myGeometry)
 geometry.setGeometry(myGeometry, (p) => 2)
 ```
 
-##### Create a MeshLineMaterial
-
-`MeshLineGeometry` needs to be paired with `MeshLineMaterial`.
+#### Create a material
 
 ```jsx
 const material = new MeshLineMaterial(options)
@@ -70,7 +71,7 @@ const material = new MeshLineMaterial(options)
 
 By default it's a white material of width 1 unit.
 
-`MeshLineMaterial` has several attributes to control the appereance of the `MeshLine`:
+`MeshLineMaterial` has several attributes to control the appereance:
 
 - `map` - a `THREE.Texture` to paint along the line (requires `useMap` set to true)
 - `useMap` - tells the material to use `map` (0 - solid color, 1 use texture)
@@ -89,16 +90,14 @@ By default it's a white material of width 1 unit.
 
 If you're rendering transparent lines or using a texture with alpha map, you should set `depthTest` to `false`, `transparent` to `true` and `blending` to an appropriate blending mode, or use `alphaTest`.
 
-##### Use MeshLine and MeshLineMaterial to create a THREE.Mesh
-
-Finally, we create a mesh and add it to the scene:
+#### Form a mesh
 
 ```jsx
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 ```
 
-##### Add raycast support
+### Raycasting
 
 Raycast can be optionally added by overwriting `mesh.raycast` with the one that meshline provides.
 
@@ -110,9 +109,7 @@ mesh.raycast = raycast
 
 ### Declarative use
 
-Meshline can be used declaritively. This is how it would look like in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-three.meshline-example-vl221).
-
-`MeshLineGeometry` has two convenience setter/getters, `points` for `.setPoints()`, and `geometry` for `.setGeometry()`.
+Meshline can be used declaritively in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). `MeshLineGeometry` has two convenience setter/getters, `points` for `.setPoints()`, and `geometry` for `.setGeometry()`.
 
 ```jsx
 import { Canvas, extend } from '@react-three/fiber'
@@ -120,32 +117,27 @@ import { MeshLineGeometry, MeshLineMaterial, raycast } from 'meshline'
 
 extend({ MeshLine, MeshLineMaterial })
 
-function Line({ points, width, color }) {
+function App() {
   return (
     <Canvas>
-      <mesh raycast={raycast}>
-        <meshLineGeometry points={points} />
-        <meshLineMaterial
-          transparent
-          depthTest={false}
-          lineWidth={width}
-          color={color}
-          dashArray={0.05}
-          dashRatio={0.95}
-        />
+      <mesh raycast={raycast} onPointerOver={console.log}>
+        <meshLineGeometry points={[0, 0, 0, 1, 0, 0]} />
+        <meshLineMaterial lineWidth={1} color="hotpink" />
       </mesh>
     </Canvas>
   )
 }
 ```
 
-Dynamic line widths can be set for each point using the `widthCallback` prop.
+#### Variable line widths
+
+Variable line widths can be set for each point using the `widthCallback` prop.
 
 ```jsx
 <meshLineGeometry points={points} widthCallback={(p) => p * Math.random()} />
 ```
 
-##### Types
+#### Types
 
 Add these declarations to your entry point.
 
