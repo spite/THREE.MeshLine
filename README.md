@@ -43,7 +43,7 @@ for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100) {
 geometry.setPoints(points)
 ```
 
-Note: `.setPoints` accepts a second parameter, which is a function to define the width in each point along the line. By default that value is 1, making the line width 1 \* lineWidth in the material.
+Note: `.setPoints` accepts a second parameter, which is a function to define a variable width for each point along the line. By default that value is 1, making the line width 1 \* lineWidth.
 
 ```jsx
 // p is a decimal percentage of the number of points
@@ -106,9 +106,7 @@ mesh.raycast = raycast
 
 ### Declarative use
 
-Meshline can be used declaritively. This is how it would look like in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). You can try it live [here](https://codesandbox.io/s/react-three-fiber-three.meshline-example-vl221).
-
-`MeshLineGeometry` has two convenience setter/getters, `points` for `.setPoints()`, and `geometry` for `.setGeometry()`.
+Meshline can be used declaritively in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). `MeshLineGeometry` has two convenience setter/getters, `points` for `.setPoints()`, and `geometry` for `.setGeometry()`.
 
 ```jsx
 import { Canvas, extend } from '@react-three/fiber'
@@ -135,7 +133,7 @@ function Line({ points, width, color }) {
 }
 ```
 
-Dynamic line widths can be set for each point using the `widthCallback` prop.
+Variable line widths can be set for each point using the `widthCallback` prop.
 
 ```jsx
 <meshLineGeometry points={points} widthCallback={(p) => p * Math.random()} />
