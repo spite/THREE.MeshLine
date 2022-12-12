@@ -19,33 +19,30 @@ npm install meshline
 
 ```jsx
 import * as THREE from 'three'
-import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
+import { MeshLineGeometry, MeshLineMaterial, raycast } from 'meshline'
 
 const geometry = new MeshLineGeometry()
 geometry.setPoints([...])
 const material = new MeshLineMaterial({ ... })
 const mesh = new THREE.Mesh(geometry, material)
+mesh.raycast = raycast
 scene.add(mesh)
 ```
 
-#### Create a geometry
+#### Assign points
 
-```jsx
-const geometry = new MeshLineGeometry()
-```
-
-##### Assign points
-
-Pass a list of points into `.setPoints()`. Expected inputs are:
+Create a `MeshLineGeometry` and pass a list of points into `.setPoints()`. Expected inputs are:
 
 - `Float32Array`
 - `Array<THREE.Vector3 | THREE.Vector2 | [number, number, number] | [number, number] | number>`
 
 ```jsx
+const geometry = new MeshLineGeometry()
+
 const points = []
-for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100) {
+for (let j = 0; j < Math.PI; j += (2 * Math.PI) / 100)
   points.push(Math.cos(j), Math.sin(j), 0)
-}
+
 geometry.setPoints(points)
 ```
 
