@@ -4,14 +4,9 @@
   "author": "Jaume Sanchez <the.spite@gmail.com> (https://www.clicktorelease.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/spite/THREE.MeshLine/issues"
+    "url": "https://github.com/pmndrs/meshline/issues"
   },
-  "homepage": "https://github.com/spite/THREE.MeshLine#readme",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build && tsc",
-    "serve": "vite preview"
-  },
+  "homepage": "https://github.com/pmndrs/meshline#readme",
   "files": [
     "dist"
   ],
@@ -20,13 +15,24 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "devDependencies": {
+    "@react-three/fiber": "^8.9.1",
+    "@react-three/postprocessing": "^2.7.0",
+    "@types/node": "^18.11.13",
     "@types/three": "^0.146.0",
+    "@vitejs/plugin-react": "2",
+    "leva": "^0.9.34",
+    "maath": "^0.4.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "three": "^0.147.0",
     "typescript": "^4.9.3",
-    "vite": "^3.2.5",
-    "three": "^0.147.0"
+    "vite": "^3.2.5"
   },
   "peerDependencies": {
     "three": ">=0.137"
   },
-  "dependencies": {}
+  "scripts": {
+    "dev": "vite demo",
+    "build": "vite build && tsc"
+  }
 }
