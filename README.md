@@ -109,7 +109,7 @@ Meshline can be used declaritively in [react-three-fiber](https://github.com/pmn
 import { Canvas, extend } from '@react-three/fiber'
 import { MeshLineGeometry, MeshLineMaterial, raycast } from 'meshline'
 
-extend({ MeshLine, MeshLineMaterial })
+extend({ MeshLineGeometry, MeshLineMaterial })
 
 function App() {
   return (
