@@ -79,13 +79,15 @@ window.addEventListener( 'load', function() {
 } );
 
 var TAU = 2 * Math.PI;
-var hexagonGeometry = new THREE.Geometry();
+var hexagonGeometry = new THREE.BufferGeometry();
+var hexagonVertices = [];
 for( var j = 0; j < TAU - .1; j += TAU / 100 ) {
 	var v = new THREE.Vector3();
 	v.set( Math.cos( j ), Math.sin( j ), 0 );
-	hexagonGeometry.vertices.push( v );
+	hexagonVertices.push( v );
 }
-hexagonGeometry.vertices.push( hexagonGeometry.vertices[ 0 ].clone() );
+hexagonVertices.push( hexagonVertices[ 0 ].clone() );
+hexagonGeometry.setFromPoints( hexagonVertices );
 
 function createCurve() {
 
@@ -106,15 +108,17 @@ function createCurve() {
 	s.p3.multiplyScalar( rMin + Math.random() * rMax );
 
 	s.calculate();
-	var geometry = new THREE.Geometry();
 	s.calculateDistances();
 	//s.reticulate( { distancePerStep: .1 });
 	s.reticulate( { steps: 500 } );
- 	var geometry = new THREE.Geometry();
+ 	var geometry = new THREE.BufferGeometry();
+ 	var vertices = [];
 
 	for( var j = 0; j < s.lPoints.length - 1; j++ ) {
-		geometry.vertices.push( s.lPoints[ j ].clone() );
+		vertices.push( s.lPoints[ j ] );
 	}
+
+	geometry.setFromPoints( s.lPoints );
 
 	return geometry;
 
@@ -200,8 +204,8 @@ function init() {
 function createLine() {
 	if( params.circles ) makeLine( hexagonGeometry );
 	if( params.curves ) makeLine( createCurve() );
-	//makeLine( makeVerticalLine() );
-	//makeLine( makeSquare() );
+	makeLine( makeVerticalLine() );
+	makeLine( makeSquare() );
 }
 
 function createLines() {
@@ -211,21 +215,21 @@ function createLines() {
 }
 
 function makeVerticalLine() {
-	var g = new THREE.Geometry()
+	var g = new THREE.BufferGeometry()
 	var x = ( .5 - Math.random() ) * 100;
-	g.vertices.push( new THREE.Vector3( x, -10, 0 ) );
-	g.vertices.push( new THREE.Vector3( x, 10, 0 ) );
+	g.setFromPoints( new THREE.Vector3( x, -10, 0 ),  new THREE.Vector3( x, 10, 0 ) );
 	return g;
 }
 
 function makeSquare() {
-	var g = new THREE.Geometry()
-	var x = ( .5 - Math.random() ) * 100;
-	g.vertices.push( new THREE.Vector3( -1, -1, 0 ) );
-	g.vertices.push( new THREE.Vector3( 1, -1, 0 ) );
-	g.vertices.push( new THREE.Vector3( 1, 1, 0 ) );
-	g.vertices.push( new THREE.Vector3( -1, 1, 0 ) );
-	g.vertices.push( new THREE.Vector3( -1, -1, 0 ) );
+	var g = new THREE.BufferGeometry()
+	var vertices = [];
+	vertices.push( new THREE.Vector3( -1, -1, 0 ) );
+	vertices.push( new THREE.Vector3( 1, -1, 0 ) );
+	vertices.push( new THREE.Vector3( 1, 1, 0 ) );
+	vertices.push( new THREE.Vector3( -1, 1, 0 ) );
+	vertices.push( new THREE.Vector3( -1, -1, 0 ) );
+	g.setFromPoints( vertices );
 	return g;
 }
 
