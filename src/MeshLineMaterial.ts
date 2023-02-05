@@ -19,7 +19,6 @@ const vertexShader = /* glsl */ `
   
   varying vec2 vUV;
   varying vec4 vColor;
-  varying vec3 vPosition;
   varying float vCounters;
   
   vec2 fix(vec4 i, float aspect) {
@@ -31,7 +30,6 @@ const vertexShader = /* glsl */ `
   
   void main() {
     float aspect = resolution.x / resolution.y;
-    vPosition = position;
     vColor = vec4(color, opacity);
     vUV = uv;
   
@@ -96,7 +94,6 @@ const fragmentShader = /* glsl */ `
   uniform vec3 gradient[2];
   
   varying vec2 vUV;
-  varying vec3 vPosition;
   varying vec4 vColor;
   varying float vCounters;
   
@@ -177,7 +174,7 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
         dashOffset: { value: 0 },
         dashRatio: { value: 0.5 },
         useDash: { value: 0 },
-        useGradient: { value: 1 },
+        useGradient: { value: 0 },
         visibility: { value: 1 },
         alphaTest: { value: 0 },
         repeat: { value: new THREE.Vector2(1, 1) },
