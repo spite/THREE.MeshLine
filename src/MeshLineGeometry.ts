@@ -225,7 +225,7 @@ export class MeshLineGeometry extends THREE.BufferGeometry {
     this.next.push(v[0], v[1], v[2])
     this.next.push(v[0], v[1], v[2])
 
-    if (!this._attributes || this._attributes.position.count !== this.positions.length) {
+    if (!this._attributes || this._attributes.position.count !== this.counters.length) {
       this._attributes = {
         position: new THREE.BufferAttribute(new Float32Array(this.positions), 3),
         previous: new THREE.BufferAttribute(new Float32Array(this.previous), 3),
