@@ -81,6 +81,7 @@ const fragmentShader = /* glsl */ `
   
   uniform sampler2D map;
   uniform sampler2D alphaMap;
+  uniform float useGradient;
   uniform float useMap;
   uniform float useAlphaMap;
   uniform float useDash;
@@ -90,6 +91,7 @@ const fragmentShader = /* glsl */ `
   uniform float visibility;
   uniform float alphaTest;
   uniform vec2 repeat;
+  uniform vec3 gradient[2];
   
   varying vec2 vUV;
   varying vec4 vColor;
@@ -98,6 +100,7 @@ const fragmentShader = /* glsl */ `
   void main() {
     #include <logdepthbuf_fragment>
     vec4 c = vColor;
+    if (useGradient == 1.) c = vec4(mix(gradient[0], gradient[1], vCounters), 1.0);
     if (useMap == 1.) c *= texture2D(map, vUV * repeat);
     if (useAlphaMap == 1.) c.a *= texture2D(alphaMap, vUV * repeat).a;
     if (c.a < alphaTest) discard;
@@ -119,6 +122,7 @@ export interface MeshLineMaterialParameters {
   alphaMap?: THREE.Texture
   useAlphaMap?: number
   color?: string | THREE.Color | number
+  gradient?: string[] | THREE.Color[] | number[]
   opacity?: number
   resolution: THREE.Vector2 // required
   sizeAttenuation?: number
@@ -126,6 +130,7 @@ export interface MeshLineMaterialParameters {
   dashOffset?: number
   dashRatio?: number
   useDash?: number
+  useGradient?: number
   visibility?: number
   alphaTest?: number
   repeat?: THREE.Vector2
@@ -138,6 +143,7 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
   alphaMap!: THREE.Texture
   useAlphaMap!: number
   color!: THREE.Color
+  gradient!: THREE.Color[]
   declare opacity: number
   resolution!: THREE.Vector2
   sizeAttenuation!: number
@@ -145,6 +151,7 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
   dashOffset!: number
   dashRatio!: number
   useDash!: number
+  useGradient!: number
   visibility!: number
   declare alphaTest: number
   repeat!: THREE.Vector2
@@ -159,6 +166,7 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
         alphaMap: { value: null },
         useAlphaMap: { value: 0 },
         color: { value: new THREE.Color(0xffffff) },
+        gradient: { value: [new THREE.Color(0xff0000), new THREE.Color(0x00ff00)] },
         opacity: { value: 1 },
         resolution: { value: new THREE.Vector2(1, 1) },
         sizeAttenuation: { value: 1 },
@@ -166,6 +174,7 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
         dashOffset: { value: 0 },
         dashRatio: { value: 0.5 },
         useDash: { value: 0 },
+        useGradient: { value: 0 },
         visibility: { value: 1 },
         alphaTest: { value: 0 },
         repeat: { value: new THREE.Vector2(1, 1) },
@@ -228,6 +237,15 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
         },
         set(value) {
           this.uniforms.color.value = value
+        },
+      },
+      gradient: {
+        enumerable: true,
+        get() {
+          return this.uniforms.gradient.value
+        },
+        set(value) {
+          this.uniforms.gradient.value = value
         },
       },
       opacity: {
@@ -294,6 +312,15 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
           this.uniforms.useDash.value = value
         },
       },
+      useGradient: {
+        enumerable: true,
+        get() {
+          return this.uniforms.useGradient.value
+        },
+        set(value) {
+          this.uniforms.useGradient.value = value
+        },
+      },
       visibility: {
         enumerable: true,
         get() {
@@ -333,6 +360,7 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
     this.alphaMap = source.alphaMap
     this.useAlphaMap = source.useAlphaMap
     this.color.copy(source.color)
+    this.gradient = source.gradient
     this.opacity = source.opacity
     this.resolution.copy(source.resolution)
     this.sizeAttenuation = source.sizeAttenuation
@@ -340,6 +368,7 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
     this.dashOffset = source.dashOffset
     this.dashRatio = source.dashRatio
     this.useDash = source.useDash
+    this.useGradient = source.useGradient
     this.visibility = source.visibility
     this.alphaTest = source.alphaTest
     this.repeat.copy(source.repeat)
