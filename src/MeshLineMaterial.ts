@@ -70,6 +70,9 @@ const vertexShader = /* glsl */ `
   }
 `
 
+const version = /* @__PURE__ */ (() => parseInt(THREE.REVISION.replace(/\D+/g, '')))()
+const colorspace_fragment = version >= 154 ? 'colorspace_fragment' : 'encodings_fragment'
+
 const fragmentShader = /* glsl */ `
   #include <fog_pars_fragment>
   #include <logdepthbuf_pars_fragment>
@@ -106,7 +109,7 @@ const fragmentShader = /* glsl */ `
     gl_FragColor.a *= step(vCounters, visibility);
     #include <fog_fragment>
     #include <tonemapping_fragment>
-    #include <encodings_fragment>
+    #include <${colorspace_fragment}>
   }
 `
 
