@@ -34,7 +34,7 @@ const vertexShader = /* glsl */ `
     vUV = uv;
   
     mat4 m = projectionMatrix * modelViewMatrix;
-    vec4 finalPosition = m * vec4(position, 1.0);
+    vec4 finalPosition = m * vec4(position, 1.0) * aspect;
     vec4 prevPos = m * vec4(previous, 1.0);
     vec4 nextPos = m * vec4(next, 1.0);
   
@@ -58,7 +58,7 @@ const vertexShader = /* glsl */ `
     //normal *= projectionMatrix;
     if (sizeAttenuation == 0.) {
       normal.xy *= finalPosition.w;
-      normal.xy /= (vec4(resolution, 0., 1.) * projectionMatrix).xy;
+      normal.xy /= (vec4(resolution, 0., 1.) * projectionMatrix).xy * aspect;
     }
   
     finalPosition.xy += normal.xy * side;
@@ -142,7 +142,7 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
   useAlphaMap!: number
   color!: THREE.Color
   gradient!: THREE.Color[]
-  declare opacity: number
+  opacity: number = 1
   resolution!: THREE.Vector2
   sizeAttenuation!: number
   dashArray!: number
@@ -151,7 +151,7 @@ export class MeshLineMaterial extends THREE.ShaderMaterial implements MeshLineMa
   useDash!: number
   useGradient!: number
   visibility!: number
-  declare alphaTest: number
+  alphaTest: number = 0
   repeat!: THREE.Vector2
 
   constructor(parameters: MeshLineMaterialParameters) {
