@@ -4,6 +4,7 @@ const vertexShader = /* glsl */ `
   #include <common>
   #include <logdepthbuf_pars_vertex>
   #include <fog_pars_vertex>
+  #include <clipping_planes_pars_vertex>
 
   attribute vec3 previous;
   attribute vec3 next;
@@ -66,6 +67,7 @@ const vertexShader = /* glsl */ `
     #include <logdepthbuf_vertex>
     #include <fog_vertex>
     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    #include <clipping_planes_vertex>
     #include <fog_vertex>
   }
 `
@@ -76,6 +78,7 @@ const colorspace_fragment = version >= 154 ? 'colorspace_fragment' : 'encodings_
 const fragmentShader = /* glsl */ `
   #include <fog_pars_fragment>
   #include <logdepthbuf_pars_fragment>
+  #include <clipping_planes_pars_fragment>
   
   uniform sampler2D map;
   uniform sampler2D alphaMap;
@@ -97,16 +100,15 @@ const fragmentShader = /* glsl */ `
   
   void main() {
     #include <logdepthbuf_fragment>
-    vec4 c = vColor;
-    if (useGradient == 1.) c = vec4(mix(gradient[0], gradient[1], vCounters), 1.0);
-    if (useMap == 1.) c *= texture2D(map, vUV * repeat);
-    if (useAlphaMap == 1.) c.a *= texture2D(alphaMap, vUV * repeat).a;
-    if (c.a < alphaTest) discard;
-    if (useDash == 1.) {
-      c.a *= ceil(mod(vCounters + dashOffset, dashArray) - (dashArray * dashRatio));
-    }
-    gl_FragColor = c;
-    gl_FragColor.a *= step(vCounters, visibility);
+    vec4 diffuseColor = vColor;
+    if (useGradient == 1.) diffuseColor = vec4(mix(gradient[0], gradient[1], vCounters), 1.0);
+    if (useMap == 1.) diffuseColor *= texture2D(map, vUV * repeat);
+    if (useAlphaMap == 1.) diffuseColor.a *= texture2D(alphaMap, vUV * repeat).a;
+    if (diffuseColor.a < alphaTest) discard;
+    if (useDash == 1.) diffuseColor.a *= ceil(mod(vCounters + dashOffset, dashArray) - (dashArray * dashRatio));
+    diffuseColor.a *= step(vCounters, visibility);
+    #include <clipping_planes_fragment>
+    gl_FragColor = diffuseColor;     
     #include <fog_fragment>
     #include <tonemapping_fragment>
     #include <${colorspace_fragment}>
