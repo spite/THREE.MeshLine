@@ -1,6 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { MeshLine, MeshLineMaterial } from '../../src/THREE.MeshLine.js';
+import { colors } from './colors.js';
+
+// the colors of the palette that stand out against the background
+var palette = [ 0, 2, 3, 5, 6, 10, 12, 13, 14 ].map( function ( i ) { return colors[ i ]; } );
 
 var scene = new THREE.Scene();
 
@@ -8,6 +12,14 @@ var camera, controls, renderer,
 		birds, bird;
 
 var boid, boids;
+
+function birdColor() {
+
+	// a color of the palette, a bit lighter or darker
+	var color = new THREE.Color( palette[ Math.floor( Math.random() * palette.length ) ] );
+	return color.offsetHSL( 0, 0, ( Math.random() - .5 ) * .12 );
+
+}
 
 function createBird() {
 
@@ -382,7 +394,7 @@ function init() {
 		boid.setAvoidWalls( true );
 		boid.setWorldSize( 300, 300, 300 );
 
-		bird = birds[ i ] = new THREE.Mesh( createBird(), new THREE.MeshBasicMaterial( { color: Math.floor( Math.random() * 0xffffff ), side: THREE.DoubleSide } ) );
+		bird = birds[ i ] = new THREE.Mesh( createBird(), new THREE.MeshBasicMaterial( { color: birdColor(), side: THREE.DoubleSide } ) );
 		bird.phase = Math.floor( Math.random() * 62.83 );
 		scene.add( bird );
 	}
