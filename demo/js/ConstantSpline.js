@@ -1,18 +1,20 @@
-THREE.ConstantSpline = function() {
+import { Vector3 } from 'three';
 
-	this.p0 = new THREE.Vector3();
-	this.p1 = new THREE.Vector3();
-	this.p2 = new THREE.Vector3();
-	this.p3 = new THREE.Vector3();
+function ConstantSpline() {
 
-	this.tmp = new THREE.Vector3();
-	this.res = new THREE.Vector3();
-	this.o = new THREE.Vector3();
+	this.p0 = new Vector3();
+	this.p1 = new Vector3();
+	this.p2 = new Vector3();
+	this.p3 = new Vector3();
+
+	this.tmp = new Vector3();
+	this.res = new Vector3();
+	this.o = new Vector3();
 
 	this.points = [];
 	this.lPoints = [];
 	this.steps = [];
-	
+
 	this.inc = .01;
 	this.d = 0;
 
@@ -20,7 +22,7 @@ THREE.ConstantSpline = function() {
 
 };
 
-THREE.ConstantSpline.prototype.calculate = function() {
+ConstantSpline.prototype.calculate = function() {
 
 	this.d = 0;
 	this.points = [];
@@ -28,17 +30,17 @@ THREE.ConstantSpline.prototype.calculate = function() {
 	this.o.copy( this.p0 );
 
 	for( var j = 0; j <= 1; j += this.inc ) {
-		
+
 		var i = ( 1 - j );
 		var ii = i * i;
 		var iii = ii * i;
 		var jj = j * j;
 		var jjj = jj * j;
-		
+
 		this.res.set( 0, 0, 0 );
-		
+
 		this.tmp.copy( this.p0 );
-		this.tmp.multiplyScalar( iii );		
+		this.tmp.multiplyScalar( iii );
 		this.res.add( this.tmp );
 
 		this.tmp.copy( this.p1 );
@@ -54,7 +56,7 @@ THREE.ConstantSpline.prototype.calculate = function() {
 		this.res.add( this.tmp );
 
 		this.points.push( this.res.clone() );
-		
+
 	}
 
 	this.points.push( this.p3.clone() );
@@ -63,7 +65,7 @@ THREE.ConstantSpline.prototype.calculate = function() {
 
 };
 
-THREE.ConstantSpline.prototype.calculateDistances = function() {
+ConstantSpline.prototype.calculateDistances = function() {
 
 	this.steps = [];
 	this.d = 0;
@@ -88,7 +90,7 @@ THREE.ConstantSpline.prototype.calculateDistances = function() {
 
 }
 
-THREE.ConstantSpline.prototype.reticulate = function( settings ) {
+ConstantSpline.prototype.reticulate = function( settings ) {
 
 	if( this.distancesNeedUpdate ) {
 		this.calculateDistances();
@@ -108,7 +110,7 @@ THREE.ConstantSpline.prototype.reticulate = function( settings ) {
 
 	if( settings.distancePerStep ) {
 		distancePerStep = settings.distancePerStep;
-		steps = this.d / distancePerStep;		
+		steps = this.d / distancePerStep;
 	}
 
 	var d = 0,
@@ -116,7 +118,7 @@ THREE.ConstantSpline.prototype.reticulate = function( settings ) {
 
 	this.lPoints = [];
 
-	var current = new THREE.Vector3();
+	var current = new Vector3();
 	current.copy( this.points[ 0 ].clone() );
 	this.lPoints.push( current.clone() );
 
@@ -140,7 +142,7 @@ THREE.ConstantSpline.prototype.reticulate = function( settings ) {
 	for( var j = 0; j < this.points.length; j++ ) {
 
 		if( this.points[ j ].ac - d > distancePerStep ) {
-			
+
 			d += splitSegment( current, this.points[ j ], this.lPoints );
 
 		}
@@ -150,3 +152,5 @@ THREE.ConstantSpline.prototype.reticulate = function( settings ) {
 
 
 };
+
+export { ConstantSpline };

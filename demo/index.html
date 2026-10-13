@@ -1,30 +1,38 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>THREE.MeshLine - Demo</title>
-    <meta property="og:description" content="THREE.MeshLine - Demo">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link rel="stylesheet" href="css/main.css">
-    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,700italic,400italic,300,300italic' rel='stylesheet' type='text/css'>
+	<meta charset="utf-8">
+	<title>THREE.MeshLine - Demo</title>
+	<meta property="og:description" content="THREE.MeshLine - Demo">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" href="css/main.css">
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,700,700italic,400italic,300,300italic" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/guspira@0.1.1/dist/guspira.min.css">
+	<script type="importmap">
+	{
+		"imports": {
+			"three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+			"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+		}
+	}
+	</script>
 </head>
-
-</script>
-
 <body>
-    <div id="container" ></div>
-    <div id="title">
-        <h1>THREE.MeshLine - Demo</h1>
-        <p>Play with the different settings on the controls</p>
-    </div>
+	<div id="container"></div>
+	<div id="title">
+		<h1>THREE.MeshLine - Demo</h1>
+		<p>Play with the different settings on the controls</p>
+	</div>
+	<div id="gui-container"></div>
+	<p id="nav">
+		<a href="index.html" class="current">Demo</a>
+		<a href="graph.html">Graph</a>
+		<a href="spinner.html">Spinner</a>
+		<a href="svg.html">SVG</a>
+		<a href="shape.html">Shape</a>
+		<a href="birds.html">Birds</a>
+		<a href="https://github.com/spite/THREE.MeshLine">GitHub</a>
+	</p>
+	<script type="module" src="js/main.js"></script>
 </body>
-
-<script src="js/three.min.js"></script>
-<script src="js/OrbitControls.js"></script>
-<script src="js/THREE.ConstantSpline.js"></script>
-<script src="js/Maf.js"></script>
-<script src="js/dat.gui.min.js"></script>
-<script src="../src/THREE.MeshLine.js"></script>
-<script src="js/main.js"></script>
-
 </html>
