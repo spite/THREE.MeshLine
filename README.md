@@ -1,6 +1,8 @@
 # MeshLine
 Mesh replacement for ```THREE.Line```
 
+[![npm](https://img.shields.io/npm/v/three.meshline.svg)](https://www.npmjs.com/package/three.meshline)
+
 Instead of using GL_LINE, it uses a strip of triangles billboarded.
 
 #### Demos ####
