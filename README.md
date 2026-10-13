@@ -1,9 +1,9 @@
 # MeshLine
 Mesh replacement for ```THREE.Line```
 
-[![npm](https://img.shields.io/npm/v/three.meshline.svg)](https://www.npmjs.com/package/three.meshline)
-
 Instead of using GL_LINE, it uses a strip of triangles billboarded.
+
+[![npm](https://img.shields.io/npm/v/three.meshline.svg)](https://www.npmjs.com/package/three.meshline)
 
 #### Demos ####
 * **[Demo](https://spite.github.io/THREE.MeshLine/demo/index.html)**: play with the different settings of materials
@@ -162,8 +162,8 @@ The intersection has the ```point``` on the line, the ```distance```, and the ``
 THREE.meshline can be used declaritively. This is how it would look like in [react-three-fiber](https://github.com/pmndrs/react-three-fiber). The live examples below were made with version 1.x.
 
 <p align="center">
-	<a href="https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221"><img width="432" height="240" src="https://imgur.com/mZikTAH.gif" /></a>
-	<a href="https://codesandbox.io/s/threejs-meshline-custom-spring-3-ypkxx"><img width="432" height="240" src="https://imgur.com/g8ts0vJ.gif" /></a>
+	<a href="https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221"><img width="432" height="240" src="https://i.imgur.com/mZikTAH.gif" /></a>
+	<a href="https://codesandbox.io/s/threejs-meshline-custom-spring-3-ypkxx"><img width="432" height="240" src="https://i.imgur.com/g8ts0vJ.gif" /></a>
 </p>
 
 ```jsx
@@ -208,12 +208,12 @@ three.js r155 or later, on any browser that runs it. Tested on r155, r163 and r1
 
 ### References ###
 
-* [Drawing lines is hard](http://mattdesl.svbtle.com/drawing-lines-is-hard)
-* [WebGL rendering of solid trails](http://codeflow.org/entries/2012/aug/05/webgl-rendering-of-solid-trails/)
-* [Drawing Antialiased Lines with OpenGL](https://www.mapbox.com/blog/drawing-antialiased-lines/)
+* [Drawing lines is hard](https://mattdesl.svbtle.com/drawing-lines-is-hard)
+* [WebGL rendering of solid trails](https://web.archive.org/web/20161216021844/http://codeflow.org/entries/2012/aug/05/webgl-rendering-of-solid-trails/)
+* [Drawing Antialiased Lines with OpenGL](https://web.archive.org/web/20160401092603/https://www.mapbox.com/blog/drawing-antialiased-lines/)
 
 #### License ####
 
 MIT licensed
 
-Copyright (C) 2015-2016 Jaume Sanchez Elias, http://www.clicktorelease.com
+Copyright (C) 2015-2016 Jaume Sanchez Elias, https://www.clicktorelease.com
