@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GUI, signal, effect } from 'https://cdn.jsdelivr.net/npm/guspira@0.1.1/dist/guspira.min.js';
+import { GUI, signal, effect } from 'https://cdn.jsdelivr.net/npm/guspira@0.2.0/dist/guspira.min.js';
 import { MeshLine, MeshLineMaterial } from '../../src/THREE.MeshLine.js';
 import { ConstantSpline } from './ConstantSpline.js';
 import { colors } from './colors.js';
